@@ -1,7 +1,6 @@
 package com.udoolleh.backend.interceptor;
 
-import com.udoolleh.backend.core.security.role.Role;
-import com.udoolleh.backend.exception.CustomAuthenticationException;
+import com.udoolleh.backend.exception.errors.CustomAuthenticationException;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +19,22 @@ import java.util.Optional;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
-    private static final String AUTHORIZATION_HEADER = "X-auth-token";
+    private static final String AUTHORIZATION_HEADER = "x-auth-token";
 
     @Override
     public boolean preHandle(HttpServletRequest servletRequest, HttpServletResponse servletResponse, Object handler)
             throws Exception{
 
-        log.info("preHandle");
+        log.info("preHandle!");
+        if(servletRequest.getMethod().equals("OPTIONS")) {
+            return true;
+        }
 
         Optional<String> token = resolveToken(servletRequest);
 
         if(token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
-            if (jwtAuthToken.validate() & Role.USER.getCode().equals(jwtAuthToken.getData().get("role"))) {
+            if (jwtAuthToken.validate()) {
                 return true;
             } else {
                 throw new CustomAuthenticationException();

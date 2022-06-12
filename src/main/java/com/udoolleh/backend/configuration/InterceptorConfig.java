@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
@@ -15,10 +18,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        //List<String> excludePatterns = Arrays.asList("/**");
+        List<String> excludePatterns = Arrays.asList("/UDO/**");
         registry.addInterceptor(authInterceptor) //Bean 등록
-                .addPathPatterns("/api/login/**")
-                .excludePathPatterns("/api/home/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns(excludePatterns);
 
     }
 }

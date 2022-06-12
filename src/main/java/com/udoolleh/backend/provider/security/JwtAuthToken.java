@@ -1,7 +1,7 @@
 package com.udoolleh.backend.provider.security;
 
 import com.udoolleh.backend.core.security.auth.AuthToken;
-import com.udoolleh.backend.exception.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
