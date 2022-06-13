@@ -1,6 +1,7 @@
 package com.udoolleh.backend.exception;
 
 
+import com.udoolleh.backend.exception.error.WharfNameDuplicatedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -60,6 +61,18 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(response, ErrorCode.UNSUPPORTED_MEDIA_TYPE.getStatus());
+    }
+    @ExceptionHandler(WharfNameDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleWharfNameDuplicatedException(WharfNameDuplicatedException e) {
+        ErrorCode errorCode = ErrorCode.WHARF_NAME_DUPLICATED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
     }
 }
 
