@@ -16,11 +16,10 @@ import java.util.Map;
 public class ShipController {
     private final ShipService shipService;
 
-    @PostMapping("/wharf/register")
+    @PostMapping("/udo/wharf")
     public ResponseEntity<CommonResponse> addWharf(@RequestBody Map<String, String> wharf){
         shipService.registerWharf(wharf.get("wharf"));
 
-        System.out.println(wharf.get("wharf"));
         CommonResponse response = CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("선착장 등록 성공")
