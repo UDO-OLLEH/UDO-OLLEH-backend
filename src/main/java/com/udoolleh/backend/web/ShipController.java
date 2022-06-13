@@ -23,7 +23,7 @@ public class ShipController {
         System.out.println(wharf.get("wharf"));
         CommonResponse response = CommonResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message("달구지 정거장 등록 성공")
+                .message("선착장 등록 성공")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
