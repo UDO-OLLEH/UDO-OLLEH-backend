@@ -1,5 +1,6 @@
 package com.udoolleh.backend.interceptor;
 
+
 import com.udoolleh.backend.exception.errors.CustomAuthenticationException;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
@@ -8,9 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-
+import java.net.ProtocolException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.Optional;
 
 @Slf4j
@@ -54,5 +56,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
     }
 }
+
 
 

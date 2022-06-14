@@ -9,19 +9,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
+
 @RequiredArgsConstructor
+@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
-
     private final AuthInterceptor authInterceptor;
-
-
     @Override
-    public void addInterceptors(InterceptorRegistry registry){
-        List<String> excludePatterns = Arrays.asList("/UDO/**");
-        registry.addInterceptor(authInterceptor) //Bean 등록
+    public void addInterceptors(InterceptorRegistry registry) {
+        List<String> excludePatterns = Arrays.asList("/wharf/register","/user/**","/home","/**");
+
+        registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns(excludePatterns);
+                .excludePathPatterns(excludePatterns); // 경로지정하기
 
     }
 }
