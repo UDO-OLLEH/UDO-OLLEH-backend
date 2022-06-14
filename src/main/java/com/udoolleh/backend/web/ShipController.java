@@ -2,6 +2,7 @@ package com.udoolleh.backend.web;
 
 import com.udoolleh.backend.provider.service.ShipService;
 import com.udoolleh.backend.web.dto.CommonResponse;
+import com.udoolleh.backend.web.dto.RequestWharfTimetable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,16 @@ public class ShipController {
         CommonResponse response = CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("선착장 등록 성공")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("/udo/wharf/timetable")
+    public ResponseEntity<CommonResponse> addWharfTimetable(@RequestBody RequestWharfTimetable.WharfTime requestDto){
+        shipService.registerWharfTimetable(requestDto.getWharf(),requestDto.getTime());
+
+        CommonResponse response = CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("배 시간 등록 성공")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
