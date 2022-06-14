@@ -15,7 +15,7 @@ public class RequestWharfTimetable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class StationTime {
+    public static class WharfTime {
         @NotNull(message = "선착장이 비었다")
         private String wharf;
 
