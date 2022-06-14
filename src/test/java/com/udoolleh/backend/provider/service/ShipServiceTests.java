@@ -1,7 +1,6 @@
-package com.udoolleh.backend.web;
+package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Wharf;
-import com.udoolleh.backend.provider.ShipService;
 import com.udoolleh.backend.repository.WharfRepository;
 import com.udoolleh.backend.repository.WharfTimetableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ShipControllerTests {
+public class ShipServiceTests {
     @Autowired
     ShipService shipService;
     @Autowired
@@ -23,7 +22,7 @@ public class ShipControllerTests {
     @Autowired
     WharfTimetableRepository wharfTimetableRepository;
 
-    @DisplayName("선착장 등록 성공 테스트")
+    @DisplayName("선착장 등록 테스트")
     @Transactional
     @Test
     void registerStationTest(){

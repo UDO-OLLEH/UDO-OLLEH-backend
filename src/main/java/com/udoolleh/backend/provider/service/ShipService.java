@@ -1,4 +1,4 @@
-package com.udoolleh.backend.provider;
+package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.ShipServiceInterface;
 import com.udoolleh.backend.entity.Wharf;

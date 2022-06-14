@@ -1,6 +1,6 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.provider.ShipService;
+import com.udoolleh.backend.provider.service.ShipService;
 import com.udoolleh.backend.web.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
