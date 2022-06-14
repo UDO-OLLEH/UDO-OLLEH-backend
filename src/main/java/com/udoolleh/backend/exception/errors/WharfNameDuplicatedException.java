@@ -1,4 +1,4 @@
-package com.udoolleh.backend.exception.error;
+package com.udoolleh.backend.exception.errors;
 
 import com.udoolleh.backend.exception.ErrorCode;
 

@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
+
 @RequiredArgsConstructor
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
@@ -20,5 +21,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludePatterns); // 경로지정하기
+
     }
 }

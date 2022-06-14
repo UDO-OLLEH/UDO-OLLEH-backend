@@ -1,7 +1,7 @@
 package com.udoolleh.backend.exception;
 
 
-import com.udoolleh.backend.exception.error.WharfNameDuplicatedException;
+import com.udoolleh.backend.exception.errors.WharfNameDuplicatedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;

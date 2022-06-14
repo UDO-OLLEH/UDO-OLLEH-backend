@@ -2,7 +2,7 @@ package com.udoolleh.backend.provider;
 
 import com.udoolleh.backend.core.service.ShipServiceInterface;
 import com.udoolleh.backend.entity.Wharf;
-import com.udoolleh.backend.exception.error.WharfNameDuplicatedException;
+import com.udoolleh.backend.exception.errors.WharfNameDuplicatedException;
 import com.udoolleh.backend.repository.WharfRepository;
 import com.udoolleh.backend.repository.WharfTimetableRepository;
 import lombok.RequiredArgsConstructor;
