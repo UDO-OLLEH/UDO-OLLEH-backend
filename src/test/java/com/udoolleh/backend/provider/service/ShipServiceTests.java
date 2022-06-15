@@ -1,5 +1,6 @@
 package com.udoolleh.backend.provider.service;
 
+import com.udoolleh.backend.core.type.ShipTimetableType;
 import com.udoolleh.backend.entity.Wharf;
 import com.udoolleh.backend.entity.WharfTimetable;
 import com.udoolleh.backend.repository.WharfRepository;
@@ -46,11 +47,14 @@ public class ShipServiceTests {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         Date time = format.parse("08:10:00");
         Date otherTime = format.parse("08:11:00");
-        shipService.registerWharfTimetable("성산봉", time);
-        shipService.registerWharfTimetable("성산봉", otherTime);
+        shipService.registerWharfTimetable("성산봉", time, ShipTimetableType.typeOne);
+        shipService.registerWharfTimetable("성산봉", otherTime,ShipTimetableType.typeOne);
 
         List<WharfTimetable> wharfTimetableList = wharfTimetableRepository.findByWharf(wharf);
         assertNotNull(wharfTimetableList);
+        System.out.println(wharfTimetableList.get(0).getWharf().getWharf()+" "+wharfTimetableList.get(0).getDepartureTime()+" "+wharfTimetableList.get(0).getMonthType().getMonth());
+        System.out.println(wharfTimetableList.get(1).getWharf().getWharf()+" "+wharfTimetableList.get(1).getDepartureTime()+" "+wharfTimetableList.get(1).getMonthType().getMonth());
+
     }
 
 }

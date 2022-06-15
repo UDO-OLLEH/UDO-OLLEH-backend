@@ -1,6 +1,7 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.ShipServiceInterface;
+import com.udoolleh.backend.core.type.ShipTimetableType;
 import com.udoolleh.backend.entity.Wharf;
 import com.udoolleh.backend.entity.WharfTimetable;
 import com.udoolleh.backend.exception.errors.NotFoundWharfException;
@@ -35,12 +36,12 @@ public class ShipService implements ShipServiceInterface {
     }
     @Transactional
     @Override
-    public void registerWharfTimetable(String wharfName, Date departureTime){
+    public void registerWharfTimetable(String wharfName, Date departureTime, ShipTimetableType monthType){
         Wharf wharf = wharfRepository.findByWharf(wharfName);
         if(wharf == null){ //선착장이 없으면 예외 던지기
             throw new NotFoundWharfException();
         }
-        WharfTimetable wharfTime = wharfTimetableRepository.findByWharfAndDepartureTime(wharf, departureTime);
+        WharfTimetable wharfTime = wharfTimetableRepository.findByWharfAndDepartureTimeAndMonthType(wharf, departureTime, monthType);
         if(wharfTime != null){// 이미 있는 시간이면 예외 던지기
             throw new WharfTimeDuplicatedException();
         }
@@ -48,6 +49,7 @@ public class ShipService implements ShipServiceInterface {
         WharfTimetable wharfTimetable = WharfTimetable.builder()
                 .departureTime(departureTime)
                 .wharf(wharf)
+                .monthType(monthType)
                 .build();
         wharfTimetableRepository.save(wharfTimetable);
         wharf.addTimetable(wharfTimetable);
