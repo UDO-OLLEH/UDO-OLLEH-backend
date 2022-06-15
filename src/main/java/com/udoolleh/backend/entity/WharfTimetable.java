@@ -1,5 +1,6 @@
 package com.udoolleh.backend.entity;
 
+import com.udoolleh.backend.core.type.ShipTimetableType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,13 +21,17 @@ public class WharfTimetable {
     @Temporal(TemporalType.TIME)
     private Date departureTime;
 
+    @Column(name = "month_type")
+    private ShipTimetableType monthType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wharf_name")
     private Wharf wharf;
 
     @Builder
-    public WharfTimetable(Wharf wharf, Date departureTime){
+    public WharfTimetable(Wharf wharf,ShipTimetableType monthType, Date departureTime){
         this.wharf = wharf;
+        this.monthType = monthType;
         this.departureTime = departureTime;
     }
 }
