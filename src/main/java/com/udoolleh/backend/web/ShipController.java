@@ -75,7 +75,7 @@ public class ShipController {
         shipService.deleteWharfTimetable(wharfCourse, monthType);
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
-                .message("선착장 코스 삭제 성공")
+                .message("배 시간 삭제 성공")
                 .build(), HttpStatus.OK);
 
     }
