@@ -4,10 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum ShipTimetableType {
-    typeOne("1월~2월, 11월~12월"),
-    typeTwo("3월, 10월"),
-    typeThree("4월, 9월"),
-    typeFour("5월~8월");
+    SEONGSAN_One("1월~2월, 11월~12월"),
+    SEONGSAN_Two("3월, 10월"),
+    SEONGSAN_Three("4월, 9월"),
+    SEONGSAN_Four("5월~8월"),
+    JONGDAL_One("1월~3월, 10월~12월"),
+    JONGDAL_Two("4월~9월");
 
     private String month;
 

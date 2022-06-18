@@ -17,7 +17,9 @@ public enum ErrorCode {
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH001", " AUTHENTICATION_FAILED."),
     WHARF_NAME_DUPLICATED(HttpStatus.FORBIDDEN, "WHARF_001", "선착장 이름이 중복됨"),
     NOT_FOUND_WHARF(HttpStatus.NOT_FOUND, "WHARF_002", "존재하지 않는 선착장"),
-    WHARF_TIME_DUPLICATED(HttpStatus.FORBIDDEN, "WHARF_003", "배 출발 시간이 중복됨");
+    WHARF_TIME_DUPLICATED(HttpStatus.FORBIDDEN, "WHARF_003", "배 출발 시간이 중복됨"),
+    NOT_FOUND_WHARF_TIMETABLE(HttpStatus.NOT_FOUND, "WHARF_004", "배 시간이 존재하지 않음");
+
 
     private final String code;
     private final String message;
