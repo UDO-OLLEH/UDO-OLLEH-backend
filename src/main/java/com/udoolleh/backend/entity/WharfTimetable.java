@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Table(name = "wharf_timetable")
 @Getter
@@ -18,18 +17,17 @@ public class WharfTimetable {
     private Long id;
 
     @Column(name = "departure_time")
-    @Temporal(TemporalType.TIME)
-    private Date departureTime;
+    private String departureTime;
 
     @Column(name = "month_type")
     private ShipTimetableType monthType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wharf_name")
+    @JoinColumn(name = "wharf_id")
     private Wharf wharf;
 
     @Builder
-    public WharfTimetable(Wharf wharf,ShipTimetableType monthType, Date departureTime){
+    public WharfTimetable(Wharf wharf, ShipTimetableType monthType, String departureTime){
         this.wharf = wharf;
         this.monthType = monthType;
         this.departureTime = departureTime;

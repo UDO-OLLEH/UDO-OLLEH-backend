@@ -2,6 +2,7 @@ package com.udoolleh.backend.exception;
 
 
 import com.udoolleh.backend.exception.errors.NotFoundWharfException;
+import com.udoolleh.backend.exception.errors.NotFoundWharfTimetableException;
 import com.udoolleh.backend.exception.errors.WharfNameDuplicatedException;
 import com.udoolleh.backend.exception.errors.WharfTimeDuplicatedException;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(WharfTimeDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleWharfTimeDuplicatedException(WharfTimeDuplicatedException e) {
         ErrorCode errorCode = ErrorCode.WHARF_TIME_DUPLICATED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundWharfTimetableException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundWharfTimetableException(NotFoundWharfTimetableException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_WHARF_TIMETABLE;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
