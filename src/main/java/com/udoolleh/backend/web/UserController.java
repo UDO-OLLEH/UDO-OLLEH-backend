@@ -22,7 +22,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @PostMapping("/udo/register")
     public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.Register registerDto) {
