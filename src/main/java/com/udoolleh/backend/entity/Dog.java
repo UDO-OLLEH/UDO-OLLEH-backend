@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Table(name = "Dog")
+@Table(name = "dog")
 @Entity
 @Getter
 @NoArgsConstructor
@@ -15,10 +15,10 @@ public class Dog {      //테스트 엔티티
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "NAME")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "AGE")
+    @Column(name = "age")
     private Integer age;
 
     @Builder
