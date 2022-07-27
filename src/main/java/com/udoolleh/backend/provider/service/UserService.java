@@ -54,16 +54,16 @@ public class UserService implements UserServiceInterface {
     //로그인 API
     @Transactional
     @Override
-    public Optional<ResponseUser.Login> login(RequestUser.Login loginDtO) {
+    public Optional<ResponseUser.Login> login(RequestUser.Login loginDto) {
 
-        User user = userRepository.findByEmail(loginDtO.getEmail());
+        User user = userRepository.findByEmail(loginDto.getEmail());
         if (user == null) {
             throw new LoginFailedException();
         }
         String salt = user.getSalt();
-        String encryptedPassword = SHA256Util.getEncrypt(loginDtO.getPassword(), salt);
+        String encryptedPassword = SHA256Util.getEncrypt(loginDto.getPassword(), salt);
 
-        user = userRepository.findByEmailAndPassword(loginDtO.getEmail(), loginDtO.getPassword());
+        user = userRepository.findByEmailAndPassword(loginDto.getEmail(), encryptedPassword);
         ResponseUser.Login login = null;
 
         if (user != null) {

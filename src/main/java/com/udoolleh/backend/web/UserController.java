@@ -22,9 +22,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
-    @PostMapping("/UDO/register")
+    @PostMapping("/udo/register")
     public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.Register registerDto) {
 
         userService.register(registerDto);
@@ -35,7 +34,7 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @PostMapping("/UDO/login")
+    @PostMapping("/udo/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.Login loginDto) {
 
         ResponseUser.Login manager = userService.login(loginDto).orElseThrow(()->new LoginFailedException());
@@ -51,7 +50,7 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @PostMapping("/UDO/refreshToken")
+    @PostMapping("/udo/refreshToken")
     public ResponseEntity<CommonResponse> refreshToken(@RequestBody Map<String, String> payload) {
         ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(()->new CustomJwtRuntimeException());
 
