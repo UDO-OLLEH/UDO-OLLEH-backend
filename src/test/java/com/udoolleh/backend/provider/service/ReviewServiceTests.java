@@ -1,0 +1,85 @@
+package com.udoolleh.backend.provider.service;
+
+import com.udoolleh.backend.entity.Restaurant;
+import com.udoolleh.backend.entity.Review;
+import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.errors.ReviewDuplicatedException;
+import com.udoolleh.backend.repository.RestaurantRepository;
+import com.udoolleh.backend.repository.ReviewRepository;
+import com.udoolleh.backend.repository.UserRepository;
+import com.udoolleh.backend.web.dto.RequestReviewDto;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@ActiveProfiles("test")
+public class ReviewServiceTests {
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private ReviewService reviewService;
+
+    @Test
+    @Transactional
+    @DisplayName("리뷰 등록 테스트(성공)")
+    void registerReviewTest(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 등록
+        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+                .restaurantId(restaurant.getId())
+                .title("제목")
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+        reviewService.registerReview(null, "test", requestDto);
+
+        assertNotNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
+    }
+    @Test
+    @Transactional
+    @DisplayName("리뷰 등록 테스트(실패 - 이미 리뷰가 있는 경우)")
+    void registerReviewTestWhenExistReview(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 등록
+        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+                .restaurantId(restaurant.getId())
+                .title("제목")
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+        reviewService.registerReview(null, "test", requestDto);
+
+        //리뷰 중복
+        assertThrows(ReviewDuplicatedException.class, ()-> reviewService.registerReview(null, "test", requestDto));
+    }
+}

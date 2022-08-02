@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "user")
 @Entity
@@ -27,6 +29,8 @@ public class User {
     @Column(name = "salt")
     private String salt;
 
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviewList = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String salt){
@@ -36,5 +40,9 @@ public class User {
     }
     public void changeRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void addReview(Review review){
+        this.reviewList.add(review);
     }
 }
