@@ -8,10 +8,7 @@ import com.udoolleh.backend.web.dto.RequestReviewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +38,27 @@ public class ReviewController {
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("리뷰 등록 성공")
+                .build(), HttpStatus.OK);
+    }
+
+    @PutMapping("/review/{reviewId}")
+    ResponseEntity<CommonResponse> modifyReview(HttpServletRequest request,
+                                                @PathVariable String reviewId,
+                                                @RequestPart MultipartFile file,
+                                                @Valid @RequestPart RequestReviewDto.modify requestDto){
+        //유저 확인
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if(token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        //리뷰 수정
+        reviewService.modifyReview(file, email, reviewId, requestDto);
+
+        return new ResponseEntity<>(CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("리뷰 수정 성공")
                 .build(), HttpStatus.OK);
     }
 }

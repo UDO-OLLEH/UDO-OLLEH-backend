@@ -5,6 +5,7 @@ import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
+import com.udoolleh.backend.exception.errors.NotFoundReviewException;
 import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.exception.errors.ReviewDuplicatedException;
 import com.udoolleh.backend.repository.RestaurantRepository;
@@ -49,5 +50,22 @@ public class ReviewService implements ReviewServiceInterface {
         review = reviewRepository.save(review);
         restaurant.addReview(review);
         user.addReview(review);
+
+        //사진 등록
+    }
+
+    @Override
+    @Transactional
+    public void modifyReview(MultipartFile file, String email, String reviewId, RequestReviewDto.modify requestDto){
+        User user = userRepository.findByEmail(email);
+        if(user == null){ //해당 유저가 없으면
+            throw new NotFoundUserException();
+        }
+        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new NotFoundReviewException());
+
+        //사진 수정
+        String photo = "";
+
+        review.modifyReview(requestDto.getTitle(), requestDto.getContext(), photo, requestDto.getGrade());
     }
 }

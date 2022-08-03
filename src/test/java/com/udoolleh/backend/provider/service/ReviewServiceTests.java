@@ -3,6 +3,7 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.errors.NotFoundReviewException;
 import com.udoolleh.backend.exception.errors.ReviewDuplicatedException;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
@@ -81,5 +82,65 @@ public class ReviewServiceTests {
 
         //리뷰 중복
         assertThrows(ReviewDuplicatedException.class, ()-> reviewService.registerReview(null, "test", requestDto));
+    }
+    @Test
+    @Transactional
+    @DisplayName("리뷰 수정 테스트(성공)")
+    void modifyReviewTest(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 등록
+        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+                .restaurantId(restaurant.getId())
+                .title("제목")
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+        reviewService.registerReview(null, "test", requestDto);
+
+        Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
+        //리뷰 수정
+        RequestReviewDto.modify request = RequestReviewDto.modify.builder()
+                .title("수정한 제목")
+                .context("리뷰 수정 내용")
+                .grade(5.0)
+                .build();
+        reviewService.modifyReview(null, "test", review.getId(), request);
+
+        Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
+        assertTrue(result.getTitle().equals("수정한 제목"));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("리뷰 수정 테스트(실패 - 리뷰가 없을 경우)")
+    void modifyReviewTestWhenNotExistReview(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 수정
+        RequestReviewDto.modify request = RequestReviewDto.modify.builder()
+                .title("수정한 제목")
+                .context("리뷰 수정 내용")
+                .grade(5.0)
+                .build();
+        assertThrows(NotFoundReviewException.class, ()-> reviewService.modifyReview(null, "test", "옳지 않은 리뷰 아이디", request));
     }
 }

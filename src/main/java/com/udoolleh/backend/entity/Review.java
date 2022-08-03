@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Table(name = "review")
 @Entity
@@ -14,8 +15,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "review_id")
+    private String id = UUID.randomUUID().toString();
 
     @CreationTimestamp
     @Column(name = "create_at")
@@ -51,5 +52,11 @@ public class Review {
         this.restaurant = restaurant;
     }
 
+    public void modifyReview(String title, String context, String photo, Double grade){
+        this.title = title;
+        this.context = context;
+        this.photo = photo;
+        this.grade = grade;
+    }
 
 }

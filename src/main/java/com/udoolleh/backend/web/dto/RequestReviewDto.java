@@ -19,4 +19,15 @@ public class RequestReviewDto {
         @NotEmpty(message = "별점이 비었습니다.")
         private Double grade;
     }
+
+    @Builder
+    @Data
+    public static class modify{
+        @NotEmpty(message = "제목이 비어있습니다.")
+        private String title;
+        @NotEmpty(message = "내용이 비어있습니다")
+        private String context;
+        @NotEmpty(message = "별점이 비었습니다.")
+        private Double grade;
+    }
 }
