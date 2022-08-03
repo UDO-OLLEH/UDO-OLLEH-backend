@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Review {
     @Id
     @Column(name = "review_id")
-    private String id = UUID.randomUUID().toString();
+    private String reviewId = UUID.randomUUID().toString();
 
     @CreationTimestamp
     @Column(name = "create_at")

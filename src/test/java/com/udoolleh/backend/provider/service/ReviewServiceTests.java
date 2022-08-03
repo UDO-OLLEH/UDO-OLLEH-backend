@@ -114,7 +114,7 @@ public class ReviewServiceTests {
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
-        reviewService.modifyReview(null, "test", review.getId(), request);
+        reviewService.modifyReview(null, "test", review.getReviewId(), request);
 
         Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
         assertTrue(result.getTitle().equals("수정한 제목"));
@@ -143,4 +143,53 @@ public class ReviewServiceTests {
                 .build();
         assertThrows(NotFoundReviewException.class, ()-> reviewService.modifyReview(null, "test", "옳지 않은 리뷰 아이디", request));
     }
-}
+
+    @Test
+    @Transactional
+    @DisplayName("리뷰 삭제 테스트(성공)")
+    void deleteReviewTest(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+        //리뷰 등록
+        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+                .restaurantId(restaurant.getId())
+                .title("제목")
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+        reviewService.registerReview(null, "test", requestDto);
+        Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
+
+        //리뷰 삭제
+        reviewService.deleteReview("test", review.getReviewId());
+
+        assertNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
+        assertFalse(user.getReviewList().contains(review));
+        assertFalse(restaurant.getReviewList().contains(review));
+    }
+    @Test
+    @Transactional
+    @DisplayName("리뷰 삭제 테스트(실패 - 리뷰가 없을 경우)")
+    void deleteReviewTestWhenNotExistReview() {
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+        //리뷰 삭제
+        assertThrows(NotFoundReviewException.class, ()-> reviewService.deleteReview("test", "존재하지 않은 리뷰 아이디"));
+    }
+    }

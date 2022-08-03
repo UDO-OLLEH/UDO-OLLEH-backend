@@ -61,11 +61,32 @@ public class ReviewService implements ReviewServiceInterface {
         if(user == null){ //해당 유저가 없으면
             throw new NotFoundUserException();
         }
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new NotFoundReviewException());
+        Review review = reviewRepository.findByUserAndReviewId(user, reviewId);
+        if(review == null){
+            throw new NotFoundReviewException();
+        }
 
         //사진 수정
         String photo = "";
 
         review.modifyReview(requestDto.getTitle(), requestDto.getContext(), photo, requestDto.getGrade());
+    }
+
+    @Override
+    @Transactional
+    public void deleteReview(String email, String reviewId){
+        User user = userRepository.findByEmail(email);
+        if(user == null){ //해당 유저가 없으면
+            throw new NotFoundUserException();
+        }
+        Review review = reviewRepository.findByUserAndReviewId(user, reviewId);
+        if(review == null){
+            throw new NotFoundReviewException();
+        }
+        //리뷰 삭제
+        review.getRestaurant().getReviewList().remove(review);
+        user.getReviewList().remove(review);
+
+        reviewRepository.delete(review);
     }
 }
