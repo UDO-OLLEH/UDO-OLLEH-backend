@@ -1,10 +1,7 @@
 package com.udoolleh.backend.exception;
 
 
-import com.udoolleh.backend.exception.errors.NotFoundWharfException;
-import com.udoolleh.backend.exception.errors.NotFoundWharfTimetableException;
-import com.udoolleh.backend.exception.errors.WharfNameDuplicatedException;
-import com.udoolleh.backend.exception.errors.WharfTimeDuplicatedException;
+import com.udoolleh.backend.exception.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -104,6 +101,56 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundWharfTimetableException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundWharfTimetableException(NotFoundWharfTimetableException e) {
         ErrorCode errorCode = ErrorCode.NOT_FOUND_WHARF_TIMETABLE;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundUserException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_USER;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundRestaurantException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundRestaurantException(NotFoundRestaurantException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_RESTAURANT;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(ReviewDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleReviewDuplicatedException(ReviewDuplicatedException e) {
+        ErrorCode errorCode = ErrorCode.REVIEW_DUPLICATED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundReviewException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundReviewException(NotFoundReviewException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_REVIEW;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
