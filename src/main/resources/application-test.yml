@@ -12,7 +12,7 @@ spring:
 
   jpa:
     show-sql: true
-    generate-ddl: false
+    generate-ddl: true
     hibernate:
       ddl-auto: create
 
