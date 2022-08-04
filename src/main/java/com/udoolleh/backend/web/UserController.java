@@ -23,7 +23,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/udo/register")
+    @PostMapping("/udo/user")
     public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.Register registerDto) {
 
         userService.register(registerDto);
@@ -34,10 +34,11 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @PostMapping("/udo/login")
+
+    @PostMapping("/udo/user/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.Login loginDto) {
 
-        ResponseUser.Login manager = userService.login(loginDto).orElseThrow(()->new LoginFailedException());
+        ResponseUser.Login manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("accessToken", manager.getAccessToken());
@@ -50,9 +51,10 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @PostMapping("/udo/refreshToken")
     public ResponseEntity<CommonResponse> refreshToken(@RequestBody Map<String, String> payload) {
-        ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(()->new CustomJwtRuntimeException());
+        ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(() -> new CustomJwtRuntimeException());
 
         CommonResponse response = CommonResponse.builder()
                 .status(HttpStatus.OK.value())

@@ -40,20 +40,20 @@ public class BoardServiceTests {
         RequestBoard.Creates requestDto = RequestBoard.Creates.builder()
                 .user(user)
                 .title("테스트입니다")
-                .content("잘 되나요?")
+                .context("잘 되나요?")
                 .build();
 
         boardService.registerPosts(requestDto);
         //ResponseBoard.Board boardResponse
         //boardService.registerPosts(requestDto);
         assertNotNull(requestDto.getTitle());
-        assertNotNull(requestDto.getContent());
+        assertNotNull(requestDto.getContext());
 
         //assertEquals("테스트입니다", requestDto.getTitle());
         System.out.println(user.getEmail());
         System.out.println(user.getPassword());
         System.out.println(requestDto.getTitle());
-        System.out.println(requestDto.getContent());
+        System.out.println(requestDto.getContext());
         //System.out.println(.getCreatedDate());
 
     }

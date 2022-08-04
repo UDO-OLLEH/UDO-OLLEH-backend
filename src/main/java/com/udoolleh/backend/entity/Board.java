@@ -9,8 +9,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
-@Table(name="board")
+@Table(name = "board")
 @NoArgsConstructor
 @Getter
 @Entity
@@ -26,28 +27,20 @@ public class Board {
     @Column(name = "title", length = 30, nullable = false)
     private String title;
 
-    @Column(name = "category", length = 5)
-    private String category;
-
     @Lob
-    private String content;
+    @Column(name = "context")
+    private String context;
 
-    @Column(name = "picture")
-    private String picture;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
+    @CreationTimestamp
+    @Column(name = "create_at")
+    private Date createAt = new Date();
 
     @Builder
-    public Board(Long id,String title,String category,String content,String picture){
-        this.id=id;
-        this.title=title;
-        this.category=category;
-        this.content=content;
-        this.picture=picture;
+    public Board(Long id, User user, String title, String context) {
+        this.id = id;
+        this.user = user;
+        this.title = title;
+        this.context = context;
     }
+
 }

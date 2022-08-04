@@ -59,7 +59,6 @@ public class UserServiceTests {
 
         //when
         ResponseUser.Login loginResponse = userService.login(loginRequest).orElseGet(()->null);
-
         System.out.println(loginResponse.getAccessToken());
         System.out.println(loginResponse.getRefreshToken());
 
