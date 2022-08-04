@@ -32,9 +32,7 @@ public class ReviewService implements ReviewServiceInterface {
             throw new NotFoundUserException();
         }
         Restaurant restaurant = restaurantRepository.findById(requestDto.getRestaurantId()).orElseThrow(()-> new NotFoundRestaurantException());
-        if(restaurant == null){ //해당 음식점이 없으면
-            throw new NotFoundRestaurantException();
-        }
+
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         if(review != null){ //이미 리뷰가 있다면
             throw new ReviewDuplicatedException();
@@ -89,4 +87,5 @@ public class ReviewService implements ReviewServiceInterface {
 
         reviewRepository.delete(review);
     }
+
 }
