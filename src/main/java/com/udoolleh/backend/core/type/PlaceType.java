@@ -1,5 +1,10 @@
 package com.udoolleh.backend.core.type;
 
+import lombok.Getter;
+
+import java.util.Arrays;
+
+@Getter
 public enum PlaceType {
     RESTAURANT("FD6"),
     CAFE("CE7");

@@ -1,9 +1,12 @@
 package com.udoolleh.backend.core.type;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
+@Getter
 public enum UdoCoordinateType {
-    ONE_QUADRANT(1,"126.955669,33.506972,126.975226,33.527403"),
+    ONE_QUADRANT(1,"126.955669,33.506972,126.975226,33.527403"),    //x가 경도, y가 위도
     TWO_QUADRANT(2,"126.935805,33.527508,126.955669,33.506972"),
     THREE_QUADRANT(3,"126.937426,33.490855,126.955669,33.506972"),
     FOUR_QUADRANT(4,"126.955669,33.506972,126.978418,33.487412");

@@ -1,5 +1,6 @@
 package com.udoolleh.backend.entity;
 
+import com.udoolleh.backend.core.type.PlaceType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,9 @@ public class Restaurant {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "place_type")
+    private PlaceType placeType;
+
     @Column(name = "address")
     private String address;
 
@@ -37,9 +41,10 @@ public class Restaurant {
     private List<Review> reviewList = new ArrayList<>();
 
     @Builder
-    public Restaurant(String name, String description, String address, Float totalGrade){
+    public Restaurant(String name, String description,PlaceType placeType, String address, Float totalGrade){
         this.name = name;
         this.description = description;
+        this.placeType = placeType;
         this.address = address;
         this.totalGrade = totalGrade;
     }

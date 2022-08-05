@@ -1,10 +1,10 @@
 package com.udoolleh.backend.provider.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoolleh.backend.core.service.KakaoApiServiceInterface;
 import com.udoolleh.backend.core.type.PlaceType;
 import com.udoolleh.backend.core.type.UdoCoordinateType;
-import com.udoolleh.backend.web.dto.ResponseKakaoApi;
+import com.udoolleh.backend.entity.Restaurant;
+import com.udoolleh.backend.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,27 +19,25 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 @PropertySource("classpath:/secrets/kakao-api-secrets.properties")
 @Service
 @RequiredArgsConstructor
 public class KakaoApiService implements KakaoApiServiceInterface {
     @Value("${kakao.restapi.key}")
     private String kakaoRestApiKey;
+    private String baseUrl = "https://dapi.kakao.com";
 
-    private final String baseUrl = "https://dapi.kakao.com";
+    private final RestaurantRepository restaurantRepository;
 
 
+    @Transactional
     @Override
     public void callKakaoApi(String query, int page, PlaceType placeType, UdoCoordinateType coordinateType){      //카카오 api를 키워드로 호출하고 해당 page값을 String으로 반환
         int pageParam = page;
         MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
         params.add("query", query);
         params.add("category_group_code", placeType.getPlaceCode());       //음식점 FD6, 카페 CE7
-        params.add("rect",coordinateType.getCoordiante());
+        params.add("rect",coordinateType.getCoordiante());      //x : 경도, y : 위도
 
         Mono<String> mono = WebClient.builder()
                 .baseUrl(baseUrl)
@@ -52,7 +50,8 @@ public class KakaoApiService implements KakaoApiServiceInterface {
                 .retrieve()
                 .bodyToMono(String.class);
         int nextPage;
-        boolean finish = saveLocalInfo(mono.block(), page, query);
+        boolean finish = saveLocalInfo(mono.block(), page,placeType , query);
+
         if(finish) {     //is_end가 true이면 다음 사분면을 호출(기저 조건)
             int number = coordinateType.getNumber()+1;
             coordinateType = UdoCoordinateType.valueOfNumber(number);
@@ -64,12 +63,13 @@ public class KakaoApiService implements KakaoApiServiceInterface {
         }
         //끝 페이지가 아니라면 다음 페이지 호출
         nextPage = page +1;
-        callKakaoApi(query, nextPage, placeType, coordinateType);
+        callKakaoApi(query, nextPage, placeType ,coordinateType);
     }
 
-    @Transactional
+
     @Override
-    public boolean saveLocalInfo(String kakaoApiResponse,int page,String query){   //필요한 값들을 Dto에 넣기
+    @Transactional
+    public boolean saveLocalInfo(String kakaoApiResponse, int page, PlaceType placeType,String query){   //필요한 값들을 Dto에 넣기
         JSONObject jsonMeta = new JSONObject();
         try {
             JSONParser jsonParser = new JSONParser();
@@ -78,17 +78,15 @@ public class KakaoApiService implements KakaoApiServiceInterface {
             jsonMeta = (JSONObject) jsonObject.get("meta");
             JSONArray jsonDocuments = (JSONArray) jsonObject.get("documents");
 
-            List<ResponseKakaoApi.PlaceDto> placeList = new ArrayList<>();
             for (int i = 0; i < jsonDocuments.size(); i++) {        //해당 가게들 리스트를
                 JSONObject document = (JSONObject) jsonDocuments.get(i);
-                ResponseKakaoApi.PlaceDto placeDto = ResponseKakaoApi.PlaceDto.builder()
-                        .placeName((String) document.get("place_name"))
-                        .placeType(PlaceType.RESTAURANT)
-                        .category((String) document.get("category_name"))
-                        .address((String) document.get("road_address_name"))
-                        .page(page)
+                Restaurant restaurant = Restaurant.builder()
+                        .name(document.get("place_name").toString())
+                        .placeType(placeType)
+                        //.category((String) document.get("category_name")) //상의 필요
+                        .address(document.get("road_address_name").toString())
                         .build();
-                placeList.add(placeDto);
+                        restaurantRepository.save(restaurant);
             }
         }
         catch(ParseException e){
