@@ -1,10 +1,7 @@
 package com.udoolleh.backend.exception;
 
 
-import com.udoolleh.backend.exception.errors.NotFoundWharfException;
-import com.udoolleh.backend.exception.errors.NotFoundWharfTimetableException;
-import com.udoolleh.backend.exception.errors.WharfNameDuplicatedException;
-import com.udoolleh.backend.exception.errors.WharfTimeDuplicatedException;
+import com.udoolleh.backend.exception.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -65,6 +62,17 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, ErrorCode.UNSUPPORTED_MEDIA_TYPE.getStatus());
     }
+    @ExceptionHandler(CustomJwtRuntimeException.class)
+    protected ResponseEntity<ErrorResponse> handleJwtException(CustomJwtRuntimeException e) {
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(ErrorCode.INVALID_JWT_TOKEN.getCode())
+                .message(ErrorCode.INVALID_JWT_TOKEN.getMessage())
+                .status(ErrorCode.INVALID_JWT_TOKEN.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, ErrorCode.INVALID_JWT_TOKEN.getStatus());
+    }
     @ExceptionHandler(WharfNameDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleWharfNameDuplicatedException(WharfNameDuplicatedException e) {
         ErrorCode errorCode = ErrorCode.WHARF_NAME_DUPLICATED;
@@ -104,6 +112,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundWharfTimetableException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundWharfTimetableException(NotFoundWharfTimetableException e) {
         ErrorCode errorCode = ErrorCode.NOT_FOUND_WHARF_TIMETABLE;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(NotFoundUserException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_USER;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())

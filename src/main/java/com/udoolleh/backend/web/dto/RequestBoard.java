@@ -10,23 +10,23 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 
 public class RequestBoard {
-    @Builder
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Creates {
-        private User user;
+    public static class Register {
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
         @NotEmpty(message = "내용이 없습니다.")
         private String context;
+
     }
+
+
     @Builder
     @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
+
     public static class Updates {
-        private User user;
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
         @NotEmpty(message = "내용이 없습니다.")

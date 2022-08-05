@@ -35,7 +35,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/udo/user/login")
+    @PostMapping("/udo/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.Login loginDto) {
 
         ResponseUser.Login manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());

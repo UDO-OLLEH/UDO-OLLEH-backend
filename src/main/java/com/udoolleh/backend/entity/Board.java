@@ -17,12 +17,10 @@ import java.util.Date;
 @Entity
 public class Board {
     @Id
+    @Column(name = "board_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY) //즉시 로딩 방식
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Column(name = "title", length = 30, nullable = false)
     private String title;
@@ -34,13 +32,16 @@ public class Board {
     @CreationTimestamp
     @Column(name = "create_at")
     private Date createAt = new Date();
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Builder
-    public Board(Long id, User user, String title, String context) {
-        this.id = id;
-        this.user = user;
+    public Board(String title, String context, User user) {
         this.title = title;
         this.context = context;
+        this.user = user;
     }
+
 
 }

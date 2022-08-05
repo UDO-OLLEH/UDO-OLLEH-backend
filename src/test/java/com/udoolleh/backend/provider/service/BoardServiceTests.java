@@ -5,7 +5,7 @@ import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
-import com.udoolleh.backend.web.dto.ResponseBoard;
+import com.udoolleh.backend.web.dto.RequestUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,35 +26,37 @@ public class BoardServiceTests {
     private BoardRepository boardRepository;
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private UserService userService;
 
     @Test
     @Transactional
     @DisplayName("게시글 등록 테스트")
     void registerPostsTest() {
-        User user = User.builder()
-                .email("alive")
+
+        RequestUser.Register registerDto = RequestUser.Register.builder()
+                .email("k")
                 .password("1234")
                 .build();
-        user = userRepository.save(user);
+        userService.register(registerDto); //회원 가입
 
-        RequestBoard.Creates requestDto = RequestBoard.Creates.builder()
-                .user(user)
-                .title("테스트입니다")
-                .context("잘 되나요?")
-                .build();
+        RequestBoard.Register dto = RequestBoard.Register.builder()
+                .title("지금 몇시냐")
+                .context("잘 자")
+                .build(); //게시글 등록
+        boardService.registerPosts("k", dto);
 
-        boardService.registerPosts(requestDto);
-        //ResponseBoard.Board boardResponse
-        //boardService.registerPosts(requestDto);
-        assertNotNull(requestDto.getTitle());
-        assertNotNull(requestDto.getContext());
+        Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
-        //assertEquals("테스트입니다", requestDto.getTitle());
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
-        System.out.println(requestDto.getTitle());
-        System.out.println(requestDto.getContext());
-        //System.out.println(.getCreatedDate());
+        assertNotNull(dto);
+        assertEquals(board.getTitle(), dto.getTitle());
+        assertEquals(board.getContext(), dto.getContext());
+
+        System.out.println(board.getTitle());
+        System.out.println(board.getContext());
+        System.out.println(board.getUser().getEmail());
+        System.out.println(board.getUser().getId());
+
 
     }
 }
