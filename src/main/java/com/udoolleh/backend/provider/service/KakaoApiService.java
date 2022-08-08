@@ -49,7 +49,6 @@ public class KakaoApiService implements KakaoApiServiceInterface {
                 .header("Authorization", "KakaoAK " + kakaoRestApiKey)
                 .retrieve()
                 .bodyToMono(String.class);
-        int nextPage;
         boolean finish = registerRestaurant(mono.block(), page,placeType , query);
 
         if(finish) {     //is_end가 true이면 다음 사분면을 호출(기저 조건)
@@ -62,8 +61,7 @@ public class KakaoApiService implements KakaoApiServiceInterface {
             }
         }
         //끝 페이지가 아니라면 다음 페이지 호출
-        nextPage = page +1;
-        callKakaoApi(query, nextPage, placeType ,coordinateType);
+        callKakaoApi(query, page+1, placeType ,coordinateType);
     }
 
 
