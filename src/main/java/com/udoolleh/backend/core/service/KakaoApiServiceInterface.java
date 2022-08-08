@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 public interface KakaoApiServiceInterface {
-    boolean saveLocalInfo(String response, int page, String query) throws ParseException;;
-    void callKakaoApi(String query, int page,PlaceType placeType, UdoCoordinateType coordinateType) throws ParseException;
-//    void saveUdoLocalInfo(UdoCoordinateType coordinateType, PlaceType placeType);
+    boolean registerRestaurant(String response, int page, PlaceType placeType, String query);
+    void callKakaoApi(String query, int page,PlaceType placeType, UdoCoordinateType coordinateType);
 }

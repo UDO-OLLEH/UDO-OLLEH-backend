@@ -6,9 +6,11 @@ import com.udoolleh.backend.entity.WharfTimetable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface WharfTimetableRepository extends JpaRepository<WharfTimetable, Long> {
     List<WharfTimetable> findByWharf(Wharf wharf);
     List<WharfTimetable> findByWharfAndMonthType(Wharf wharfName, ShipTimetableType monthType);
