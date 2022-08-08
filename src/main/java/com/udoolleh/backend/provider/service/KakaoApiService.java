@@ -50,7 +50,7 @@ public class KakaoApiService implements KakaoApiServiceInterface {
                 .retrieve()
                 .bodyToMono(String.class);
         int nextPage;
-        boolean finish = saveLocalInfo(mono.block(), page,placeType , query);
+        boolean finish = registerRestaurant(mono.block(), page,placeType , query);
 
         if(finish) {     //is_end가 true이면 다음 사분면을 호출(기저 조건)
             int number = coordinateType.getNumber()+1;
@@ -69,7 +69,7 @@ public class KakaoApiService implements KakaoApiServiceInterface {
 
     @Override
     @Transactional
-    public boolean saveLocalInfo(String kakaoApiResponse, int page, PlaceType placeType,String query){   //필요한 값들을 Dto에 넣기
+    public boolean registerRestaurant(String kakaoApiResponse, int page, PlaceType placeType,String query){   //필요한 값들을 Dto에 넣기
         JSONObject jsonMeta = new JSONObject();
         try {
             JSONParser jsonParser = new JSONParser();

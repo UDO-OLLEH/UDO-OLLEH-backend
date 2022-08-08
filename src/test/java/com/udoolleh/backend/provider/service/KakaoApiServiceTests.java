@@ -28,7 +28,6 @@ public class KakaoApiServiceTests {
     @Value("${kakao.restapi.key}")
     private String kakaoRestApiKey;
     private String baseUrl = "https://dapi.kakao.com";
-
     @Autowired
     private KakaoApiService kakaoApiService;
     @Autowired
@@ -60,7 +59,6 @@ public class KakaoApiServiceTests {
         try {
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(mono.block());
-
             JSONObject jsonMeta = (JSONObject) jsonObject.get("meta");
             totalCount = Integer.parseInt(jsonMeta.get("total_count").toString());
         }
