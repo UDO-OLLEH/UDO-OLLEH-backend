@@ -19,7 +19,7 @@ public class Board {
     @Id
     @Column(name = "board_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long boardId;
 
 
     @Column(name = "title", length = 30, nullable = false)
@@ -37,11 +37,16 @@ public class Board {
     private User user;
 
     @Builder
-    public Board(String title, String context, User user) {
+    public Board(Long boardId, String title, String context, User user) {
+        this.boardId = boardId;
         this.title = title;
         this.context = context;
         this.user = user;
     }
 
+    public void modifyPosts(String title, String context) {
+        this.title = title;
+        this.context = context;
+    }
 
 }

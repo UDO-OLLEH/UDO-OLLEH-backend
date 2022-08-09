@@ -44,4 +44,21 @@ public class BoardController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PutMapping("/udo/board/{boardId}")
+    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @PathVariable Long boardId,
+                                                      @Valid @RequestBody RequestBoard.Updates updatesDto) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardService.modifyPosts(email, boardId, updatesDto);
+
+        return new ResponseEntity<>(CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("게시글 수정 성공")
+                .build(), HttpStatus.OK);
+    }
 }
