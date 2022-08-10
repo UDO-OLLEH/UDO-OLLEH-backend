@@ -35,29 +35,23 @@ public class BoardServiceTests {
     @Transactional
     @DisplayName("게시글 등록 테스트")
     void registerPostsTest() {
-
-        RequestUser.Register registerDto = RequestUser.Register.builder()
+        User user = User.builder()
                 .email("k")
                 .password("1234")
                 .build();
-        userService.register(registerDto); //회원 가입
+        user = userRepository.save(user);
 
         RequestBoard.Register dto = RequestBoard.Register.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
-                .build(); //게시글 등록
+                .build();
         boardService.registerPosts("k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
-        assertNotNull(dto);
         assertEquals(board.getTitle(), dto.getTitle());
-        assertEquals(board.getContext(), dto.getContext());
+        assertNotNull(user.getBoardList());
 
-        System.out.println(board.getTitle());
-        System.out.println(board.getContext());
-        System.out.println(board.getUser().getEmail());
-        System.out.println(board.getUser().getId());
     }
 
     @Test
@@ -65,31 +59,29 @@ public class BoardServiceTests {
     @DisplayName("게시글 수정 테스트(성공)")
     void modifyPostsTest() {
         User user = User.builder()
-                .email("test")
+                .email("k")
                 .password("1234")
                 .build();
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         RequestBoard.Register dto = RequestBoard.Register.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
-                .build(); //게시글 등록
-        boardService.registerPosts("test", dto);
+                .build();
+        boardService.registerPosts("k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
-        //리뷰 수정
+
         RequestBoard.Updates mDto = RequestBoard.Updates.builder()
                 .title("수정한 제목")
                 .context("게시글 수정 내용")
                 .build();
 
-        boardService.modifyPosts("test", board.getBoardId(), mDto);
+        boardService.modifyPosts("k", board.getBoardId(), mDto);
 
-        Board result = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
+        board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
-        assertTrue(result.getTitle().equals("수정한 제목"));
+        assertTrue(board.getTitle().equals("수정한 제목"));
 
-        System.out.println(result.getTitle());
-        System.out.println(result.getContext());
     }
 }

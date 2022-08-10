@@ -29,6 +29,7 @@ public class BoardService implements BoardServiceInterface {
     @Transactional
     public void registerPosts(String email, RequestBoard.Register postDto) { //postDto = title, context + category 추후 추가
         User user = userRepository.findByEmail(email);
+
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
@@ -42,7 +43,7 @@ public class BoardService implements BoardServiceInterface {
                 .user(user)
                 .build();
         //게시글을 등록하고 저장
-        boardRepository.save(board);
+        board = boardRepository.save(board);
         user.addBoard(board);
     }
 
@@ -59,15 +60,16 @@ public class BoardService implements BoardServiceInterface {
         }
         board.modifyPosts(updatesDto.getTitle(), updatesDto.getContext());
     }
+
     @Override
     @Transactional
-    public void deletePosts(String email, Long boardId){
+    public void deletePosts(String email, Long boardId) {
         User user = userRepository.findByEmail(email);
-        if(user == null){
+        if (user == null) {
             throw new CustomJwtRuntimeException();
         }
         Board board = boardRepository.findByUserAndBoardId(user, boardId);
-        if(board == null){
+        if (board == null) {
             throw new NotFoundBoardException();
         }
 
