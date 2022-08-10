@@ -46,7 +46,7 @@ public class BoardController {
     }
 
     @PutMapping("/udo/board/{boardId}")
-    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @PathVariable Long boardId,
+    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @PathVariable String boardId,
                                                       @Valid @RequestBody RequestBoard.Updates updatesDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;

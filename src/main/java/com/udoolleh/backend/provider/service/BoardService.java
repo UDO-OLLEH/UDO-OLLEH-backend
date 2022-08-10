@@ -2,12 +2,9 @@ package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.BoardServiceInterface;
 import com.udoolleh.backend.entity.Board;
-import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
-import com.udoolleh.backend.exception.errors.NotFoundReviewException;
-import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
@@ -49,7 +46,7 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void modifyPosts(String email, Long boardId, RequestBoard.Updates updatesDto) {
+    public void modifyPosts(String email, String boardId, RequestBoard.Updates updatesDto) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -63,7 +60,7 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void deletePosts(String email, Long boardId) {
+    public void deletePosts(String email, String boardId) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new CustomJwtRuntimeException();

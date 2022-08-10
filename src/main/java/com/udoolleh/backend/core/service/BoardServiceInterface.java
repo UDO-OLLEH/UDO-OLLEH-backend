@@ -18,6 +18,6 @@ public interface BoardServiceInterface {
     void registerPosts(String email, RequestBoard.Register postDto);
 
     //게시글 수정
-    void modifyPosts(String email, Long boardId, RequestBoard.Updates updatesDto);
-    void deletePosts(String email, Long boardId);
+    void modifyPosts(String email, String boardId, RequestBoard.Updates updatesDto);
+    void deletePosts(String email, String boardId);
 }

@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 @Table(name = "board")
 @NoArgsConstructor
@@ -18,9 +19,7 @@ import java.util.Date;
 public class Board {
     @Id
     @Column(name = "board_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long boardId;
-
+    private String boardId = UUID.randomUUID().toString();
 
     @Column(name = "title", length = 30, nullable = false)
     private String title;
@@ -37,8 +36,7 @@ public class Board {
     private User user;
 
     @Builder
-    public Board(Long boardId, String title, String context, User user) {
-        this.boardId = boardId;
+    public Board(String title, String context, User user) {
         this.title = title;
         this.context = context;
         this.user = user;
