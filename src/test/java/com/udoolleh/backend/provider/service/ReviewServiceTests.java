@@ -55,6 +55,7 @@ public class ReviewServiceTests {
         reviewService.registerReview(null, "test", requestDto);
 
         assertNotNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
+        System.out.println("저장된 리뷰 :"+reviewRepository.findByUserAndRestaurant(user, restaurant));
     }
     @Test
     @Transactional

@@ -1,16 +1,20 @@
 package com.udoolleh.backend.provider.service;
 
+import com.udoolleh.backend.entity.Menu;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.RequestMenuDto;
+import com.udoolleh.backend.web.dto.ResponseMenuDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -44,6 +48,28 @@ public class MenuServiceTests {
 
         restaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow(()-> new NotFoundRestaurantException());
         assertNotNull(restaurant.getMenuList());
-
     }
+
+    @Test
+    @DisplayName("메뉴 조회 테스트(성공)")
+    @Transactional
+    void getMenuTest(){
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        Menu menu = Menu.builder()
+                .name("메뉴 이름")
+                .price(2000)
+                .restaurant(restaurant)
+                .build();
+        menu = menuRepository.save(menu);
+        restaurant.addMenu(menu);
+
+        //메뉴 조회
+        List<ResponseMenuDto.getMenu> result = menuService.getMenu(restaurant.getId());
+        assertNotNull(result);
+    }
+
 }
