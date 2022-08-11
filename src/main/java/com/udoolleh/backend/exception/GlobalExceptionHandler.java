@@ -62,6 +62,17 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, ErrorCode.UNSUPPORTED_MEDIA_TYPE.getStatus());
     }
+    @ExceptionHandler(CustomJwtRuntimeException.class)
+    protected ResponseEntity<ErrorResponse> handleJwtException(CustomJwtRuntimeException e) {
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(ErrorCode.INVALID_JWT_TOKEN.getCode())
+                .message(ErrorCode.INVALID_JWT_TOKEN.getMessage())
+                .status(ErrorCode.INVALID_JWT_TOKEN.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, ErrorCode.INVALID_JWT_TOKEN.getStatus());
+    }
     @ExceptionHandler(WharfNameDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleWharfNameDuplicatedException(WharfNameDuplicatedException e) {
         ErrorCode errorCode = ErrorCode.WHARF_NAME_DUPLICATED;
@@ -122,35 +133,10 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
-    @ExceptionHandler(NotFoundRestaurantException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundRestaurantException(NotFoundRestaurantException e) {
-        ErrorCode errorCode = ErrorCode.NOT_FOUND_RESTAURANT;
 
-        ErrorResponse response = ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .message(errorCode.getMessage())
-                .status(errorCode.getStatus().value())
-                .build();
-
-        return new ResponseEntity<>(response, errorCode.getStatus());
-    }
-
-    @ExceptionHandler(ReviewDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleReviewDuplicatedException(ReviewDuplicatedException e) {
-        ErrorCode errorCode = ErrorCode.REVIEW_DUPLICATED;
-
-        ErrorResponse response = ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .message(errorCode.getMessage())
-                .status(errorCode.getStatus().value())
-                .build();
-
-        return new ResponseEntity<>(response, errorCode.getStatus());
-    }
-
-    @ExceptionHandler(NotFoundReviewException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundReviewException(NotFoundReviewException e) {
-        ErrorCode errorCode = ErrorCode.NOT_FOUND_REVIEW;
+    @ExceptionHandler(NotFoundBoardException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundBoardException(NotFoundBoardException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_BOARD;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())

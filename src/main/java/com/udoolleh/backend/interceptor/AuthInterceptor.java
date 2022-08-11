@@ -1,14 +1,13 @@
 package com.udoolleh.backend.interceptor;
 
-
-import com.udoolleh.backend.exception.errors.CustomAuthenticationException;
+import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import java.net.ProtocolException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
@@ -22,23 +21,23 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest servletRequest, HttpServletResponse servletResponse, Object handler)
-            throws Exception{
+            throws Exception {
 
         log.info("preHandle!");
-        if(servletRequest.getMethod().equals("OPTIONS")) {
+        if (servletRequest.getMethod().equals("OPTIONS")) {
             return true;
         }
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(servletRequest);
-        if(token.isPresent()) {
+        if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             if (jwtAuthToken.validate()) {
                 return true;
             } else {
-                throw new CustomAuthenticationException();
+                throw new CustomJwtRuntimeException();
             }
-        }else{
-            throw new CustomAuthenticationException();
+        } else {
+            throw new CustomJwtRuntimeException();
         }
 
     }
