@@ -19,3 +19,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error #EC2를 사용하지 않으면 나는 오류를 뜨지 않도록 하는 옵션
