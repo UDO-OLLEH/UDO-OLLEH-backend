@@ -14,8 +14,7 @@ public interface BoardRepository extends JpaRepository<Board, String> {
     Board findByTitleAndContext(String title, String context);
 
     Board findByUserAndBoardId(User user, String boardId);
-    List<Board> findAllByOrderByBoardIdDesc();
+    Page<Board> findAllByOrderByBoardIdDesc(Pageable pageable);
 
-    Page<Board> findByBoard(User user, Pageable pageable);
-
+    //Repository 내에서 사용되지 않는 쿼리 메소드는 지운다.
 }

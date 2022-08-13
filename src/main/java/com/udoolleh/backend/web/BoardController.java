@@ -12,6 +12,9 @@ import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
 import com.udoolleh.backend.web.dto.ResponseUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,23 @@ import java.util.Optional;
 public class BoardController {
     private final BoardService boardService;
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
+
+    @GetMapping("/udo/board/list")
+    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault Pageable pageable) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        Page<ResponseBoard.ListBoard> boards = boardService.boardList(email, pageable);
+        CommonResponse response = CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("게시글 조회 성공")
+                .list(boards)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @PostMapping("/udo/board")
     public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request,
