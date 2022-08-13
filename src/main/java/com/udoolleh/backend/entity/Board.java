@@ -47,5 +47,4 @@ public class Board {
         this.title = title;
         this.context = context;
     }
-
 }

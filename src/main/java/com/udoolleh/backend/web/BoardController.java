@@ -38,11 +38,28 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        Page<ResponseBoard.ListBoard> boards = boardService.boardList(email, pageable);
+        Page<ResponseBoard.ListBoard> listBoards = boardService.boardList(email, pageable);
         CommonResponse response = CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("게시글 조회 성공")
-                .list(boards)
+                .list(listBoards)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/udo/board/list/{boardId}")
+    public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String boardId) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        ResponseBoard.DetailBoard detailBoard = boardService.boardDetail(email, boardId);
+        CommonResponse response = CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("게시글 상세 조회 성공")
+                .list(detailBoard)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

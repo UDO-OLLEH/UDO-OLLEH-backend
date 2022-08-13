@@ -16,7 +16,7 @@ public interface BoardServiceInterface {
     Page<ResponseBoard.ListBoard> boardList(String userEmail, Pageable pageable);
 
     //게시글 상세 조회
-
+    ResponseBoard.DetailBoard boardDetail(String userEmail, String boardId);
 
     //게시글 등록
     void registerPosts(String userEmail, RequestBoard.Register postDto);

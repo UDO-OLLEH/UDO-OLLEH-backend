@@ -40,6 +40,24 @@ public class BoardService implements BoardServiceInterface {
 
     }
 
+    @Transactional
+    @Override
+    public ResponseBoard.DetailBoard boardDetail(String userEmail, String boardId) {
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) {
+            throw new CustomJwtRuntimeException();
+        }
+        Optional<Board> optionalBoard = Optional.of(boardRepository.findByBoardId(boardId));
+        Board board = optionalBoard.orElseThrow(() -> new NotFoundBoardException());
+
+        return ResponseBoard.DetailBoard.builder()
+                .title(board.getTitle())
+                .context(board.getContext())
+                .createAt(board.getCreateAt())
+                .user(user)
+                .build();
+    }
+
 
     //게시글 등록 API
     @Override
