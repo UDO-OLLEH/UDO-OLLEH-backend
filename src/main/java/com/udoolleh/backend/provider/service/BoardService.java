@@ -24,8 +24,8 @@ public class BoardService implements BoardServiceInterface {
     //게시글 등록 API
     @Override
     @Transactional
-    public void registerPosts(String email, RequestBoard.Register postDto) { //postDto = title, context + category 추후 추가
-        User user = userRepository.findByEmail(email);
+    public void registerPosts(String userEmail, RequestBoard.Register postDto) { //postDto = title, context + category 추후 추가
+        User user = userRepository.findByEmail(userEmail);
 
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -46,8 +46,8 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void modifyPosts(String email, String boardId, RequestBoard.Updates updatesDto) {
-        User user = userRepository.findByEmail(email);
+    public void modifyPosts(String userEmail, String boardId, RequestBoard.Updates updatesDto) {
+        User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
@@ -60,8 +60,8 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void deletePosts(String email, String boardId) {
-        User user = userRepository.findByEmail(email);
+    public void deletePosts(String userEmail, String boardId) {
+        User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
@@ -69,8 +69,6 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new NotFoundBoardException();
         }
-
-        //board.getReply().getBoardList().remove(board); 식당 <- 리뷰 / 게시판 <- 댓글 1:N
 
         user.getBoardList().remove(board);
         boardRepository.deleteById(boardId);

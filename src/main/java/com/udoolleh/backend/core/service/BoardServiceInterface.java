@@ -15,9 +15,9 @@ public interface BoardServiceInterface {
     //게시글 상세 조회
 
     //게시글 등록
-    void registerPosts(String email, RequestBoard.Register postDto);
+    void registerPosts(String userEmail, RequestBoard.Register postDto);
 
     //게시글 수정
-    void modifyPosts(String email, String boardId, RequestBoard.Updates updatesDto);
-    void deletePosts(String email, String boardId);
+    void modifyPosts(String userEmail, String boardId, RequestBoard.Updates updatesDto);
+    void deletePosts(String userEmail, String boardId);
 }
