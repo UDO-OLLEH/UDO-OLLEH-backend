@@ -5,21 +5,41 @@ import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
+import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
+import com.udoolleh.backend.web.dto.ResponseBoard;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService implements BoardServiceInterface {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+
+    //게시글 전체 조회
+    @Transactional(readOnly = true)
+    @Override
+    public Page<ResponseBoard.ListBoard> boardList(String userEmail, Pageable pageable) {
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) {
+            throw new CustomJwtRuntimeException();
+        }
+
+        Page<Board> board = boardRepository.findAllByOrderByBoardIdDesc();
+        return board.map(ResponseBoard.ListBoard::of);
+
+    }
+
 
     //게시글 등록 API
     @Override
