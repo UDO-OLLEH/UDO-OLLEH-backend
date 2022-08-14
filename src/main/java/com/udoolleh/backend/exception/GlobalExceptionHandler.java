@@ -1,6 +1,7 @@
 package com.udoolleh.backend.exception;
 
 
+import com.udoolleh.backend.entity.Menu;
 import com.udoolleh.backend.exception.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -137,6 +138,32 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundBoardException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundBoardException(NotFoundBoardException e) {
         ErrorCode errorCode = ErrorCode.NOT_FOUND_BOARD;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(MenuDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleMenuDuplicatedException(MenuDuplicatedException e) {
+        ErrorCode errorCode = ErrorCode.MENU_DUPLICATED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundMenuException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundMenuException(NotFoundMenuException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_MENU;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
