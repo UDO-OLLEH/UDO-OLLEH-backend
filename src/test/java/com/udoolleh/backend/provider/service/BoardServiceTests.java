@@ -57,7 +57,7 @@ public class BoardServiceTests {
                 .build();
         boardService.registerPosts("k", dto2);
 
-        boardService.registerPosts("k", dto);
+
         Pageable pageable = PageRequest.of(0, 2);
 
         Page<ResponseBoard.ListBoard> list = boardService.boardList(user.getEmail(), pageable);

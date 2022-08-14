@@ -73,7 +73,6 @@ public class BoardController {
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
-            System.out.println(email);
         }
         boardService.registerPosts(email, postDto);
         CommonResponse response = CommonResponse.builder()
@@ -91,7 +90,6 @@ public class BoardController {
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
-            System.out.println(email);
         }
         boardService.modifyPosts(email, boardId, updatesDto);
 
@@ -108,7 +106,6 @@ public class BoardController {
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
-            System.out.println(email);
         }
         boardService.deletePosts(email, boardId);
 
