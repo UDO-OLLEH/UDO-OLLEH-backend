@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,23 +22,25 @@ public class RestaurantService implements RestaurantServiceInterface {
     private final S3Service s3Service;
     @Override
     @Transactional
-    public void registerRestaurantImage(MultipartFile multipartFile, String restaurantName){
+    public void registerRestaurantImage(List<MultipartFile> multipartFile, String restaurantName){
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
         if(restaurant == null){
             throw new NotFoundRestaurantException();
         }
         String imageUrl="";
         try{
-            imageUrl = s3Service.upload(multipartFile,"static");
+            for(MultipartFile file : multipartFile) {
+                imageUrl = s3Service.upload(file, "restaurant");
+                Photo photo = Photo.builder()
+                        .url(imageUrl)
+                        .restaurant(restaurant)
+                        .build();
+                photoRepository.save(photo);
+                restaurant.addPhoto(photo);
+            }
         }
         catch (IOException e){
             e.printStackTrace();
         }
-        Photo photo = Photo.builder()
-                .url(imageUrl)
-                .restaurant(restaurant)
-                .build();
-        photoRepository.save(photo);
-
     }
 }
