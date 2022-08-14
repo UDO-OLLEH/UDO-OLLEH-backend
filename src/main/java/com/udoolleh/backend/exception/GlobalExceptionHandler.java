@@ -174,6 +174,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    @ExceptionHandler(NotFoundMenuException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundMenuException(NotFoundMenuException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_MENU;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }
 
 

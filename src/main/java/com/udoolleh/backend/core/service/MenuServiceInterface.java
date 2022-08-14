@@ -9,4 +9,5 @@ import java.util.List;
 public interface MenuServiceInterface {
     void registerMenu(MultipartFile file, RequestMenuDto.register requestDto);
     List<ResponseMenuDto.getMenu> getMenu(String restaurantId);
+    void deleteMenu(String restaurantId, String menuName);
 }

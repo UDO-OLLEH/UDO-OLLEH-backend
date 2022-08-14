@@ -38,4 +38,15 @@ public class RestaurantController {
                 .build(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/restaurant/{restaurantId}/{menu}")
+    public ResponseEntity<CommonResponse> deleteMenu(@PathVariable String restaurantId, @PathVariable String menu){
+        menuService.deleteMenu(restaurantId, menu);
+
+        return new ResponseEntity<>(CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("메뉴 삭제 성공")
+                .build(), HttpStatus.OK);
+
+    }
+
 }

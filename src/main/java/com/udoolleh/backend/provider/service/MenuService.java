@@ -4,6 +4,7 @@ import com.udoolleh.backend.core.service.MenuServiceInterface;
 import com.udoolleh.backend.entity.Menu;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.exception.errors.MenuDuplicatedException;
+import com.udoolleh.backend.exception.errors.NotFoundMenuException;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
@@ -65,4 +66,15 @@ public class MenuService implements MenuServiceInterface {
         return list;
     }
 
+    @Override
+    @Transactional
+    public void deleteMenu(String restaurantId, String menuName) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new NotFoundRestaurantException());
+        Menu menu = menuRepository.findByRestaurantAndName(restaurant, menuName);
+        if (menu == null) { //메뉴가 없다면
+            throw new NotFoundMenuException();
+        }
+        restaurant.getMenuList().remove(menu);
+        menuRepository.delete(menu);
+    }
 }
