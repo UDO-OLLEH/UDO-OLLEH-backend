@@ -40,6 +40,9 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<Review> reviewList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "restaurant")
+    private List<Photo> photoList = new ArrayList<>();
+
     @Builder
     public Restaurant(String name, String description,PlaceType placeType, String address, Float totalGrade){
         this.name = name;
@@ -55,5 +58,9 @@ public class Restaurant {
 
     public void addReview(Review review){
         this.reviewList.add(review);
+    }
+
+    public void addPhoto(Photo photo){
+        this.photoList.add(photo);
     }
 }

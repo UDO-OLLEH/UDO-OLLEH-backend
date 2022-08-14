@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 public class UserServiceTests {
 
     @Autowired
@@ -59,7 +59,6 @@ public class UserServiceTests {
 
         //when
         ResponseUser.Login loginResponse = userService.login(loginRequest).orElseGet(()->null);
-
         System.out.println(loginResponse.getAccessToken());
         System.out.println(loginResponse.getRefreshToken());
 

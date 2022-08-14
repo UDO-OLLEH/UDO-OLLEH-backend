@@ -25,6 +25,7 @@ public enum ErrorCode {
     NOT_FOUND_RESTAURANT(HttpStatus.NOT_FOUND, "WHARF_004", "NOT_FOUND_RESTAURANT"),
     MENU_DUPLICATED(HttpStatus.FORBIDDEN, "MENU_001", "MENU_DUPLICATED"),
     NOT_FOUND_MENU(HttpStatus.NOT_FOUND, "MENU_002", "NOT_FOUND_MENU");
+    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND,"BOARD_001","게시글 내용이 없습니다.");
 
 
     private final String code;
