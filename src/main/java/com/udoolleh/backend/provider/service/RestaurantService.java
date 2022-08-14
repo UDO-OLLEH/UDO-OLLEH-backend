@@ -29,8 +29,8 @@ public class RestaurantService implements RestaurantServiceInterface {
         }
         String imageUrl="";
         try{
-            for(MultipartFile m : multipartFile) {
-                imageUrl = s3Service.upload(m, "restaurant");
+            for(MultipartFile file : multipartFile) {
+                imageUrl = s3Service.upload(file, "restaurant");
                 Photo photo = Photo.builder()
                         .url(imageUrl)
                         .restaurant(restaurant)
