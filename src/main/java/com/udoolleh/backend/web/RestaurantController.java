@@ -36,14 +36,15 @@ public class RestaurantController {
                 .message("카카오 맛집 등록 성공")
                 .build(), HttpStatus.OK);
     }
-    @PostMapping("/admin/restaurant/image")
-    public ResponseEntity<CommonResponse> registerRestaurantImage(@RequestPart(value="image") MultipartFile image,@RequestPart(value="restaurantName") String restaurantName){
-
+    @PostMapping("/admin/restaurant/images")
+    public ResponseEntity<CommonResponse> registerRestaurantImage(@RequestPart(value="images") List<MultipartFile> images,@RequestPart(value="restaurantName") String restaurantName){
+        restaurantService.registerRestaurantImage(images, restaurantName);
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("S3사진 등록 성공")
                 .build(), HttpStatus.OK);
     }
+
 
 
 }
