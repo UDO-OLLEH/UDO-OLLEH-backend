@@ -40,11 +40,11 @@ public class Board {
         this.title = title;
         this.context = context;
         this.user = user;
+
     }
 
     public void modifyPosts(String title, String context) {
         this.title = title;
         this.context = context;
     }
-
 }

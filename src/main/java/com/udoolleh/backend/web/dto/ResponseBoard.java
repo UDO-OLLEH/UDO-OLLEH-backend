@@ -1,21 +1,46 @@
 package com.udoolleh.backend.web.dto;
 
+import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ResponseBoard {
+
     @Builder
     @Data
-    public static class Board{
-        private User user;
-        private Long id;
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DetailBoard{
         private String title;
-        private String category;
         private String context;
         private Date createAt;
+        private User user;
+        //private Like like;
+        //private Reply reply;
+        //private Category category;
+
+
+    }
+
+    @Builder
+    @Data
+    public static class ListBoard {
+        private String title;
+        private String context;
+        private Date createAt;
+
+        public static ListBoard of(Board board){
+            return ListBoard.builder()
+                    .title(board.getTitle())
+                    .context(board.getContext())
+                    .createAt(board.getCreateAt())
+                    .build();
+        }
+
     }
 }
