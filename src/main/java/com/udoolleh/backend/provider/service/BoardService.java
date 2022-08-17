@@ -62,7 +62,7 @@ public class BoardService implements BoardServiceInterface {
     //게시글 등록 API
     @Override
     @Transactional
-    public void registerPosts(String userEmail, RequestBoard.Register postDto) { //postDto = title, context + category 추후 추가
+    public void registerPosts(String userEmail, RequestBoard.registerDto postDto) { //postDto = title, context + category 추후 추가
         User user = userRepository.findByEmail(userEmail);
 
         if (user == null) {
@@ -84,7 +84,7 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void modifyPosts(String userEmail, String boardId, RequestBoard.Updates updatesDto) {
+    public void modifyPosts(String userEmail, String boardId, RequestBoard.updatesDto modifyDto) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -93,7 +93,7 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new NotFoundBoardException();
         }
-        board.modifyPosts(updatesDto.getTitle(), updatesDto.getContext());
+        board.modifyPosts(modifyDto.getTitle(), modifyDto.getContext());
     }
 
     @Override

@@ -45,13 +45,13 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.Register dto = RequestBoard.Register.builder()
+        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
         boardService.registerPosts("k", dto);
 
-        RequestBoard.Register dto2 = RequestBoard.Register.builder()
+        RequestBoard.registerDto dto2 = RequestBoard.registerDto.builder()
                 .title("아")
                 .context("우아")
                 .build();
@@ -78,7 +78,7 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.Register dto = RequestBoard.Register.builder()
+        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
@@ -101,7 +101,7 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.Register dto = RequestBoard.Register.builder()
+        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
@@ -109,7 +109,7 @@ public class BoardServiceTests {
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
-        RequestBoard.Updates mDto = RequestBoard.Updates.builder()
+        RequestBoard.updatesDto mDto = RequestBoard.updatesDto.builder()
                 .title("수정한 제목")
                 .context("게시글 수정 내용")
                 .build();
@@ -135,7 +135,7 @@ public class BoardServiceTests {
         user = userRepository.save(user);
 
 
-        RequestBoard.Register dto = RequestBoard.Register.builder()
+        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();

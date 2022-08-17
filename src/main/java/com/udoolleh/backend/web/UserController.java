@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/udo/user")
-    public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.Register registerDto) {
+    public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.registerDto registerDto) {
 
         userService.register(registerDto);
 
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/udo/login")
-    public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.Login loginDto) {
+    public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.loginDto loginDto) {
 
         ResponseUser.Login manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());
 

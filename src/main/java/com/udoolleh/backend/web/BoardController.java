@@ -66,7 +66,7 @@ public class BoardController {
 
     @PostMapping("/udo/board")
     public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request,
-                                                        @Valid @RequestBody RequestBoard.Register postDto) {
+                                                        @Valid @RequestBody RequestBoard.registerDto postDto) {
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -84,14 +84,14 @@ public class BoardController {
 
     @PutMapping("/udo/board/{boardId}")
     public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @PathVariable String boardId,
-                                                      @Valid @RequestBody RequestBoard.Updates updatesDto) {
+                                                      @Valid @RequestBody RequestBoard.updatesDto modifyDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.modifyPosts(email, boardId, updatesDto);
+        boardService.modifyPosts(email, boardId, modifyDto);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())

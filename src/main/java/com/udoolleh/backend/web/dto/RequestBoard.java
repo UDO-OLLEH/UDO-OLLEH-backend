@@ -14,7 +14,7 @@ public class RequestBoard {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Register {
+    public static class registerDto {
 
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
@@ -28,7 +28,7 @@ public class RequestBoard {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Updates {
+    public static class updatesDto {
 
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
