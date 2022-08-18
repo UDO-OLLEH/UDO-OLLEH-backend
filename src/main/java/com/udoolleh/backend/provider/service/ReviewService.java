@@ -11,11 +11,13 @@ import com.udoolleh.backend.exception.errors.ReviewDuplicatedException;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
 import com.udoolleh.backend.repository.UserRepository;
-import com.udoolleh.backend.web.dto.RequestReviewDto;
+import com.udoolleh.backend.web.dto.RequestReview;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +25,11 @@ public class ReviewService implements ReviewServiceInterface {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final RestaurantRepository restaurantRepository;
+    private final S3Service s3Service;
 
     @Override
     @Transactional
-    public void registerReview(MultipartFile file,  String email, RequestReviewDto.register requestDto){
+    public void registerReview(MultipartFile file,  String email, RequestReview.registerDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
             throw new NotFoundUserException();
@@ -37,6 +40,7 @@ public class ReviewService implements ReviewServiceInterface {
         if(review != null){ //이미 리뷰가 있다면
             throw new ReviewDuplicatedException();
         }
+
         //리뷰 등록
         review = Review.builder()
                 .user(user)
@@ -49,12 +53,21 @@ public class ReviewService implements ReviewServiceInterface {
         restaurant.addReview(review);
         user.addReview(review);
 
-        //사진 등록
+        //사진이 있으면 등록
+        if(!file.isEmpty()){
+            String url= "";
+            try{
+                url = s3Service.upload(file, "review");
+                review.addPhoto(url);
+            }catch (IOException e){
+                System.out.println("s3 등록 실패");
+            }
+        }
     }
 
     @Override
     @Transactional
-    public void modifyReview(MultipartFile file, String email, String reviewId, RequestReviewDto.modify requestDto){
+    public void modifyReview(MultipartFile file, String email, String reviewId, RequestReview.modifyDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
             throw new NotFoundUserException();

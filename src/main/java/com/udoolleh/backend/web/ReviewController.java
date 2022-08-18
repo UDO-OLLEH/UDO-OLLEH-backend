@@ -4,7 +4,7 @@ import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.ReviewService;
 import com.udoolleh.backend.web.dto.CommonResponse;
-import com.udoolleh.backend.web.dto.RequestReviewDto;
+import com.udoolleh.backend.web.dto.RequestReview;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class ReviewController {
     @PostMapping("/review")
     public ResponseEntity<CommonResponse> registerReview(HttpServletRequest request,
                                                   @RequestPart MultipartFile file,
-                                                  @Valid @RequestPart RequestReviewDto.register requestDto){
+                                                  @Valid @RequestPart RequestReview.registerDto requestDto){
         //유저 확인
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -45,7 +45,7 @@ public class ReviewController {
     public ResponseEntity<CommonResponse> modifyReview(HttpServletRequest request,
                                                 @PathVariable String reviewId,
                                                 @RequestPart MultipartFile file,
-                                                @Valid @RequestPart RequestReviewDto.modify requestDto){
+                                                @Valid @RequestPart RequestReview.modifyDto requestDto){
         //유저 확인
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;

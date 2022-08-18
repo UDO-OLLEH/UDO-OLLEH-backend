@@ -8,7 +8,7 @@ import com.udoolleh.backend.exception.errors.NotFoundMenuException;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
-import com.udoolleh.backend.web.dto.RequestMenuDto;
+import com.udoolleh.backend.web.dto.RequestMenu;
 import com.udoolleh.backend.web.dto.ResponseMenuDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class MenuService implements MenuServiceInterface {
 
     @Override
     @Transactional
-    public void registerMenu(MultipartFile file, RequestMenuDto.register requestDto){
+    public void registerMenu(MultipartFile file, RequestMenu.registerDto requestDto){
         Restaurant restaurant = restaurantRepository.findById(requestDto.getRestaurantId()).orElseThrow(()-> new NotFoundRestaurantException());
         Menu menu = menuRepository.findByRestaurantAndName(restaurant, requestDto.getName());
 

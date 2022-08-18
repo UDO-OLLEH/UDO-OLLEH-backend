@@ -6,7 +6,7 @@ import com.udoolleh.backend.exception.errors.NotFoundMenuException;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
-import com.udoolleh.backend.web.dto.RequestMenuDto;
+import com.udoolleh.backend.web.dto.RequestMenu;
 import com.udoolleh.backend.web.dto.ResponseMenuDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ public class MenuServiceTests {
                 .build();
         restaurant = restaurantRepository.save(restaurant);
 
-        RequestMenuDto.register requestDto = RequestMenuDto.register.builder()
+        RequestMenu.registerDto requestDto = RequestMenu.registerDto.builder()
                 .restaurantId(restaurant.getId())
                 .name("메뉴 이름")
                 .photo("")

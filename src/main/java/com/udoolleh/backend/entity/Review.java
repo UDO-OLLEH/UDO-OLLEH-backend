@@ -43,13 +43,16 @@ public class Review {
     private Restaurant restaurant;
 
     @Builder
-    public Review(String title, String context, String photo, Double grade, User user, Restaurant restaurant){
+    public Review(String title, String context, Double grade, User user, Restaurant restaurant){
         this.title = title;
         this.context = context;
-        this.photo = photo;
         this.grade = grade;
         this.user = user;
         this.restaurant = restaurant;
+    }
+
+    public void addPhoto(String photo){
+        this.photo = photo;
     }
 
     public void modifyReview(String title, String context, String photo, Double grade){

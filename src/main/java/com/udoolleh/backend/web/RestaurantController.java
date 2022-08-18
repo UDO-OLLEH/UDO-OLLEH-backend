@@ -2,22 +2,14 @@ package com.udoolleh.backend.web;
 
 import com.udoolleh.backend.provider.service.MenuService;
 import com.udoolleh.backend.web.dto.CommonResponse;
-import com.udoolleh.backend.web.dto.RequestMenuDto;
+import com.udoolleh.backend.web.dto.RequestMenu;
 import com.udoolleh.backend.web.dto.ResponseMenuDto;
 import lombok.RequiredArgsConstructor;
 import com.udoolleh.backend.core.type.PlaceType;
-import com.udoolleh.backend.core.type.ShipCourseType;
-import com.udoolleh.backend.core.type.ShipTimetableType;
 import com.udoolleh.backend.core.type.UdoCoordinateType;
 import com.udoolleh.backend.provider.service.KakaoApiService;
 import com.udoolleh.backend.provider.service.RestaurantService;
 import com.udoolleh.backend.provider.service.S3Service;
-import com.udoolleh.backend.provider.service.ShipService;
-import com.udoolleh.backend.web.dto.CommonResponse;
-import com.udoolleh.backend.web.dto.ResponseWharfTimetable;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -36,7 +27,7 @@ public class RestaurantController {
 
     @PostMapping("/restaurant/menu")
     public ResponseEntity<CommonResponse> registerMenu(@RequestPart MultipartFile file,
-                                                       @Valid @RequestPart RequestMenuDto.register requestDto){
+                                                       @Valid @RequestPart RequestMenu.registerDto requestDto){
         menuService.registerMenu(file, requestDto);
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
