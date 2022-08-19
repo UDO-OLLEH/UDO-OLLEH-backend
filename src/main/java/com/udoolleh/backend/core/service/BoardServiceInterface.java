@@ -19,10 +19,10 @@ public interface BoardServiceInterface {
     ResponseBoard.DetailBoard boardDetail(String userEmail, String boardId);
 
     //게시글 등록
-    void registerPosts(String userEmail, RequestBoard.registerDto postDto);
+    void registerPosts(MultipartFile file, String userEmail, RequestBoard.registerDto postDto);
 
     //게시글 수정
-    void modifyPosts(String userEmail, String boardId, RequestBoard.updatesDto modifyDto);
+    void modifyPosts(MultipartFile file,String userEmail, String boardId, RequestBoard.updatesDto modifyDto);
 
     void deletePosts(String userEmail, String boardId);
 }
