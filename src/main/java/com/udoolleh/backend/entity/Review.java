@@ -22,9 +22,6 @@ public class Review {
     @Column(name = "create_at")
     private Date createAt = new Date();
 
-    @Column(name = "title")
-    private String title;
-
     @Column(name = "context")
     private String context;
 
@@ -43,22 +40,19 @@ public class Review {
     private Restaurant restaurant;
 
     @Builder
-    public Review(String title, String context, Double grade, User user, Restaurant restaurant){
-        this.title = title;
+    public Review(String context, Double grade, User user, Restaurant restaurant){
         this.context = context;
         this.grade = grade;
         this.user = user;
         this.restaurant = restaurant;
     }
 
-    public void addPhoto(String photo){
+    public void updatePhoto(String photo){
         this.photo = photo;
     }
 
-    public void modifyReview(String title, String context, String photo, Double grade){
-        this.title = title;
+    public void modifyReview(String context, Double grade){
         this.context = context;
-        this.photo = photo;
         this.grade = grade;
     }
 

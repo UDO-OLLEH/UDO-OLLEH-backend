@@ -49,7 +49,6 @@ public class ReviewServiceTests {
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -80,7 +79,6 @@ public class ReviewServiceTests {
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -107,7 +105,6 @@ public class ReviewServiceTests {
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -116,14 +113,13 @@ public class ReviewServiceTests {
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         //리뷰 수정
         RequestReview.modifyDto request = RequestReview.modifyDto.builder()
-                .title("수정한 제목")
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
         reviewService.modifyReview(null, "test", review.getReviewId(), request);
 
         Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
-        assertTrue(result.getTitle().equals("수정한 제목"));
+        assertTrue(result.getContext().equals("수정한 제목"));
     }
 
     @Test
@@ -143,7 +139,6 @@ public class ReviewServiceTests {
 
         //리뷰 수정
         RequestReview.modifyDto request = RequestReview.modifyDto.builder()
-                .title("수정한 제목")
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
@@ -167,7 +162,6 @@ public class ReviewServiceTests {
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();

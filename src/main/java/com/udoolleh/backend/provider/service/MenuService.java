@@ -15,14 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MenuService implements MenuServiceInterface {
     private final RestaurantRepository restaurantRepository;
     private final MenuRepository menuRepository;
+    private final S3Service s3Service;
 
     @Override
     @Transactional
@@ -34,16 +37,26 @@ public class MenuService implements MenuServiceInterface {
             throw new MenuDuplicatedException();
         }
 
-        String photoUrl = "";
             menu = Menu.builder()
                 .name(requestDto.getName())
-                .photo(photoUrl)
                 .price(requestDto.getPrice())
                 .description(requestDto.getDescription())
-                .build();
+                .restaurant(restaurant)
+                    .build();
 
         menu = menuRepository.save(menu);
         restaurant.addMenu(menu);
+
+        //사진이 있으면 등록
+        if(Optional.ofNullable(file).isPresent()){
+            String url= "";
+            try{
+                url = s3Service.upload(file, "menu");
+                menu.updatePhoto(url);
+            }catch (IOException e){
+                System.out.println("s3 등록 실패");
+            }
+        }
     }
 
     @Override
@@ -73,6 +86,9 @@ public class MenuService implements MenuServiceInterface {
         Menu menu = menuRepository.findByRestaurantAndName(restaurant, menuName);
         if (menu == null) { //메뉴가 없다면
             throw new NotFoundMenuException();
+        }
+        if(Optional.ofNullable(menu.getPhoto()).isPresent()){ //사진 파일이 존재한다면
+            s3Service.deleteFile(menu.getPhoto());
         }
         restaurant.getMenuList().remove(menu);
         menuRepository.delete(menu);

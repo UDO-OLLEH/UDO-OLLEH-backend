@@ -15,7 +15,6 @@ public class RequestMenu {
         private String restaurantId;
         @NotEmpty(message = "메뉴 이름이 비어있습니다.")
         private String name;
-        private String photo;
         @NotEmpty(message = "가격이 비어있습니다.")
         private Integer price;
         private String description;

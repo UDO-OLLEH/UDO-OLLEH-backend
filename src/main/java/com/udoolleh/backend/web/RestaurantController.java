@@ -24,6 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantController {
     private final MenuService menuService;
+    private final KakaoApiService kakaoApiService;
+    private final RestaurantService restaurantService;
 
     @PostMapping("/restaurant/menu")
     public ResponseEntity<CommonResponse> registerMenu(@RequestPart MultipartFile file,
@@ -34,9 +36,9 @@ public class RestaurantController {
                 .message("메뉴 등록 성공")
                 .build(), HttpStatus.OK);
     }
-    @GetMapping("/restaurant/{restaurantId}/menu")
-    public ResponseEntity<CommonResponse> getMenu(@PathVariable String restaurantId){
-        List<ResponseMenuDto.getMenu> list = menuService.getMenu(restaurantId);
+    @GetMapping("/restaurant/{id}/menu")
+    public ResponseEntity<CommonResponse> getMenu(@PathVariable String id){
+        List<ResponseMenuDto.getMenu> list = menuService.getMenu(id);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -45,20 +47,15 @@ public class RestaurantController {
                 .build(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/restaurant/{restaurantId}/{menu}")
-    public ResponseEntity<CommonResponse> deleteMenu(@PathVariable String restaurantId, @PathVariable String menu){
-        menuService.deleteMenu(restaurantId, menu);
+    @DeleteMapping("/restaurant/{id}/menu/{name}")
+    public ResponseEntity<CommonResponse> deleteMenu(@PathVariable String id, @PathVariable String name){
+        menuService.deleteMenu(id, name);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("메뉴 삭제 성공")
                 .build(), HttpStatus.OK);
-
     }
-
-    private final KakaoApiService kakaoApiService;
-    private final RestaurantService restaurantService;
-    private final S3Service s3Service;
 
     @PostMapping("/admin/restaurant/place")
     public ResponseEntity<CommonResponse> registerRestaurantInfo(@RequestBody PlaceType place){
@@ -76,7 +73,4 @@ public class RestaurantController {
                 .message("식당 사진 등록 성공")
                 .build(), HttpStatus.OK);
     }
-
-
-
 }

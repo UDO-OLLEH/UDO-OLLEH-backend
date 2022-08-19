@@ -32,11 +32,14 @@ public class Menu {
     private Restaurant restaurant;
 
     @Builder
-    public Menu(String name, String photo, Integer price, String description, Restaurant restaurant){
+    public Menu(String name, Integer price, String description, Restaurant restaurant){
         this.name = name;
-        this.photo = photo;
         this.price = price;
         this.description = description;
         this.restaurant = restaurant;
+    }
+
+    public void updatePhoto(String photo){
+        this.photo = photo;
     }
 }
