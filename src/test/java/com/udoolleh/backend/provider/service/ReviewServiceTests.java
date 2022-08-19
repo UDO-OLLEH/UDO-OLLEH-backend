@@ -8,11 +8,12 @@ import com.udoolleh.backend.exception.errors.ReviewDuplicatedException;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
 import com.udoolleh.backend.repository.UserRepository;
-import com.udoolleh.backend.web.dto.RequestReviewDto;
+import com.udoolleh.backend.web.dto.RequestReview;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +33,8 @@ public class ReviewServiceTests {
 
     @Test
     @Transactional
-    @DisplayName("리뷰 등록 테스트(성공)")
-    void registerReviewTest(){
+    @DisplayName("리뷰 등록 테스트(성공 - 사진이 있을 경우)")
+    void registerReviewTestWhenExistPhoto(){
         User user = User.builder()
                 .email("test")
                 .password("1234")
@@ -46,17 +47,49 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+                "image/png", "test data".getBytes());
+
+        reviewService.registerReview(mockMultipartFile, "test", requestDto);
+
+        assertNotNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
+        assertNotNull(reviewRepository.findByUserAndRestaurant(user, restaurant).getPhoto());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("리뷰 등록 테스트(성공 - 사진이 없을 경우)")
+    void registerReviewTestWhenNotExistPhoto(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 등록
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+                .restaurantId(restaurant.getId())
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+
         reviewService.registerReview(null, "test", requestDto);
 
         assertNotNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
-        System.out.println("저장된 리뷰 :"+reviewRepository.findByUserAndRestaurant(user, restaurant));
+        assertNull(reviewRepository.findByUserAndRestaurant(user, restaurant).getPhoto());
     }
+
     @Test
     @Transactional
     @DisplayName("리뷰 등록 테스트(실패 - 이미 리뷰가 있는 경우)")
@@ -73,9 +106,8 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -100,9 +132,8 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -110,15 +141,54 @@ public class ReviewServiceTests {
 
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         //리뷰 수정
-        RequestReviewDto.modify request = RequestReviewDto.modify.builder()
-                .title("수정한 제목")
+        RequestReview.modifyDto request = RequestReview.modifyDto.builder()
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
-        reviewService.modifyReview(null, "test", review.getReviewId(), request);
+        reviewService.modifyReview(null, "test", review.getId(), request);
 
         Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
-        assertTrue(result.getTitle().equals("수정한 제목"));
+        assertTrue(result.getContext().equals("리뷰 수정 내용"));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("리뷰 수정 테스트(성공 - 사진 추가)")
+    void modifyReviewTestWhenAddPhoto(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 등록
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+                .restaurantId(restaurant.getId())
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+        reviewService.registerReview(null, "test", requestDto);
+
+        Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
+        //리뷰 수정
+        RequestReview.modifyDto request = RequestReview.modifyDto.builder()
+                .context("리뷰 수정 내용")
+                .grade(5.0)
+                .build();
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+                "image/png", "test data".getBytes());
+
+        reviewService.modifyReview(mockMultipartFile, "test", review.getId(), request);
+
+        Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
+        assertTrue(result.getContext().equals("리뷰 수정 내용"));
+        assertNotNull(reviewRepository.findByUserAndRestaurant(user, restaurant).getPhoto());
     }
 
     @Test
@@ -137,8 +207,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 수정
-        RequestReviewDto.modify request = RequestReviewDto.modify.builder()
-                .title("수정한 제목")
+        RequestReview.modifyDto request = RequestReview.modifyDto.builder()
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
@@ -160,9 +229,8 @@ public class ReviewServiceTests {
                 .build();
         restaurant = restaurantRepository.save(restaurant);
         //리뷰 등록
-        RequestReviewDto.register requestDto = RequestReviewDto.register.builder()
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
                 .restaurantId(restaurant.getId())
-                .title("제목")
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -170,7 +238,7 @@ public class ReviewServiceTests {
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
 
         //리뷰 삭제
-        reviewService.deleteReview("test", review.getReviewId());
+        reviewService.deleteReview("test", review.getId());
 
         assertNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
         assertFalse(user.getReviewList().contains(review));

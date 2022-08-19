@@ -16,7 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Restaurant {
     @Id
-    @Column(name = "restaurant_id")
     private String id = UUID.randomUUID().toString();
 
     @Column(name = "name")

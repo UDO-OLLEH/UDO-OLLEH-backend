@@ -1,14 +1,10 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Board;
-import com.udoolleh.backend.entity.Restaurant;
-import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
-import com.udoolleh.backend.web.dto.RequestReviewDto;
-import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseBoard;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

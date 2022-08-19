@@ -2,14 +2,17 @@ package com.udoolleh.backend.web;
 
 import com.amazonaws.Response;
 import com.udoolleh.backend.provider.service.MenuService;
+import com.udoolleh.backend.web.dto.CommonResponse;
+import com.udoolleh.backend.web.dto.RequestMenu;
+import com.udoolleh.backend.web.dto.ResponseMenu;
 import com.udoolleh.backend.web.dto.*;
+
 import lombok.RequiredArgsConstructor;
 import com.udoolleh.backend.core.type.PlaceType;
-import com.udoolleh.backend.core.type.ShipCourseType;
-import com.udoolleh.backend.core.type.ShipTimetableType;
 import com.udoolleh.backend.core.type.UdoCoordinateType;
 import com.udoolleh.backend.provider.service.KakaoApiService;
 import com.udoolleh.backend.provider.service.RestaurantService;
+
 import com.udoolleh.backend.provider.service.S3Service;
 import com.udoolleh.backend.provider.service.ShipService;
 import com.udoolleh.backend.web.dto.CommonResponse;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
 import javax.validation.constraints.Min;
 
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,16 +46,16 @@ public class RestaurantController {
 
     @PostMapping("/restaurant/menu")
     public ResponseEntity<CommonResponse> registerMenu(@RequestPart MultipartFile file,
-                                                       @Valid @RequestPart RequestMenuDto.register requestDto){
+                                                       @Valid @RequestPart RequestMenu.registerDto requestDto){
         menuService.registerMenu(file, requestDto);
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("메뉴 등록 성공")
                 .build(), HttpStatus.OK);
     }
-    @GetMapping("/restaurant/{restaurantId}/menu")
-    public ResponseEntity<CommonResponse> getMenu(@PathVariable String restaurantId){
-        List<ResponseMenuDto.getMenu> list = menuService.getMenu(restaurantId);
+    @GetMapping("/restaurant/{id}/menu")
+    public ResponseEntity<CommonResponse> getMenu(@PathVariable String id){
+        List<ResponseMenu.getMenuDto> list = menuService.getMenu(id);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -60,15 +64,14 @@ public class RestaurantController {
                 .build(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/restaurant/{restaurantId}/{menu}")
-    public ResponseEntity<CommonResponse> deleteMenu(@PathVariable String restaurantId, @PathVariable String menu){
-        menuService.deleteMenu(restaurantId, menu);
+    @DeleteMapping("/restaurant/{id}/menu/{name}")
+    public ResponseEntity<CommonResponse> deleteMenu(@PathVariable String id, @PathVariable String name){
+        menuService.deleteMenu(id, name);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("메뉴 삭제 성공")
                 .build(), HttpStatus.OK);
-
     }
 
     @PostMapping("/admin/restaurant/place")
@@ -102,5 +105,4 @@ public class RestaurantController {
                 .list(restaurantList)
                 .build(), HttpStatus.OK);
     }
-
 }

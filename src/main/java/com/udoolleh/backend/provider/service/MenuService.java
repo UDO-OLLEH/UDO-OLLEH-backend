@@ -8,25 +8,28 @@ import com.udoolleh.backend.exception.errors.NotFoundMenuException;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
-import com.udoolleh.backend.web.dto.RequestMenuDto;
-import com.udoolleh.backend.web.dto.ResponseMenuDto;
+import com.udoolleh.backend.web.dto.RequestMenu;
+import com.udoolleh.backend.web.dto.ResponseMenu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MenuService implements MenuServiceInterface {
     private final RestaurantRepository restaurantRepository;
     private final MenuRepository menuRepository;
+    private final S3Service s3Service;
 
     @Override
     @Transactional
-    public void registerMenu(MultipartFile file, RequestMenuDto.register requestDto){
+    public void registerMenu(MultipartFile file, RequestMenu.registerDto requestDto){
         Restaurant restaurant = restaurantRepository.findById(requestDto.getRestaurantId()).orElseThrow(()-> new NotFoundRestaurantException());
         Menu menu = menuRepository.findByRestaurantAndName(restaurant, requestDto.getName());
 
@@ -34,28 +37,39 @@ public class MenuService implements MenuServiceInterface {
             throw new MenuDuplicatedException();
         }
 
-        String photoUrl = "";
             menu = Menu.builder()
                 .name(requestDto.getName())
-                .photo(photoUrl)
                 .price(requestDto.getPrice())
                 .description(requestDto.getDescription())
-                .build();
+                .restaurant(restaurant)
+                    .build();
 
         menu = menuRepository.save(menu);
         restaurant.addMenu(menu);
+
+        //사진이 있으면 등록
+        if(Optional.ofNullable(file).isPresent()){
+            String url= "";
+            try{
+                url = s3Service.upload(file, "menu");
+                menu.updatePhoto(url);
+            }catch (IOException e){
+                System.out.println("s3 등록 실패");
+            }
+        }
+
     }
 
     @Override
     @Transactional
-    public List<ResponseMenuDto.getMenu> getMenu(String restaurantId){
+    public List<ResponseMenu.getMenuDto> getMenu(String restaurantId){
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
 
-        List<ResponseMenuDto.getMenu> list = new ArrayList<>();
+        List<ResponseMenu.getMenuDto> list = new ArrayList<>();
         List<Menu> menuList = restaurant.getMenuList();
 
         for(Menu item : menuList){
-            ResponseMenuDto.getMenu response = ResponseMenuDto.getMenu.builder()
+            ResponseMenu.getMenuDto response = ResponseMenu.getMenuDto.builder()
                     .name(item.getName())
                     .photo(item.getPhoto())
                     .price(item.getPrice())
@@ -73,6 +87,9 @@ public class MenuService implements MenuServiceInterface {
         Menu menu = menuRepository.findByRestaurantAndName(restaurant, menuName);
         if (menu == null) { //메뉴가 없다면
             throw new NotFoundMenuException();
+        }
+        if(Optional.ofNullable(menu.getPhoto()).isPresent()){ //사진 파일이 존재한다면
+            s3Service.deleteFile(menu.getPhoto());
         }
         restaurant.getMenuList().remove(menu);
         menuRepository.delete(menu);
