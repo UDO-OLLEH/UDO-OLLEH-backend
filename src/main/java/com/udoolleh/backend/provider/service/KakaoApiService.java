@@ -29,6 +29,7 @@ public class KakaoApiService implements KakaoApiServiceInterface {
 
     private final RestaurantRepository restaurantRepository;
 
+    //레스토랑 등록을 위한 카카오 오픈 api서비스와 자동 레스토랑 등록
 
     @Transactional
     @Override
@@ -81,7 +82,7 @@ public class KakaoApiService implements KakaoApiServiceInterface {
                 Restaurant restaurant = Restaurant.builder()
                         .name(document.get("place_name").toString())
                         .placeType(placeType)
-                        //.category((String) document.get("category_name")) //상의 필요
+                        .category((String) document.get("category_name")) //상의 필요
                         .address(document.get("road_address_name").toString())
                         .build();
                         restaurantRepository.save(restaurant);
