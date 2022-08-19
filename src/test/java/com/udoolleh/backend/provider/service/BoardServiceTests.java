@@ -49,13 +49,13 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts("k", dto);
+        boardService.registerPosts(null,"k", dto);
 
         RequestBoard.registerDto dto2 = RequestBoard.registerDto.builder()
                 .title("아")
                 .context("우아")
                 .build();
-        boardService.registerPosts("k", dto2);
+        boardService.registerPosts(null,"k", dto2);
 
 
         Pageable pageable = PageRequest.of(0, 2);
@@ -82,7 +82,7 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts("k", dto);
+        boardService.registerPosts(null,"k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
@@ -105,7 +105,7 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts("k", dto);
+        boardService.registerPosts(null,"k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
@@ -114,7 +114,7 @@ public class BoardServiceTests {
                 .context("게시글 수정 내용")
                 .build();
 
-        boardService.modifyPosts("k", board.getBoardId(), mDto);
+        boardService.modifyPosts(null,"k", board.getBoardId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
@@ -139,7 +139,7 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts("k", dto);
+        boardService.registerPosts(null,"k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
