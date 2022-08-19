@@ -88,7 +88,7 @@ public class RestaurantServiceTests {
                     .category("음식점>한식"+i)
                     .address("우도 ~~~")
                     .placeType(PlaceType.RESTAURANT)
-                    .totalGrade(Float.valueOf(i))
+                    .totalGrade(Double.valueOf(i))
                     .build();
             restaurantRepository.save(res);
             Restaurant restaurant = restaurantRepository.findByName("타코집"+i);
@@ -106,8 +106,8 @@ public class RestaurantServiceTests {
         //when
         List<ResponseRestaurant.restaurantDto> restaurantDtoList = restaurantService.getRestaurant(pageable);
         //then
-        assertEquals(Optional.ofNullable(restaurantDtoList.get(0).getTotalGrade()),Optional.of((float)19.0));   //별점 기준 내림차순으로 정렬확인
-        assertEquals(Optional.ofNullable(restaurantDtoList.get(1).getTotalGrade()),Optional.of((float)18.0));
+        assertEquals(Optional.ofNullable(restaurantDtoList.get(0).getTotalGrade()),Optional.of(19.0));   //별점 기준 내림차순으로 정렬확인
+        assertEquals(Optional.ofNullable(restaurantDtoList.get(1).getTotalGrade()),Optional.of(18.0));
         assertEquals(restaurantDtoList.size(),10);  //페이징 처리가 되어 사이즈가 10이 맞는지
     }
 }
