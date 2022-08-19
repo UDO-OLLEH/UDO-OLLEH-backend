@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -30,7 +31,7 @@ public class BoardController {
     private final BoardService boardService;
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
-    @GetMapping("/udo/board/list")
+    @GetMapping("/board/list")
     public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -47,7 +48,7 @@ public class BoardController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/udo/board/list/{boardId}")
+    @GetMapping("/board/list/{boardId}")
     public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String boardId) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -64,8 +65,8 @@ public class BoardController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/udo/board")
-    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request,
+    @PostMapping("/board")
+    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart MultipartFile file,
                                                         @Valid @RequestBody RequestBoard.registerDto postDto) {
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
@@ -74,7 +75,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.registerPosts(email, postDto);
+        boardService.registerPosts(file, email, postDto);
         CommonResponse response = CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("게시글 등록 성공")
@@ -82,8 +83,8 @@ public class BoardController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/udo/board/{boardId}")
-    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @PathVariable String boardId,
+    @PutMapping("/board/{boardId}")
+    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String boardId,
                                                       @Valid @RequestBody RequestBoard.updatesDto modifyDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -91,7 +92,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.modifyPosts(email, boardId, modifyDto);
+        boardService.modifyPosts(file, email, boardId, modifyDto);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -99,7 +100,7 @@ public class BoardController {
                 .build(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/udo/board/{boardId}")
+    @DeleteMapping("/board/{boardId}")
     public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String boardId) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;

@@ -5,7 +5,6 @@ import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
-import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
@@ -15,16 +14,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 public class BoardService implements BoardServiceInterface {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final S3Service s3Service;
 
     //게시글 전체 조회
     @Transactional(readOnly = true)
@@ -40,7 +41,7 @@ public class BoardService implements BoardServiceInterface {
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ResponseBoard.DetailBoard boardDetail(String userEmail, String boardId) {
         User user = userRepository.findByEmail(userEmail);
@@ -54,6 +55,7 @@ public class BoardService implements BoardServiceInterface {
                 .title(board.getTitle())
                 .context(board.getContext())
                 .createAt(board.getCreateAt())
+
                 .user(user)
                 .build();
     }
@@ -62,29 +64,36 @@ public class BoardService implements BoardServiceInterface {
     //게시글 등록 API
     @Override
     @Transactional
-    public void registerPosts(String userEmail, RequestBoard.registerDto postDto) { //postDto = title, context + category 추후 추가
+    public void registerPosts(MultipartFile file, String userEmail, RequestBoard.registerDto postDto) { //postDto = title, context + category 추후 추가
         User user = userRepository.findByEmail(userEmail);
 
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
 
-        //Board board = boardRepository.findByTitleContext(postDto.getTitle(), postDto.getContext);
-        //if (board == null) { ~ }
-        //빌더 패턴으로 게시글 작성
         Board board = Board.builder()
                 .title(postDto.getTitle())
                 .context(postDto.getContext())
                 .user(user)
                 .build();
-        //게시글을 등록하고 저장
+
         board = boardRepository.save(board);
         user.addBoard(board);
+
+        if(Optional.ofNullable(file).isPresent()){
+            String url= "";
+            try{
+                url = s3Service.upload(file, "board");
+                board.updatePhoto(url);
+            }catch (IOException e){
+                System.out.println("s3 등록 실패");
+            }
+        }
     }
 
     @Override
     @Transactional
-    public void modifyPosts(String userEmail, String boardId, RequestBoard.updatesDto modifyDto) {
+    public void modifyPosts(MultipartFile file, String userEmail, String boardId, RequestBoard.updatesDto modifyDto) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
