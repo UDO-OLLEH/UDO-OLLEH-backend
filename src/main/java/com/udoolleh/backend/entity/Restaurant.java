@@ -21,8 +21,8 @@ public class Restaurant {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "category")
+    private String category;
 
     @Column(name = "place_type")
     private PlaceType placeType;
@@ -43,9 +43,9 @@ public class Restaurant {
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
-    public Restaurant(String name, String description,PlaceType placeType, String address, Float totalGrade){
+    public Restaurant(String name, String category,PlaceType placeType, String address, Float totalGrade){
         this.name = name;
-        this.description = description;
+        this.category = category;
         this.placeType = placeType;
         this.address = address;
         this.totalGrade = totalGrade;

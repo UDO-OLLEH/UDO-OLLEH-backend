@@ -89,7 +89,7 @@ public class ShipServiceTests {
         time.add("18:00");
         time.add("18:30");
         shipService.registerWharfTimetable(ShipCourseType.SEONGSAN_UDO, time, ShipTimetableType.SEONGSAN_One);
-        ResponseWharfTimetable.WharfTimetable wharfTimetable = shipService.getWharfTimetable(ShipCourseType.SEONGSAN_UDO, ShipTimetableType.SEONGSAN_One).orElseThrow(() -> null);
+        ResponseWharfTimetable.wharfTimetableDto wharfTimetable = shipService.getWharfTimetable(ShipCourseType.SEONGSAN_UDO, ShipTimetableType.SEONGSAN_One).orElseThrow(() -> null);
         assertNotNull(wharfTimetable);
         System.out.println(wharfTimetable.getDepartureTime()+" "+wharfTimetable.getWharfCourse()+" "+wharfTimetable.getMonthType());
     }

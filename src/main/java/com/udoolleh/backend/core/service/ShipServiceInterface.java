@@ -12,7 +12,7 @@ public interface ShipServiceInterface {
     void registerWharfCourse(ShipCourseType wharfCourse);
     void registerWharfTimetable(ShipCourseType wharfCourse, List<String> departureTime, ShipTimetableType monthType);
     Optional<List<String>> getAllWharf();
-    Optional<ResponseWharfTimetable.WharfTimetable> getWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType);
+    Optional<ResponseWharfTimetable.wharfTimetableDto> getWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType);
     void deleteWharf(ShipCourseType wharfCourse);
     void deleteWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType);
 }
