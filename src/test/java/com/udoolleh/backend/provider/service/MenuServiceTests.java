@@ -7,7 +7,7 @@ import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.RequestMenu;
-import com.udoolleh.backend.web.dto.ResponseMenuDto;
+import com.udoolleh.backend.web.dto.ResponseMenu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +99,7 @@ public class MenuServiceTests {
         menu.updatePhoto("사진 url");
 
         //메뉴 조회
-        List<ResponseMenuDto.getMenu> result = menuService.getMenu(restaurant.getId());
+        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getId());
         assertNotNull(result);
     }
 
@@ -121,7 +121,7 @@ public class MenuServiceTests {
         restaurant.addMenu(menu);
 
         //메뉴 조회
-        List<ResponseMenuDto.getMenu> result = menuService.getMenu(restaurant.getId());
+        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getId());
         assertNotNull(result);
     }
 

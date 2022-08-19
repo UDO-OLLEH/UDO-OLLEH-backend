@@ -14,6 +14,7 @@ import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestReview;
 import com.udoolleh.backend.web.dto.ResponseReview;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,15 +76,23 @@ public class ReviewService implements ReviewServiceInterface {
         if(user == null){ //해당 유저가 없으면
             throw new NotFoundUserException();
         }
-        Review review = reviewRepository.findByUserAndReviewId(user, reviewId);
+        Review review = reviewRepository.findByUserAndId(user, reviewId);
         if(review == null){
             throw new NotFoundReviewException();
         }
-        if(Optional.ofNullable(review.getPhoto()).isPresent()){
+        if(Optional.ofNullable(review.getPhoto()).isPresent()){ //기존에 사진이 있으면
             s3Service.deleteFile(review.getPhoto());
-
         }
-        //사진 수정
+
+        if(Optional.ofNullable(file).isPresent()){
+            String url= "";
+            try{
+                url = s3Service.upload(file, "review");
+                review.updatePhoto(url);
+            }catch (IOException e){
+                System.out.println("s3 등록 실패");
+            }
+        }
         review.modifyReview(requestDto.getContext(), requestDto.getGrade());
 
 
@@ -96,11 +105,15 @@ public class ReviewService implements ReviewServiceInterface {
         if(user == null){ //해당 유저가 없으면
             throw new NotFoundUserException();
         }
-        Review review = reviewRepository.findByUserAndReviewId(user, reviewId);
+        Review review = reviewRepository.findByUserAndId(user, reviewId);
         if(review == null){
             throw new NotFoundReviewException();
         }
         //리뷰 삭제
+        if(Optional.ofNullable(review.getPhoto()).isPresent()){ //s3에 있는 사진 삭제
+            s3Service.deleteFile(review.getPhoto());
+        }
+
         review.getRestaurant().getReviewList().remove(review);
         user.getReviewList().remove(review);
 
@@ -110,7 +123,19 @@ public class ReviewService implements ReviewServiceInterface {
     @Override
     @Transactional
     public List<ResponseReview.getReviewDto> getReview(String restaurantId){
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
+        List<Review> reviewList =  reviewRepository.findByRestaurant(restaurant);
         List<ResponseReview.getReviewDto> list = new ArrayList<>();
+
+        for(Review item : reviewList){
+            ResponseReview.getReviewDto response = ResponseReview.getReviewDto.builder()
+                    .nickName(item.getUser().getNickname())
+                    .context(item.getContext())
+                    .photo(item.getPhoto())
+                    .grade(item.getGrade())
+                    .build();
+            list.add(response);
+        }
 
         return list;
     }

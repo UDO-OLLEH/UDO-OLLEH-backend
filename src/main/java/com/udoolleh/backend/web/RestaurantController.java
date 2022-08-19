@@ -3,13 +3,12 @@ package com.udoolleh.backend.web;
 import com.udoolleh.backend.provider.service.MenuService;
 import com.udoolleh.backend.web.dto.CommonResponse;
 import com.udoolleh.backend.web.dto.RequestMenu;
-import com.udoolleh.backend.web.dto.ResponseMenuDto;
+import com.udoolleh.backend.web.dto.ResponseMenu;
 import lombok.RequiredArgsConstructor;
 import com.udoolleh.backend.core.type.PlaceType;
 import com.udoolleh.backend.core.type.UdoCoordinateType;
 import com.udoolleh.backend.provider.service.KakaoApiService;
 import com.udoolleh.backend.provider.service.RestaurantService;
-import com.udoolleh.backend.provider.service.S3Service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,7 @@ public class RestaurantController {
     }
     @GetMapping("/restaurant/{id}/menu")
     public ResponseEntity<CommonResponse> getMenu(@PathVariable String id){
-        List<ResponseMenuDto.getMenu> list = menuService.getMenu(id);
+        List<ResponseMenu.getMenuDto> list = menuService.getMenu(id);
 
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())

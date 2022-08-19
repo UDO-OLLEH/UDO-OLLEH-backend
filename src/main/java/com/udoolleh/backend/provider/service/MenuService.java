@@ -9,7 +9,7 @@ import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.RequestMenu;
-import com.udoolleh.backend.web.dto.ResponseMenuDto;
+import com.udoolleh.backend.web.dto.ResponseMenu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,18 +57,19 @@ public class MenuService implements MenuServiceInterface {
                 System.out.println("s3 등록 실패");
             }
         }
+
     }
 
     @Override
     @Transactional
-    public List<ResponseMenuDto.getMenu> getMenu(String restaurantId){
+    public List<ResponseMenu.getMenuDto> getMenu(String restaurantId){
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
 
-        List<ResponseMenuDto.getMenu> list = new ArrayList<>();
+        List<ResponseMenu.getMenuDto> list = new ArrayList<>();
         List<Menu> menuList = restaurant.getMenuList();
 
         for(Menu item : menuList){
-            ResponseMenuDto.getMenu response = ResponseMenuDto.getMenu.builder()
+            ResponseMenu.getMenuDto response = ResponseMenu.getMenuDto.builder()
                     .name(item.getName())
                     .photo(item.getPhoto())
                     .price(item.getPrice())
