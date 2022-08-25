@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -30,34 +32,28 @@ public class BoardService implements BoardServiceInterface {
     //게시글 전체 조회
     @Transactional(readOnly = true)
     @Override
-    public Page<ResponseBoard.ListBoard> boardList(String userEmail, Pageable pageable) {
+    public Page<ResponseBoard.listBoardDto> boardList(String userEmail, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
 
-        Page<Board> board = boardRepository.findAllByOrderByBoardIdDesc(pageable);
-        return board.map(ResponseBoard.ListBoard::of);
+        Page<Board> board = boardRepository.findByBoardId(pageable);
+        return board.map(ResponseBoard.listBoardDto::of);
 
     }
 
     @Transactional(readOnly = true)
     @Override
-    public ResponseBoard.DetailBoard boardDetail(String userEmail, String boardId) {
+    public ResponseBoard.detailBoardDto boardDetail(String userEmail, String boardId) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-        Optional<Board> optionalBoard = Optional.of(boardRepository.findByBoardId(boardId));
-        Board board = optionalBoard.orElseThrow(() -> new NotFoundBoardException());
 
-        return ResponseBoard.DetailBoard.builder()
-                .title(board.getTitle())
-                .context(board.getContext())
-                .createAt(board.getCreateAt())
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundBoardException());
 
-                .user(user)
-                .build();
+        return new ResponseBoard.detailBoardDto(board);
     }
 
 
@@ -80,12 +76,12 @@ public class BoardService implements BoardServiceInterface {
         board = boardRepository.save(board);
         user.addBoard(board);
 
-        if(Optional.ofNullable(file).isPresent()){
-            String url= "";
-            try{
+        if (Optional.ofNullable(file).isPresent()) {
+            String url = "";
+            try {
                 url = s3Service.upload(file, "board");
                 board.updatePhoto(url);
-            }catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("s3 등록 실패");
             }
         }
@@ -102,6 +98,19 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new NotFoundBoardException();
         }
+        if(Optional.ofNullable(board.getPhoto()).isPresent()){
+            s3Service.deleteFile(board.getPhoto());
+        }
+
+        if(Optional.ofNullable(file).isPresent()){
+            String url= "";
+            try{
+                url = s3Service.upload(file, "board");
+                board.updatePhoto(url);
+            }catch (IOException e){
+                System.out.println("s3 등록 실패");
+            }
+        }
         board.modifyPosts(modifyDto.getTitle(), modifyDto.getContext());
     }
 
@@ -115,6 +124,10 @@ public class BoardService implements BoardServiceInterface {
         Board board = boardRepository.findByUserAndBoardId(user, boardId);
         if (board == null) {
             throw new NotFoundBoardException();
+        }
+
+        if(Optional.ofNullable(board.getPhoto()).isPresent()){
+            s3Service.deleteFile(board.getPhoto());
         }
 
         user.getBoardList().remove(board);

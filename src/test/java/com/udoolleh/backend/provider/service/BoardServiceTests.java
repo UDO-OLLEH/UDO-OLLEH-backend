@@ -60,9 +60,9 @@ public class BoardServiceTests {
 
         Pageable pageable = PageRequest.of(0, 2);
 
-        Page<ResponseBoard.ListBoard> list = boardService.boardList(user.getEmail(), pageable);
+        Page<ResponseBoard.listBoardDto> list = boardService.boardList(user.getEmail(), pageable);
         assertNotNull(list);
-        for (ResponseBoard.ListBoard listBoard : list) {
+        for (ResponseBoard.listBoardDto listBoard : list) {
             System.out.println(listBoard.getTitle() + listBoard.getContext() + listBoard.getCreateAt());
         }
 
