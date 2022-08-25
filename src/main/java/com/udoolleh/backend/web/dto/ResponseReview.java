@@ -7,7 +7,7 @@ public class ResponseReview {
     @Builder
     @Data
     public static class getReviewDto{
-        private String nickName;
+        private String nickname;
         private String context;
         private String photo;
         private Double grade;
