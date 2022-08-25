@@ -4,12 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "board")
@@ -28,6 +27,9 @@ public class Board {
     @Column(name = "context")
     private String context;
 
+    @Column(name = "photo")
+    private String photo;
+
     @CreationTimestamp
     @Column(name = "create_at")
     private Date createAt = new Date();
@@ -40,11 +42,14 @@ public class Board {
         this.title = title;
         this.context = context;
         this.user = user;
-
     }
 
     public void modifyPosts(String title, String context) {
         this.title = title;
         this.context = context;
+    }
+
+    public void updatePhoto(String photo) {
+        this.photo = photo;
     }
 }

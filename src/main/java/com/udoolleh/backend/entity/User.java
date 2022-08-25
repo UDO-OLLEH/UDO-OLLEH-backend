@@ -36,22 +36,23 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> reviewList = new ArrayList<>();
 
-
-
     @Builder
-    public User(String email, String password, String salt){
+    public User(String email, String password, String salt) {
         this.email = email;
         this.password = password;
         this.salt = salt;
     }
+
     public void changeRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public void addBoard(Board board){
+    public void addBoard(Board board) {
         this.boardList.add(board);
     }
-    public void addReview(Review review){
+
+    public void addReview(Review review) {
         this.reviewList.add(review);
     }
+
 }
