@@ -43,6 +43,7 @@ public class ReviewServiceTests {
 
         Restaurant restaurant = Restaurant.builder()
                 .name("음식점")
+                .totalGrade(0.0)
                 .build();
         restaurant = restaurantRepository.save(restaurant);
 
@@ -92,6 +93,47 @@ public class ReviewServiceTests {
 
     @Test
     @Transactional
+    @DisplayName("리뷰 등록 테스트(성공 - 별점 확인)")
+    void registerReviewTest(){
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        User user1 = User.builder()
+                .email("test1")
+                .password("1234")
+                .build();
+        user1 = userRepository.save(user1);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .totalGrade(0.0)
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        //리뷰 등록
+        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+                .restaurantId(restaurant.getId())
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+
+        reviewService.registerReview(null, "test", requestDto);
+
+        RequestReview.registerDto requestDto1 = RequestReview.registerDto.builder()
+                .restaurantId(restaurant.getId())
+                .context("리뷰 내용")
+                .grade(4.5)
+                .build();
+        reviewService.registerReview(null, "test1", requestDto1);
+
+        assertEquals(4.0, restaurantRepository.findByName("음식점").getTotalGrade());
+    }
+
+    @Test
+    @Transactional
     @DisplayName("리뷰 등록 테스트(실패 - 이미 리뷰가 있는 경우)")
     void registerReviewTestWhenExistReview(){
         User user = User.builder()
@@ -128,6 +170,7 @@ public class ReviewServiceTests {
 
         Restaurant restaurant = Restaurant.builder()
                 .name("음식점")
+                .totalGrade(0.0)
                 .build();
         restaurant = restaurantRepository.save(restaurant);
 
@@ -149,6 +192,7 @@ public class ReviewServiceTests {
 
         Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
         assertTrue(result.getContext().equals("리뷰 수정 내용"));
+        assertEquals(5.0, restaurant.getTotalGrade());
     }
 
     @Test
@@ -226,6 +270,7 @@ public class ReviewServiceTests {
 
         Restaurant restaurant = Restaurant.builder()
                 .name("음식점")
+                .totalGrade(0.0)
                 .build();
         restaurant = restaurantRepository.save(restaurant);
         //리뷰 등록
@@ -243,6 +288,7 @@ public class ReviewServiceTests {
         assertNull(reviewRepository.findByUserAndRestaurant(user, restaurant));
         assertFalse(user.getReviewList().contains(review));
         assertFalse(restaurant.getReviewList().contains(review));
+        assertEquals(0.0, restaurant.getTotalGrade());
     }
     @Test
     @Transactional

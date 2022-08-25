@@ -67,6 +67,12 @@ public class ReviewService implements ReviewServiceInterface {
                 System.out.println("s3 등록 실패");
             }
         }
+
+        //별점 음식점에 반영
+        Integer reviewSize = restaurant.getReviewList().size();
+        Double newGrade = (restaurant.getTotalGrade() * (reviewSize-1) + requestDto.getGrade()) / reviewSize;
+        restaurant.updateGrade(newGrade);
+
     }
 
     @Override
@@ -93,7 +99,16 @@ public class ReviewService implements ReviewServiceInterface {
                 System.out.println("s3 등록 실패");
             }
         }
+        //별점 변경
+        Restaurant restaurant = review.getRestaurant();
+        if(review.getGrade() != requestDto.getGrade()){ //기존 별점과 다르면
+            Integer reviewSize = restaurant.getReviewList().size();
+            Double newGrade = (restaurant.getTotalGrade() * reviewSize - review.getGrade() + requestDto.getGrade()) / reviewSize;
+            restaurant.updateGrade(newGrade);
+        }
+
         review.modifyReview(requestDto.getContext(), requestDto.getGrade());
+
 
 
     }
@@ -114,9 +129,14 @@ public class ReviewService implements ReviewServiceInterface {
             s3Service.deleteFile(review.getPhoto());
         }
 
+        //별점 삭제
+        Restaurant restaurant = review.getRestaurant();
+        Integer reviewSize = restaurant.getReviewList().size();
+        Double newGrade = (restaurant.getTotalGrade() * reviewSize - review.getGrade()) / reviewSize;
+        restaurant.updateGrade(newGrade);
+
         review.getRestaurant().getReviewList().remove(review);
         user.getReviewList().remove(review);
-
         reviewRepository.delete(review);
     }
 
@@ -129,7 +149,7 @@ public class ReviewService implements ReviewServiceInterface {
 
         for(Review item : reviewList){
             ResponseReview.getReviewDto response = ResponseReview.getReviewDto.builder()
-                    .nickName(item.getUser().getNickname())
+                    .nickname(item.getUser().getNickname())
                     .context(item.getContext())
                     .photo(item.getPhoto())
                     .grade(item.getGrade())

@@ -63,6 +63,7 @@ public class RestaurantService implements RestaurantServiceInterface {
                 .placeType(restaurantDto.getPlaceType())
                 .category(restaurantDto.getCategory())
                 .address(restaurantDto.getAddress())
+                .totalGrade(0.0)
                 .build();
         restaurantRepository.save(restaurant);
     }
