@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,16 +50,16 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null,"k", dto);
+        boardService.registerPosts(null, "k", dto);
 
         RequestBoard.registerDto dto2 = RequestBoard.registerDto.builder()
                 .title("아")
                 .context("우아")
                 .build();
-        boardService.registerPosts(null,"k", dto2);
+        boardService.registerPosts(null, "k", dto2);
 
 
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(0, 10);
 
         Page<ResponseBoard.listBoardDto> list = boardService.boardList(user.getEmail(), pageable);
         assertNotNull(list);
@@ -70,8 +71,8 @@ public class BoardServiceTests {
 
     @Test
     @Transactional
-    @DisplayName("게시글 등록 테스트")
-    void registerPostsTest() {
+    @DisplayName("게시글 등록 테스트(사진 파일 있을 때) - 성공")
+    void registerPostsTestWhenExistPhoto() {
         User user = User.builder()
                 .email("k")
                 .password("1234")
@@ -82,7 +83,35 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null,"k", dto);
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+                "image/png", "test data".getBytes());
+
+        boardService.registerPosts(mockMultipartFile, "k", dto);
+
+        Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
+
+        assertEquals(board.getTitle(), dto.getTitle());
+        assertNotNull(user.getBoardList());
+        assertNotNull(board.getPhoto());
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("게시글 등록 테스트(사진 파일 없을 때) - 성공")
+    void registerPostsTestWhenNotExistPhoto() {
+        User user = User.builder()
+                .email("k")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+                .title("지금 몇시냐")
+                .context("잘 자")
+                .build();
+        boardService.registerPosts(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
@@ -93,7 +122,7 @@ public class BoardServiceTests {
 
     @Test
     @Transactional
-    @DisplayName("게시글 수정 테스트")
+    @DisplayName("게시글 수정 테스트(사진 추가) - 성공")
     void modifyPostsTest() {
         User user = User.builder()
                 .email("k")
@@ -105,7 +134,39 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null,"k", dto);
+        boardService.registerPosts(null, "k", dto);
+
+        Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
+
+        RequestBoard.updatesDto mDto = RequestBoard.updatesDto.builder()
+                .title("수정한 제목")
+                .context("게시글 수정 내용")
+                .build();
+        boardService.modifyPosts(null, "k", board.getBoardId(), mDto);
+
+        board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
+
+        assertTrue(board.getTitle().equals("수정한 제목"));
+        System.out.println(board.getTitle());
+        System.out.println(user.getEmail());
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("게시글 수정 테스트(사진 추가) - 성공")
+    void modifyPostsTestWhenAddPhoto() {
+        User user = User.builder()
+                .email("k")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+                .title("지금 몇시냐")
+                .context("잘 자")
+                .build();
+        boardService.registerPosts(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
@@ -114,11 +175,15 @@ public class BoardServiceTests {
                 .context("게시글 수정 내용")
                 .build();
 
-        boardService.modifyPosts(null,"k", board.getBoardId(), mDto);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+                "image/png", "test data".getBytes());
+
+        boardService.modifyPosts(mockMultipartFile, "k", board.getBoardId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
         assertTrue(board.getTitle().equals("수정한 제목"));
+        assertNotNull(board.getPhoto());
         System.out.println(board.getTitle());
         System.out.println(user.getEmail());
 
@@ -139,7 +204,7 @@ public class BoardServiceTests {
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null,"k", dto);
+        boardService.registerPosts(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 

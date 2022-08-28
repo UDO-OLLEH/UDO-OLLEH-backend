@@ -38,7 +38,7 @@ public class BoardService implements BoardServiceInterface {
             throw new CustomJwtRuntimeException();
         }
 
-        Page<Board> board = boardRepository.findByBoardId(pageable);
+        Page<Board> board = boardRepository.findAll(pageable);
         return board.map(ResponseBoard.listBoardDto::of);
 
     }
