@@ -62,4 +62,6 @@ public class Restaurant {
     public void addPhoto(Photo photo){
         this.photoList.add(photo);
     }
+
+    public void updateGrade(Double grade){ this.totalGrade = grade; }
 }

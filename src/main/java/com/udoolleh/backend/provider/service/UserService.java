@@ -46,6 +46,7 @@ public class UserService implements UserServiceInterface {
         user = User.builder()
                 .email(registerDto.getEmail())
                 .password(encryptedPassword)
+                .nickname(registerDto.getNickname())
                 .salt(salt)
                 .build();
         userRepository.save(user);
