@@ -186,6 +186,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    @ExceptionHandler(NotFoundPhotoException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundPhotoException(NotFoundPhotoException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_PHOTO;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }
 
 

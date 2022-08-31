@@ -64,9 +64,7 @@ public class S3Service{
     }
 
     public void deleteFile(String url){
-        String[] fileName = url.split("/");
-        System.out.println(fileName[3]+fileName[4]);
-        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName[3]+"/"+fileName[4]);
+        DeleteObjectRequest request = new DeleteObjectRequest(bucket, url);
         amazonS3Client.deleteObject(request);
     }
 }

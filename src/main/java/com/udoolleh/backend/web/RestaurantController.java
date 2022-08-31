@@ -34,6 +34,7 @@ import javax.validation.constraints.Min;
 
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,7 @@ public class RestaurantController {
                 .message("카카오 맛집 등록 성공")
                 .build(), HttpStatus.OK);
     }
+
     @PostMapping("/admin/restaurant/images")
     public ResponseEntity<CommonResponse> registerRestaurantImage(@RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="restaurantName") String restaurantName){
         restaurantService.registerRestaurantImage(images, restaurantName);
@@ -90,6 +92,7 @@ public class RestaurantController {
                 .message("맛집 사진 등록 성공")
                 .build(), HttpStatus.OK);
     }
+
     @PostMapping("/admin/restaurant")
     public ResponseEntity<CommonResponse> registerRestaurant(@RequestBody RequestRestaurant.registerDto registerDto){
         restaurantService.registerRestaurant(registerDto);
@@ -97,12 +100,22 @@ public class RestaurantController {
                 .message("이미지를 제외한 맛집 등록 성공")
                 .build(), HttpStatus.OK);
     }
+
     @GetMapping("/restaurant")
     public ResponseEntity<CommonResponse> getRestaurant(@PageableDefault (size=10, sort="totalGrade", direction = Sort.Direction.DESC) Pageable pageable) {
         List<ResponseRestaurant.restaurantDto> restaurantList = restaurantService.getRestaurant(pageable);
         return new ResponseEntity<>(CommonResponse.builder()
                 .message("맛집 조회 성공")
                 .list(restaurantList)
+                .build(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/restaurant/{name}/images/{url}")
+    public ResponseEntity<CommonResponse> deleteRestaurantImages(@PathVariable String name,@PathVariable String url) {
+        String[] urls = url.split(",");
+        restaurantService.deleteRestaurantImageSelection(name, urls);
+        return new ResponseEntity<>(CommonResponse.builder()
+                .message("맛집 이미지 삭제 성공")
                 .build(), HttpStatus.OK);
     }
 }

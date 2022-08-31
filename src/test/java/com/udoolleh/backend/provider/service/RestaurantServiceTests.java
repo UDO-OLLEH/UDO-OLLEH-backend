@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,8 @@ public class RestaurantServiceTests {
     private RestaurantRepository restaurantRepository;
     @Autowired
     private PhotoRepository photoRepository;
+    @Autowired
+    private S3Service s3Service;
 
     @DisplayName("식당 사진 등록 테스트")
     @Transactional
@@ -60,6 +63,47 @@ public class RestaurantServiceTests {
         //then
         assertEquals(restaurantRepository.findByName("식당").getPhotoList().size(), 4);
     }
+    @DisplayName("식당 사진 삭제")
+    @Transactional
+    @Test
+    void deleteRestaurantImageSelectionTest() {
+        //given
+        Restaurant res = Restaurant.builder()
+                .name("식당")
+                .placeType(PlaceType.RESTAURANT)
+                .address("주소")
+                .build();
+        restaurantRepository.save(res);
+
+        List<MultipartFile> mockMultipartFile = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            MultipartFile file = new MockMultipartFile("file", "test" + i + ".png",
+                    "image/png", "test data".getBytes());
+            mockMultipartFile.add(file);
+        }
+        Restaurant restaurant = restaurantRepository.findByName("식당");
+
+        String[] imageUrls = new String[4];
+        try {
+            for (int i =0; i < mockMultipartFile.size(); i++) {
+                imageUrls[i] = s3Service.upload(mockMultipartFile.get(i), "test");
+                Photo photo = Photo.builder()
+                        .url(imageUrls[i])
+                        .restaurant(restaurant)
+                        .build();
+                photoRepository.save(photo);
+                restaurant.addPhoto(photo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        restaurantService.deleteRestaurantImageSelection("식당",imageUrls);
+
+        System.out.println(restaurant.getPhotoList().size());
+        System.out.println(photoRepository.findByRestaurant(restaurant).size()+"--------");
+    }
+
     @DisplayName("식당 등록 테스트")
     @Transactional
     @Test
