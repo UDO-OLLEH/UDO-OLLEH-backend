@@ -39,7 +39,7 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
