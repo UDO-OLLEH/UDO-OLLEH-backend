@@ -138,7 +138,7 @@ public class BoardServiceTests {
                 .title("수정한 제목")
                 .context("게시글 수정 내용")
                 .build();
-        boardService.modifyPosts(null, "k", board.getBoardId(), mDto);
+        boardService.modifyPosts(null, "k", board.getId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
@@ -174,7 +174,7 @@ public class BoardServiceTests {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
                 "image/png", "test data".getBytes());
 
-        boardService.modifyPosts(mockMultipartFile, "k", board.getBoardId(), mDto);
+        boardService.modifyPosts(mockMultipartFile, "k", board.getId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
@@ -205,9 +205,9 @@ public class BoardServiceTests {
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
 
-        boardService.deletePosts("k", board.getBoardId());
+        boardService.deletePosts("k", board.getId());
 
-        assertNull(boardRepository.findByUserAndBoardId(user, board.getBoardId()));
+        assertNull(boardRepository.findByUserAndId(user, board.getId()));
         assertFalse(user.getBoardList().contains(board));
     }
 

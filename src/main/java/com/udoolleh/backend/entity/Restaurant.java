@@ -32,7 +32,7 @@ public class Restaurant {
     private String address;
 
     @Column(name = "total_grade")
-    private Double totalGrade;
+    private double totalGrade;
 
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menuList = new ArrayList<>();
@@ -44,7 +44,7 @@ public class Restaurant {
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
-    public Restaurant(String name, String category,PlaceType placeType, String address, Double totalGrade){
+    public Restaurant(String name, String category,PlaceType placeType, String address, double totalGrade){
         this.name = name;
         this.category = category;
         this.placeType = placeType;

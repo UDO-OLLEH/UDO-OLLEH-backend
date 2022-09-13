@@ -29,7 +29,7 @@ public class Review {
     private String photo;
 
     @Column(name = "grade")
-    private Double grade;
+    private double grade;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -40,7 +40,7 @@ public class Review {
     private Restaurant restaurant;
 
     @Builder
-    public Review(String context, Double grade, User user, Restaurant restaurant){
+    public Review(String context, double grade, User user, Restaurant restaurant){
         this.context = context;
         this.grade = grade;
         this.user = user;
@@ -51,7 +51,7 @@ public class Review {
         this.photo = photo;
     }
 
-    public void modifyReview(String context, Double grade){
+    public void modifyReview(String context, double grade){
         this.context = context;
         this.grade = grade;
     }

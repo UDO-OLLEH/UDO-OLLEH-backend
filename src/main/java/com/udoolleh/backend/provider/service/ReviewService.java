@@ -69,8 +69,8 @@ public class ReviewService implements ReviewServiceInterface {
         }
 
         //별점 음식점에 반영
-        Integer reviewSize = restaurant.getReviewList().size();
-        Double newGrade = (restaurant.getTotalGrade() * (reviewSize-1) + requestDto.getGrade()) / reviewSize;
+        int reviewSize = restaurant.getReviewList().size();
+        double newGrade = (restaurant.getTotalGrade() * (reviewSize-1) + requestDto.getGrade()) / reviewSize;
         restaurant.updateGrade(newGrade);
 
     }
@@ -102,8 +102,8 @@ public class ReviewService implements ReviewServiceInterface {
         //별점 변경
         Restaurant restaurant = review.getRestaurant();
         if(review.getGrade() != requestDto.getGrade()){ //기존 별점과 다르면
-            Integer reviewSize = restaurant.getReviewList().size();
-            Double newGrade = (restaurant.getTotalGrade() * reviewSize - review.getGrade() + requestDto.getGrade()) / reviewSize;
+            int reviewSize = restaurant.getReviewList().size();
+            double newGrade = (restaurant.getTotalGrade() * reviewSize - review.getGrade() + requestDto.getGrade()) / reviewSize;
             restaurant.updateGrade(newGrade);
         }
 
@@ -131,8 +131,8 @@ public class ReviewService implements ReviewServiceInterface {
 
         //별점 삭제
         Restaurant restaurant = review.getRestaurant();
-        Integer reviewSize = restaurant.getReviewList().size();
-        Double newGrade = (restaurant.getTotalGrade() * reviewSize - review.getGrade()) / reviewSize;
+        int reviewSize = restaurant.getReviewList().size();
+        double newGrade = (restaurant.getTotalGrade() * reviewSize - review.getGrade()) / reviewSize;
         restaurant.updateGrade(newGrade);
 
         review.getRestaurant().getReviewList().remove(review);

@@ -40,7 +40,7 @@ public class TestController {
     }
 
     @PostMapping("/test/login")
-    public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.Login loginDto) {
+    public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.loginDto loginDto) {
 
         ResponseUser.Login manager = userService.login(loginDto).orElseThrow(()->new LoginFailedException());
 

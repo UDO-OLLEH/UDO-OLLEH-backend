@@ -15,7 +15,7 @@ public class RequestReview {
         @NotEmpty(message = "내용이 비어있습니다.")
         private String context;
         @NotEmpty(message = "별점이 비었습니다.")
-        private Double grade;
+        private double grade;
     }
 
     @Builder
@@ -24,6 +24,6 @@ public class RequestReview {
         @NotEmpty(message = "내용이 비어있습니다")
         private String context;
         @NotEmpty(message = "별점이 비었습니다.")
-        private Double grade;
+        private double grade;
     }
 }

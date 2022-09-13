@@ -98,7 +98,7 @@ public class BoardService implements BoardServiceInterface {
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-        Board board = boardRepository.findByUserAndBoardId(user, boardId);
+        Board board = boardRepository.findByUserAndId(user, boardId);
         if (board == null) {
             throw new NotFoundBoardException();
         }
@@ -125,7 +125,7 @@ public class BoardService implements BoardServiceInterface {
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-        Board board = boardRepository.findByUserAndBoardId(user, boardId);
+        Board board = boardRepository.findByUserAndId(user, boardId);
         if (board == null) {
             throw new NotFoundBoardException();
         }
