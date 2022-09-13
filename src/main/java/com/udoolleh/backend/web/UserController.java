@@ -23,7 +23,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/udo/user")
+    @PostMapping("/user")
     public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.registerDto registerDto) {
 
         userService.register(registerDto);
@@ -35,7 +35,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/udo/login")
+    @PostMapping("/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.loginDto loginDto) {
 
         ResponseUser.Login manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());
@@ -52,7 +52,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/udo/refreshToken")
+    @PostMapping("/refreshToken")
     public ResponseEntity<CommonResponse> refreshToken(@RequestBody Map<String, String> payload) {
         ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(() -> new CustomJwtRuntimeException());
 

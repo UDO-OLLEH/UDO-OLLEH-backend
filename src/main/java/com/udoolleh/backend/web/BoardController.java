@@ -48,7 +48,7 @@ public class BoardController {
                 .build());
     }
 
-    @GetMapping("/board/{boardId}/list")
+    @GetMapping("/board/{id}")
     public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String boardId) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -66,7 +66,7 @@ public class BoardController {
 
     @PostMapping("/board")
     public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart MultipartFile file,
-                                                        @Valid @RequestBody RequestBoard.registerDto postDto) {
+                                                        @Valid @RequestPart RequestBoard.registerDto postDto) {
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -81,7 +81,7 @@ public class BoardController {
                 .build());
     }
 
-    @PutMapping("/board/{boardId}")
+    @PutMapping("/board/{id}")
     public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String boardId,
                                                       @Valid @RequestBody RequestBoard.updatesDto modifyDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
@@ -97,7 +97,7 @@ public class BoardController {
                 .build());
     }
 
-    @DeleteMapping("/board/{boardId}")
+    @DeleteMapping("/board/{id}")
     public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String boardId) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
