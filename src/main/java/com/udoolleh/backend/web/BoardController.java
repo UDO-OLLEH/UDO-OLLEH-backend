@@ -14,10 +14,12 @@ import com.udoolleh.backend.web.dto.ResponseUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -30,24 +32,23 @@ public class BoardController {
     private final BoardService boardService;
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
-    @GetMapping("/udo/board/list")
-    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault Pageable pageable) {
+    @GetMapping("/board/list")
+    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        Page<ResponseBoard.ListBoard> listBoards = boardService.boardList(email, pageable);
-        CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("게시글 조회 성공")
+        Page<ResponseBoard.listBoardDto> listBoards = boardService.boardList(email, pageable);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시판 조회 성공")
                 .list(listBoards)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+                .build());
     }
 
-    @GetMapping("/udo/board/list/{boardId}")
+    @GetMapping("/board/{boardId}/list")
     public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String boardId) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -55,18 +56,17 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        ResponseBoard.DetailBoard detailBoard = boardService.boardDetail(email, boardId);
-        CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("게시글 상세 조회 성공")
-                .list(detailBoard)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ResponseBoard.detailBoardDto detailBoards = boardService.boardDetail(email, boardId);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시판 상세 조회 성공")
+                .list(detailBoards)
+                .build());
     }
 
-    @PostMapping("/udo/board")
-    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request,
-                                                        @Valid @RequestBody RequestBoard.Register postDto) {
+    @PostMapping("/board")
+    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart MultipartFile file,
+                                                        @Valid @RequestBody RequestBoard.registerDto postDto) {
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -74,32 +74,30 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.registerPosts(email, postDto);
-        CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("게시글 등록 성공")
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        boardService.registerPosts(file, email, postDto);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시판 등록 성공")
+                .build());
     }
 
-    @PutMapping("/udo/board/{boardId}")
-    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @PathVariable String boardId,
-                                                      @Valid @RequestBody RequestBoard.Updates updatesDto) {
+    @PutMapping("/board/{boardId}")
+    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String boardId,
+                                                      @Valid @RequestBody RequestBoard.updatesDto modifyDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.modifyPosts(email, boardId, updatesDto);
+        boardService.modifyPosts(file, email, boardId, modifyDto);
 
-        return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("게시글 수정 성공")
-                .build(), HttpStatus.OK);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시판 수정 성공")
+                .build());
     }
 
-    @DeleteMapping("/udo/board/{boardId}")
+    @DeleteMapping("/board/{boardId}")
     public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String boardId) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -109,9 +107,8 @@ public class BoardController {
         }
         boardService.deletePosts(email, boardId);
 
-        return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("게시글 삭제 성공")
-                .build(), HttpStatus.OK);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시판 삭제 성공")
+                .build());
     }
 }

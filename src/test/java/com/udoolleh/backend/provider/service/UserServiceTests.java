@@ -28,7 +28,7 @@ public class UserServiceTests {
     @Transactional
     void registerTest() {
         //given
-        RequestUser.Register dto = RequestUser.Register.builder()
+        RequestUser.registerDto dto = RequestUser.registerDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
@@ -46,13 +46,13 @@ public class UserServiceTests {
     @DisplayName("로그인 서비스 테스트")
     void loginTest() {
         //given
-        RequestUser.Register dto = RequestUser.Register.builder()
+        RequestUser.registerDto dto = RequestUser.registerDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
         userService.register(dto);
 
-        RequestUser.Login loginRequest = RequestUser.Login.builder()
+        RequestUser.loginDto loginRequest = RequestUser.loginDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
@@ -72,13 +72,13 @@ public class UserServiceTests {
     @DisplayName("토큰 갱신 테스트")
     void refreshTokenTest() {
         //given
-        RequestUser.Register dto = RequestUser.Register.builder()
+        RequestUser.registerDto dto = RequestUser.registerDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
         userService.register(dto);
 
-        RequestUser.Login loginRequest = RequestUser.Login.builder()
+        RequestUser.loginDto loginRequest = RequestUser.loginDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();

@@ -39,8 +39,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> reviewList = new ArrayList<>();
 
-
-
     @Builder
     public User(String email, String password, String nickname, String salt){
         this.email = email;
@@ -48,14 +46,17 @@ public class User {
         this.nickname = nickname;
         this.salt = salt;
     }
+
     public void changeRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public void addBoard(Board board){
+    public void addBoard(Board board) {
         this.boardList.add(board);
     }
-    public void addReview(Review review){
+
+    public void addReview(Review review) {
         this.reviewList.add(review);
     }
+
 }

@@ -9,7 +9,7 @@ public class RequestUser {
 
     @Builder
     @Data
-    public static class Register{
+    public static class registerDto{
         @NotEmpty(message = "이메일이 비어있습니다.")
         private String email;
         @NotEmpty(message = "닉네임이 비어있습니다.")
@@ -19,7 +19,7 @@ public class RequestUser {
     }
     @Builder
     @Data
-    public static class Login {
+    public static class loginDto {
         @NotEmpty(message = "이메일이 비어있습니다.")
         private String email;
         @NotEmpty(message = "비밀번호 입력이 되어있지 않습니다.")

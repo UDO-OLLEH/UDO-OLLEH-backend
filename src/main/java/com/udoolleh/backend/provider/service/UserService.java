@@ -32,7 +32,7 @@ public class UserService implements UserServiceInterface {
     //회원가입 API
     @Transactional
     @Override
-    public void register(RequestUser.Register registerDto) {
+    public void register(RequestUser.registerDto registerDto) {
         User user = userRepository.findByEmail(registerDto.getEmail());
         if (user != null) {
             throw new RegisterFailedException();
@@ -55,7 +55,7 @@ public class UserService implements UserServiceInterface {
     //로그인 API
     @Transactional
     @Override
-    public Optional<ResponseUser.Login> login(RequestUser.Login loginDto) {
+    public Optional<ResponseUser.Login> login(RequestUser.loginDto loginDto) {
 
         User user = userRepository.findByEmail(loginDto.getEmail());
         if (user == null) {
