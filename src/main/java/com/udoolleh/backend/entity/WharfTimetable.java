@@ -13,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class WharfTimetable {
     @Id
+    @Column(name="wharf_timetable_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

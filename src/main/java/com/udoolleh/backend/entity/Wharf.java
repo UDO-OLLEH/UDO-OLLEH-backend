@@ -15,8 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Wharf {
     @Id
+    @Column(name="wharf_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "wharf_id")
     private Long id;
 
     @Column(name = "wharf_course")

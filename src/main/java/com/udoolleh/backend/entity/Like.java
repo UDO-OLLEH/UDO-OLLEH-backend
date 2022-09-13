@@ -1,10 +1,16 @@
 package com.udoolleh.backend.entity;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@Table(name = "like")
+@Entity
+@Getter
+@NoArgsConstructor
 public class Like {
     @Id
     @Column(name = "like_id")

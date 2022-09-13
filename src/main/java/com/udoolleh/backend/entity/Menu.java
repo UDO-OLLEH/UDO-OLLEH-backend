@@ -12,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Menu {
     @Id
+    @Column(name="menu_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

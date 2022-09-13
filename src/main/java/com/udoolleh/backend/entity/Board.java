@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Board {
     @Id
     @Column(name = "board_id")
-    private String boardId = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
 
     @Column(name = "title", length = 30, nullable = false)
     private String title;
@@ -33,6 +33,7 @@ public class Board {
     @CreationTimestamp
     @Column(name = "create_at")
     private Date createAt = new Date();
+
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
