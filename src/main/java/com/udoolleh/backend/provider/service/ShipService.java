@@ -76,7 +76,7 @@ public class ShipService implements ShipServiceInterface {
     }
     @Transactional(readOnly = true)
     @Override
-    public Optional<ResponseWharfTimetable.WharfTimetable> getWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType){
+    public Optional<ResponseWharfTimetable.wharfTimetableDto> getWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType){
         Wharf wharf = wharfRepository.findByWharfCourse(wharfCourse);
         if(wharf == null){ //선착장이 없으면 예외 던지기
             throw new NotFoundWharfException();
@@ -88,7 +88,7 @@ public class ShipService implements ShipServiceInterface {
                 time.add(wharfTimetable.getDepartureTime());
             }
         }
-        ResponseWharfTimetable.WharfTimetable resWharfTimetable = ResponseWharfTimetable.WharfTimetable.builder()
+        ResponseWharfTimetable.wharfTimetableDto resWharfTimetable = ResponseWharfTimetable.wharfTimetableDto.builder()
                 .monthType(monthType.getMonth())
                 .departureTime(time)
                 .wharfCourse(wharf.getWharfCourse().getDestination())

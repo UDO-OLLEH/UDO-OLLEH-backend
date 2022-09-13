@@ -67,6 +67,10 @@ public class BoardService implements BoardServiceInterface {
             throw new CustomJwtRuntimeException();
         }
 
+        //Board board = boardRepository.findByTitleContext(postDto.getTitle(), postDto.getContext);
+        //if (board == null) { ~ }
+        //빌더 패턴으로 게시글 작성
+
         Board board = Board.builder()
                 .title(postDto.getTitle())
                 .context(postDto.getContext())

@@ -16,14 +16,13 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Restaurant {
     @Id
-    @Column(name = "restaurant_id")
     private String id = UUID.randomUUID().toString();
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "category")
+    private String category;
 
     @Column(name = "place_type")
     private PlaceType placeType;
@@ -32,7 +31,7 @@ public class Restaurant {
     private String address;
 
     @Column(name = "total_grade")
-    private Float totalGrade;
+    private Double totalGrade;
 
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menuList = new ArrayList<>();
@@ -40,13 +39,13 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
-    public Restaurant(String name, String description,PlaceType placeType, String address, Float totalGrade){
+    public Restaurant(String name, String category,PlaceType placeType, String address, Double totalGrade){
         this.name = name;
-        this.description = description;
+        this.category = category;
         this.placeType = placeType;
         this.address = address;
         this.totalGrade = totalGrade;
@@ -63,4 +62,6 @@ public class Restaurant {
     public void addPhoto(Photo photo){
         this.photoList.add(photo);
     }
+
+    public void updateGrade(Double grade){ this.totalGrade = grade; }
 }

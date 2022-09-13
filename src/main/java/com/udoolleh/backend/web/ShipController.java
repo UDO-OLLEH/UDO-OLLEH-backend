@@ -31,7 +31,7 @@ public class ShipController {
     }
 
     @PostMapping("/udo/wharf/timetable")
-    public ResponseEntity<CommonResponse> addWharfTimetable(@RequestBody RequestWharfTimetable.WharfTime requestDto){
+    public ResponseEntity<CommonResponse> addWharfTimetable(@RequestBody RequestWharfTimetable.wharfTimeDto requestDto){
         shipService.registerWharfTimetable(requestDto.getWharfCourse(), requestDto.getDepartureTime(), requestDto.getMonthType());
 
         return new ResponseEntity<>(CommonResponse.builder()
@@ -52,7 +52,7 @@ public class ShipController {
 
     @GetMapping("/udo/wharf/timetable")
     public ResponseEntity<CommonResponse> getWharfTimetable(@RequestParam ShipCourseType wharfCourse, @RequestParam ShipTimetableType monthType){
-        ResponseWharfTimetable.WharfTimetable list = shipService.getWharfTimetable(wharfCourse, monthType).orElseGet(()->null);
+        ResponseWharfTimetable.wharfTimetableDto list = shipService.getWharfTimetable(wharfCourse, monthType).orElseGet(()->null);
         return new ResponseEntity<>(CommonResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("배시간 조회 성공")
