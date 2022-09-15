@@ -91,8 +91,6 @@ public class KakaoApiService implements KakaoApiServiceInterface {
         catch(ParseException e){
             e.printStackTrace();
         }
-
         return (boolean)jsonMeta.get("is_end");
-
     }
 }
