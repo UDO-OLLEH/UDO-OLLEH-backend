@@ -40,7 +40,7 @@ public class MenuServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         RequestMenu.registerDto requestDto = RequestMenu.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .name("메뉴 이름")
                 .description("설명")
                 .price(2000)
@@ -63,7 +63,7 @@ public class MenuServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         RequestMenu.registerDto requestDto = RequestMenu.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .name("메뉴 이름")
                 .description("설명")
                 .price(2000)
