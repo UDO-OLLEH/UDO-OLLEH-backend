@@ -39,7 +39,10 @@ public class ReviewService implements ReviewServiceInterface {
         if(user == null){ //해당 유저가 없으면
             throw new NotFoundUserException();
         }
-        Restaurant restaurant = restaurantRepository.findById(requestDto.getRestaurantId()).orElseThrow(()-> new NotFoundRestaurantException());
+        Restaurant restaurant = restaurantRepository.findByName(requestDto.getRestaurantName());
+        if(restaurant == null){
+            throw new NotFoundReviewException();
+        }
 
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         if(review != null){ //이미 리뷰가 있다면
@@ -142,13 +145,17 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     @Transactional
-    public List<ResponseReview.getReviewDto> getReview(String restaurantId){
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
+    public List<ResponseReview.getReviewDto> getReview(String restaurantName){
+        Restaurant restaurant = restaurantRepository.findByName(restaurantName);
+        if(restaurant == null){
+            throw new NotFoundReviewException();
+        }
         List<Review> reviewList =  reviewRepository.findByRestaurant(restaurant);
         List<ResponseReview.getReviewDto> list = new ArrayList<>();
 
         for(Review item : reviewList){
             ResponseReview.getReviewDto response = ResponseReview.getReviewDto.builder()
+                    .reviewId(item.getId())
                     .nickname(item.getUser().getNickname())
                     .context(item.getContext())
                     .photo(item.getPhoto())

@@ -78,9 +78,9 @@ public class ReviewController {
                 .message("리뷰 삭제 성공")
                 .build());
     }
-    @GetMapping("/restaurant/{id}/review")
-    public ResponseEntity<CommonResponse> getReview(@PathVariable String id){
-        List<ResponseReview.getReviewDto> list = reviewService.getReview(id);
+    @GetMapping("/restaurant/{name}/review")
+    public ResponseEntity<CommonResponse> getReview(@PathVariable String name){
+        List<ResponseReview.getReviewDto> list = reviewService.getReview(name);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("리뷰 조회 성공")
