@@ -6,6 +6,7 @@ import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.LoginFailedException;
 import com.udoolleh.backend.exception.errors.RegisterFailedException;
+import com.udoolleh.backend.exception.errors.UserDuplicatedException;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.repository.UserRepository;
@@ -36,6 +37,10 @@ public class UserService implements UserServiceInterface {
         User user = userRepository.findByEmail(registerDto.getEmail());
         if (user != null) {
             throw new RegisterFailedException();
+        }
+        user = userRepository.findByNickname(registerDto.getNickname());
+        if(user != null){//닉네임 중복시
+            throw new UserDuplicatedException();
         }
         String salt = SHA256Util.generateSalt();
 

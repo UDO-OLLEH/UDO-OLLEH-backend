@@ -225,6 +225,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
+    @ExceptionHandler(UserDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleUserDuplicatedException(UserDuplicatedException e) {
+        ErrorCode errorCode = ErrorCode.USER_DUPLICATED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }
 
 
