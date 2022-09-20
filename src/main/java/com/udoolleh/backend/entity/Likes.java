@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Table(name = "like")
+@Table(name = "likes")
 @Entity
 @Getter
 @NoArgsConstructor
-public class Like {
+public class Likes {
     @Id
     @Column(name = "like_id")
     private String id = UUID.randomUUID().toString();
@@ -25,7 +25,7 @@ public class Like {
     private Board board;
 
     @Builder
-    public Like(User user, Board board) {
+    public Likes(User user, Board board) {
         this.user = user;
         this.board = board;
     }

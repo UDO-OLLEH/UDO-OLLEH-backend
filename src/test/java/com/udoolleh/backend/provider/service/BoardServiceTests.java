@@ -1,8 +1,10 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Board;
+import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.repository.BoardRepository;
+import com.udoolleh.backend.repository.LikeRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
@@ -27,6 +29,8 @@ public class BoardServiceTests {
     private UserRepository userRepository;
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private LikeRepository likeRepository;
     @Autowired
     private BoardService boardService;
     @Autowired
@@ -211,4 +215,34 @@ public class BoardServiceTests {
         assertFalse(user.getBoardList().contains(board));
     }
 
+    @Test
+    @Transactional
+    @DisplayName("좋아요 한 게시판 조회 테스트(성공)")
+    void getLikeBoardTest(){
+        User user = User.builder()
+                .email("test")
+                .nickname("nick")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Board board = Board.builder()
+                .title("제목")
+                .context("내용")
+                .user(user)
+                .build();
+        board = boardRepository.save(board);
+
+        //좋아요
+        Likes like = Likes.builder()
+                .board(board)
+                .user(user)
+                .build();
+        like = likeRepository.save(like);
+
+        //페이지 크기 설정
+        Pageable pageable = PageRequest.of(0, 3);
+        Page<ResponseBoard.getLikeBoardDto> response =  boardService.getLikeBoard("test", pageable);
+        assertNotNull(response);
+    }
 }
