@@ -1,6 +1,7 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.errors.UserNicknameDuplicatedException;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
@@ -12,8 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,6 +39,29 @@ public class UserServiceTests {
         assertEquals(dto.getEmail(), user.getEmail());
         System.out.println(user.getEmail());
         System.out.println(user.getPassword());
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트(실패 - 닉네임 중복됐을 경우)")
+    @Transactional
+    void registerTestWhenDuplicatedNickname() {
+        //given
+        RequestUser.registerDto dto = RequestUser.registerDto.builder()
+                .email("hello")
+                .nickname("nickname")
+                .password("itsmypassword")
+                .build();
+        //when
+        userService.register(dto);
+
+        //닉네임 중복
+        RequestUser.registerDto dto1 = RequestUser.registerDto.builder()
+                .email("test")
+                .nickname("nickname")
+                .password("1234")
+                .build();
+        //then
+        assertThrows(UserNicknameDuplicatedException.class, ()-> userService.register(dto1));
     }
 
     @Transactional
