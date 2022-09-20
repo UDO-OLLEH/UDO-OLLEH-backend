@@ -49,14 +49,14 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String boardId) {
+    public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        ResponseBoard.detailBoardDto detailBoards = boardService.boardDetail(email, boardId);
+        ResponseBoard.detailBoardDto detailBoards = boardService.boardDetail(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 상세 조회 성공")
@@ -82,15 +82,15 @@ public class BoardController {
     }
 
     @PutMapping("/board/{id}")
-    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String boardId,
-                                                      @Valid @RequestBody RequestBoard.updatesDto modifyDto) {
+    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String id,
+                                                      @Valid @RequestPart RequestBoard.updatesDto modifyDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.modifyPosts(file, email, boardId, modifyDto);
+        boardService.modifyPosts(file, email, id, modifyDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 수정 성공")
@@ -98,14 +98,14 @@ public class BoardController {
     }
 
     @DeleteMapping("/board/{id}")
-    public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String boardId) {
+    public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.deletePosts(email, boardId);
+        boardService.deletePosts(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 삭제 성공")

@@ -45,13 +45,13 @@ public class BoardService implements BoardServiceInterface {
 
     @Transactional(readOnly = true)
     @Override
-    public ResponseBoard.detailBoardDto boardDetail(String userEmail, String boardId) {
+    public ResponseBoard.detailBoardDto boardDetail(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
 
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundBoardException());
+        Board board = boardRepository.findById(id).orElseThrow(() -> new NotFoundBoardException());
 
         return new ResponseBoard.detailBoardDto(board);
     }
@@ -93,12 +93,12 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void modifyPosts(MultipartFile file, String userEmail, String boardId, RequestBoard.updatesDto modifyDto) {
+    public void modifyPosts(MultipartFile file, String userEmail, String id, RequestBoard.updatesDto modifyDto) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-        Board board = boardRepository.findByUserAndId(user, boardId);
+        Board board = boardRepository.findByUserAndId(user, id);
         if (board == null) {
             throw new NotFoundBoardException();
         }
@@ -120,12 +120,12 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void deletePosts(String userEmail, String boardId) {
+    public void deletePosts(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-        Board board = boardRepository.findByUserAndId(user, boardId);
+        Board board = boardRepository.findByUserAndId(user, id);
         if (board == null) {
             throw new NotFoundBoardException();
         }
@@ -135,7 +135,7 @@ public class BoardService implements BoardServiceInterface {
         }
 
         user.getBoardList().remove(board);
-        boardRepository.deleteById(boardId);
+        boardRepository.deleteById(id);
     }
 
 }
