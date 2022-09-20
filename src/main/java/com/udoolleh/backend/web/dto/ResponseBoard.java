@@ -9,22 +9,18 @@ import java.util.Date;
 
 public class ResponseBoard {
 
+    @Builder
     @Getter
     public static class detailBoardDto {
-        private String boardId;
+
+        private String id;
         private String title;
         private String context;
         private String photo;
         private Date createAt;
-        private User user;
+        private String nickname;
 
-        public detailBoardDto(Board board) {
-            this.title = board.getTitle();
-            this.context = board.getContext();
-            this.photo = board.getPhoto();
-            this.createAt = board.getCreateAt();
-            this.user = board.getUser();
-        }
+
         //private Like like;
         //private Reply reply;
         //private Category category;

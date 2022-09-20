@@ -50,10 +50,17 @@ public class BoardService implements BoardServiceInterface {
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        Board board = optionalBoard.orElseThrow(() -> new NotFoundBoardException());
 
-        Board board = boardRepository.findById(id).orElseThrow(() -> new NotFoundBoardException());
-
-        return new ResponseBoard.detailBoardDto(board);
+        return ResponseBoard.detailBoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .context(board.getContext())
+                .photo(board.getPhoto())
+                .createAt(board.getCreateAt())
+                .nickname(board.getUser().getNickname())
+                .build();
     }
 
 
@@ -102,16 +109,16 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new NotFoundBoardException();
         }
-        if(Optional.ofNullable(board.getPhoto()).isPresent()){
+        if (Optional.ofNullable(board.getPhoto()).isPresent()) {
             s3Service.deleteFile(board.getPhoto());
         }
 
-        if(Optional.ofNullable(file).isPresent()){
-            String url= "";
-            try{
+        if (Optional.ofNullable(file).isPresent()) {
+            String url = "";
+            try {
                 url = s3Service.upload(file, "board");
                 board.updatePhoto(url);
-            }catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("s3 등록 실패");
             }
         }
@@ -130,7 +137,7 @@ public class BoardService implements BoardServiceInterface {
             throw new NotFoundBoardException();
         }
 
-        if(Optional.ofNullable(board.getPhoto()).isPresent()){
+        if (Optional.ofNullable(board.getPhoto()).isPresent()) {
             s3Service.deleteFile(board.getPhoto());
         }
 
