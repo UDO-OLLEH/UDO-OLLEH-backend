@@ -1,7 +1,7 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.UserDuplicatedException;
+import com.udoolleh.backend.exception.errors.UserNicknameDuplicatedException;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
@@ -61,7 +61,7 @@ public class UserServiceTests {
                 .password("1234")
                 .build();
         //then
-        assertThrows(UserDuplicatedException.class, ()-> userService.register(dto1));
+        assertThrows(UserNicknameDuplicatedException.class, ()-> userService.register(dto1));
     }
 
     @Transactional

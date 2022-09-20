@@ -1,7 +1,6 @@
 package com.udoolleh.backend.exception;
 
 
-import com.udoolleh.backend.entity.Menu;
 import com.udoolleh.backend.exception.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -226,9 +225,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
-    @ExceptionHandler(UserDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleUserDuplicatedException(UserDuplicatedException e) {
-        ErrorCode errorCode = ErrorCode.USER_DUPLICATED;
+    @ExceptionHandler(UserNicknameDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleUserNicknameDuplicatedException(UserNicknameDuplicatedException e) {
+        ErrorCode errorCode = ErrorCode.USER_NICKNAME_DUPLICATED;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
