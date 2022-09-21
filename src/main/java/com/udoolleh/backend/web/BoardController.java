@@ -57,6 +57,7 @@ public class BoardController {
             email = jwtAuthToken.getData().getSubject();
         }
         ResponseBoard.detailBoardDto detailBoards = boardService.boardDetail(email, id);
+        boardService.updateVisit(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 상세 조회 성공")

@@ -30,6 +30,9 @@ public class Board {
     @Column(name = "photo")
     private String photo;
 
+    @Column(name = "countVisit")
+    private long countVisit;
+
     @CreationTimestamp
     @Column(name = "create_at")
     private Date createAt = new Date();
@@ -39,10 +42,11 @@ public class Board {
     private User user;
 
     @Builder
-    public Board(String title, String context, User user) {
+    public Board(String title, String context, User user, long countVisit) {
         this.title = title;
         this.context = context;
         this.user = user;
+        this.countVisit = countVisit;
     }
 
     public void modifyPosts(String title, String context) {
@@ -53,4 +57,9 @@ public class Board {
     public void updatePhoto(String photo) {
         this.photo = photo;
     }
+
+    public void updateVisit(long countVisit) {
+        this.countVisit = countVisit;
+    }
 }
+

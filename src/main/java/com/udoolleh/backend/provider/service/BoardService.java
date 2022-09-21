@@ -63,6 +63,30 @@ public class BoardService implements BoardServiceInterface {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public void updateVisit(String userEmail, String id) {
+
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) {
+            throw new CustomJwtRuntimeException();
+        }
+        Board board = boardRepository.findById(id).get();
+        if (board == null) {
+            throw new NotFoundBoardException();
+        }
+
+        long countVisit = board.getCountVisit() + 1;
+
+        RequestBoard.countDto dto = RequestBoard.countDto.builder()
+                .countVisit(countVisit)
+                .build();
+
+        board.updateVisit(dto.getCountVisit());
+
+        //board.updateVisit(countVisit);
+        System.out.println("조회수: " + countVisit);
+    }
 
     //게시글 등록 API
     @Override
