@@ -118,6 +118,8 @@ public class RestaurantService implements RestaurantServiceInterface {
                     .name(item.getName())
                     .category(item.getCategory())
                     .imagesUrl(imageUrlList)
+                    .xCoordinate(item.getXCoordinate())
+                    .yCoordinate(item.getYCoordinate())
                     .build();
             restaurantLists.add(restaurantDto);
         }
