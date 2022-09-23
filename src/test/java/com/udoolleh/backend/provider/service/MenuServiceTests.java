@@ -99,7 +99,7 @@ public class MenuServiceTests {
         menu.updatePhoto("사진 url");
 
         //메뉴 조회
-        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getId());
+        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getName());
         assertNotNull(result);
     }
 
@@ -121,7 +121,7 @@ public class MenuServiceTests {
         restaurant.addMenu(menu);
 
         //메뉴 조회
-        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getId());
+        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getName());
         assertNotNull(result);
     }
 
