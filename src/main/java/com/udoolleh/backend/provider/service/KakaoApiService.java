@@ -59,9 +59,9 @@ public class KakaoApiService implements KakaoApiServiceInterface {
             if (coordinateType == null) { //좌표타입이 4사분면 이후는 없기 때문에 null반환, 기저조건
                 return;
             }
+        }
             //끝 페이지가 아니라면 다음 페이지 호출
             callKakaoApi(query, page + 1, placeType, coordinateType);
-        }
     }
 
 
