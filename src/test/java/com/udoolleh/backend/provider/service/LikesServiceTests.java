@@ -1,10 +1,10 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Board;
-import com.udoolleh.backend.entity.Heart;
+import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.repository.BoardRepository;
-import com.udoolleh.backend.repository.HeartRepository;
+import com.udoolleh.backend.repository.LikesRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class HeartServiceTests {
+public class LikesServiceTests {
     @Autowired
-    private HeartRepository heartRepository;
+    private LikesRepository likesRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -39,7 +38,7 @@ public class HeartServiceTests {
 
     private User userEntity;
     private Board boardEntity;
-    private Heart heartEntity;
+    private Likes likesEntity;
 
 
     @BeforeEach
@@ -66,7 +65,7 @@ public class HeartServiceTests {
                 break;
             }
         }
-        heartEntity = Heart.builder()
+        likesEntity = Likes.builder()
                 .board(boardEntity)
                 .user(userEntity)
                 .build();
@@ -75,17 +74,17 @@ public class HeartServiceTests {
     @Test
     @DisplayName("좋아요 api 실행 - 버튼 눌렀을 때")
     void insertTest() {
-        heartRepository.save(heartEntity);
-        Heart heart = heartRepository.findById(heartEntity.getId()).get();
-        assertEquals(heartEntity, heart);
+        likesRepository.save(likesEntity);
+        Likes likes = likesRepository.findById(likesEntity.getId()).get();
+        assertEquals(likesEntity, likes);
     }
 
     @Test
     @DisplayName("좋아요 api 실행 - 버튼 두번 눌러서 취소하기")
     void deleteTest() {
-        heartRepository.save(heartEntity);
-        heartRepository.delete(heartEntity);
-        Optional<Heart> deleteHeart = heartRepository.findById(heartEntity.getId());
+        likesRepository.save(likesEntity);
+        likesRepository.delete(likesEntity);
+        Optional<Likes> deleteHeart = likesRepository.findById(likesEntity.getId());
         assertThat(deleteHeart.isPresent(), equalTo(false));
     }
 
@@ -105,7 +104,7 @@ public class HeartServiceTests {
         boardRepository.save(newBoard);
         List<User> userEntities = userRepository.findAll().stream().filter(user -> user.equals(userEntity) == false).collect(Collectors.toList());
         for (int i = 0; i < countHeart; ++i) {
-            heartRepository.save(Heart.builder()
+            likesRepository.save(Likes.builder()
                     .user(userEntities.get(i))
                     .board(newBoard)
                     .build());

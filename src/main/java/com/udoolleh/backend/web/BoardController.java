@@ -33,7 +33,7 @@ public class BoardController {
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @GetMapping("/board/list")
-    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
