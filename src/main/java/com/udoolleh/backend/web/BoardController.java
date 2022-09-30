@@ -115,4 +115,32 @@ public class BoardController {
                 .message("게시판 삭제 성공")
                 .build());
     }
+
+    @PostMapping("/board/{id}/likes")
+    public ResponseEntity<CommonResponse> addLikes(HttpServletRequest request, @PathVariable String id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardService.addLikes(email, id);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시글 좋아요 성공")
+                .build());
+    }
+
+    @DeleteMapping("/board/{id}/likes/{likesId}")
+    public ResponseEntity<CommonResponse> deleteLikes(HttpServletRequest request, @PathVariable String id, @PathVariable String likesId) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardService.deleteLikes(email, likesId, id);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시글 좋아요 취소 성공")
+                .build());
+    }
 }

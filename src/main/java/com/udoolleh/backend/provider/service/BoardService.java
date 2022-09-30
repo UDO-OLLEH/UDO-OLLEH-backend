@@ -2,10 +2,13 @@ package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.BoardServiceInterface;
 import com.udoolleh.backend.entity.Board;
+import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
+import com.udoolleh.backend.exception.errors.NotFoundLikesException;
 import com.udoolleh.backend.repository.BoardRepository;
+import com.udoolleh.backend.repository.LikesRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
@@ -31,6 +34,8 @@ public class BoardService implements BoardServiceInterface {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final S3Service s3Service;
+
+    private final LikesRepository likesRepository;
 
 
     //게시글 전체 조회
@@ -173,4 +178,40 @@ public class BoardService implements BoardServiceInterface {
         boardRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public void addLikes(String userEmail, String id) {
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) {
+            throw new CustomJwtRuntimeException();
+        }
+        Board board = boardRepository.findById(id).get();
+        if (board == null) {
+            throw new NotFoundBoardException();
+        }
+        likesRepository.findByUserAndBoard(user, board).ifPresent(none -> {
+            throw new NotFoundLikesException();
+        });
+
+        likesRepository.save(
+                Likes.builder()
+                        .user(user)
+                        .board(board)
+                        .build());
+    }
+
+    @Override
+    @Transactional
+    public void deleteLikes(String userEmail, String likesId, String id) {
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) {
+            throw new CustomJwtRuntimeException();
+        }
+        Board board = boardRepository.findById(id).get();
+        if (board == null) {
+            throw new NotFoundBoardException();
+        }
+        likesRepository.findByUserAndBoard(user, board).orElseThrow(() -> new RuntimeException());
+        likesRepository.deleteById(likesId);
+    }
 }
