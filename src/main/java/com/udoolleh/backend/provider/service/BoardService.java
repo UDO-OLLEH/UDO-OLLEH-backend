@@ -11,7 +11,10 @@ import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,15 +32,16 @@ public class BoardService implements BoardServiceInterface {
     private final BoardRepository boardRepository;
     private final S3Service s3Service;
 
+
     //게시글 전체 조회
     @Transactional(readOnly = true)
     @Override
-    public Page<ResponseBoard.listBoardDto> boardList(String userEmail, Pageable pageable) {
+    public Page<ResponseBoard.listBoardDto> boardList(String userEmail, int pageNo, String orderCriteria, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-
+        pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, orderCriteria));
         Page<Board> board = boardRepository.findAll(pageable);
         return board.map(ResponseBoard.listBoardDto::of);
 
