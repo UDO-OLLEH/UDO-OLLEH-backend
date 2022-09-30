@@ -16,6 +16,9 @@ public class Likes {
     @Column(name = "likes_id")
     public String id = UUID.randomUUID().toString();
 
+    @Column(name = "count")
+    public Long count;
+
     @ManyToOne(targetEntity = Board.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     public Board board;

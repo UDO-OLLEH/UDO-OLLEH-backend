@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     NOT_FOUND_PATH(HttpStatus.NOT_FOUND, "PATH_001", "NOT FOUND PATH"), // 없는 경로로 요청보낸 경우
-    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED,"PATH_002","METHOD NOT ALLOWED"), // POST GET방식 잘못 보낸경우
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "PATH_002", "METHOD NOT ALLOWED"), // POST GET방식 잘못 보낸경우
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "PATH_003", "UNSUPPORTED MEDIA TYPE"),
 
 
@@ -27,14 +27,15 @@ public enum ErrorCode {
     NOT_FOUND_PHOTO(HttpStatus.NOT_FOUND, "PHOTO_001", "NOT_FOUND_PHOTO"),
     MENU_DUPLICATED(HttpStatus.FORBIDDEN, "MENU_001", "MENU_DUPLICATED"),
     NOT_FOUND_MENU(HttpStatus.NOT_FOUND, "MENU_002", "NOT_FOUND_MENU"),
-    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND,"BOARD_001","게시글 내용이 없습니다.");
-
+    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "BOARD_001", "게시글 내용이 없습니다."),
+    NOT_FOUND_LIKES(HttpStatus.NOT_FOUND, "LIKES_001", "해당 게시글에 좋아요 내역이 없습니다."),
+    LIKES_DUPLICATED(HttpStatus.FORBIDDEN, "LIKES_002", "이미 좋아요 한 게시물 입니다.");
 
     private final String code;
     private final String message;
     private final HttpStatus status;
 
-    ErrorCode(final HttpStatus status, final String code, final String message){
+    ErrorCode(final HttpStatus status, final String code, final String message) {
         this.status = status;
         this.code = code;
         this.message = message;

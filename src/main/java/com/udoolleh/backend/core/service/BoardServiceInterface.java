@@ -28,5 +28,10 @@ public interface BoardServiceInterface {
 
     void updateVisit(String userEmail, String id);
 
+    //void updateLikes(String userEmail, String id);
+    void addLikes(String userEmail, String id);
+
+    void deleteLikes(String userEmail, String likedId, String id);
+
 
 }

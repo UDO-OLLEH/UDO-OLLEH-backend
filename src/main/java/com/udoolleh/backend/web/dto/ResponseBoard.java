@@ -19,10 +19,9 @@ public class ResponseBoard {
         private String photo;
         private Date createAt;
         private String nickname;
-        private long countVisit;
+        private Long countLikes;
 
 
-        //private Like like;
         //private Reply reply;
         //private Category category;
 

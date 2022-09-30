@@ -199,6 +199,30 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+    @ExceptionHandler(NotFoundLikesException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundLikesException(NotFoundLikesException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_LIKES;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(LikesDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleLikesDuplicatedException(LikesDuplicatedException e){
+        ErrorCode errorCode = ErrorCode.LIKES_DUPLICATED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }
 
 

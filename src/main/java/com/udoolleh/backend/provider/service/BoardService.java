@@ -5,6 +5,7 @@ import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.errors.LikesDuplicatedException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
 import com.udoolleh.backend.exception.errors.NotFoundLikesException;
 import com.udoolleh.backend.repository.BoardRepository;
@@ -96,7 +97,6 @@ public class BoardService implements BoardServiceInterface {
         //board.updateVisit(countVisit);
         System.out.println("조회수: " + countVisit);
     }
-
     //게시글 등록 API
     @Override
     @Transactional
@@ -106,10 +106,6 @@ public class BoardService implements BoardServiceInterface {
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-
-        //Board board = boardRepository.findByTitleContext(postDto.getTitle(), postDto.getContext);
-        //if (board == null) { ~ }
-        //빌더 패턴으로 게시글 작성
 
         Board board = Board.builder()
                 .title(postDto.getTitle())
@@ -209,7 +205,7 @@ public class BoardService implements BoardServiceInterface {
         }
         Board board = boardRepository.findById(id).get();
         if (board == null) {
-            throw new NotFoundBoardException();
+            throw new LikesDuplicatedException();
         }
         likesRepository.findByUserAndBoard(user, board).orElseThrow(() -> new RuntimeException());
         likesRepository.deleteById(likesId);
