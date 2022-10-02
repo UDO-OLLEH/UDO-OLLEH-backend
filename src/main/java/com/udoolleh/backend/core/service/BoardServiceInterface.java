@@ -25,4 +25,6 @@ public interface BoardServiceInterface {
     void modifyPosts(MultipartFile file,String userEmail, String boardId, RequestBoard.updatesDto modifyDto);
 
     void deletePosts(String userEmail, String boardId);
+
+    Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable);
 }

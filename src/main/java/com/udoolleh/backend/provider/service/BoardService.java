@@ -5,6 +5,7 @@ import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
+import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
@@ -136,6 +137,18 @@ public class BoardService implements BoardServiceInterface {
 
         user.getBoardList().remove(board);
         boardRepository.deleteById(boardId);
+    }
+
+    @Override
+    @Transactional
+    public Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable){
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new NotFoundUserException();
+        }
+        Page<Board> boardList = boardRepository.findByUser(user, pageable);
+
+        return boardList.map(ResponseBoard.listBoardDto::of);
     }
 
 }

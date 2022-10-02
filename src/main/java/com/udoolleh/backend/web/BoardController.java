@@ -65,7 +65,7 @@ public class BoardController {
     }
 
     @PostMapping("/board")
-    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart MultipartFile file,
+    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart(required = false) MultipartFile file,
                                                         @Valid @RequestPart RequestBoard.registerDto postDto) {
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
@@ -109,6 +109,22 @@ public class BoardController {
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 삭제 성공")
+                .build());
+    }
+
+    @GetMapping("/user/board")
+    public ResponseEntity<CommonResponse> getMyBoardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        Page<ResponseBoard.listBoardDto> myBoardList = boardService.getMyBoard(email,pageable);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("내 게시물 조회 성공")
+                .list(myBoardList)
                 .build());
     }
 }
