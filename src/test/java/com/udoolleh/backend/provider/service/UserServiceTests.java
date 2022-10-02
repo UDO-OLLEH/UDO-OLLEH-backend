@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
@@ -115,5 +116,28 @@ public class UserServiceTests {
         System.out.println(tokenResponse.getAccessToken());
         System.out.println(tokenResponse.getRefreshToken());
     }
+
+    @Test
+    @DisplayName("회원정보 수정 테스트(성공)")
+    void ChangeUserInfoTest(){
+        User user = User.builder()
+                .email("email")
+                .password("password")
+                .nickname("nick")
+                .build();
+        userRepository.save(user);
+        //회원정보 변경
+        RequestUser.updateDto updateDto = RequestUser.updateDto.builder()
+                .password("changedpassword")
+                .nickname("changednick")
+                .build();
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test2.png",
+                "image/png", "test data".getBytes());
+        userService.updateUser("email",mockMultipartFile,updateDto);
+        User updateUser = userRepository.findByEmail("email");
+        assertEquals(updateDto.getNickname(), updateUser.getNickname());
+        assertNotNull(updateUser.getProfile());
+        }
+
 
 }

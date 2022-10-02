@@ -25,4 +25,13 @@ public class RequestUser {
         @NotEmpty(message = "비밀번호 입력이 되어있지 않습니다.")
         private String password;
     }
+
+    @Builder
+    @Data
+    public static class updateDto{
+        @NotEmpty(message = "닉네임이 비어있습니다.")
+        private String nickname;
+        @NotEmpty(message = "비밀번호 입력이 되어있지 않습니다.")
+        private String password;
+    }
 }
