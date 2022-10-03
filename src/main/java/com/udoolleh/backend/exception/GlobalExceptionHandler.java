@@ -211,18 +211,6 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
-    @ExceptionHandler(LikesDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleLikesDuplicatedException(LikesDuplicatedException e){
-        ErrorCode errorCode = ErrorCode.LIKES_DUPLICATED;
-
-        ErrorResponse response = ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .message(errorCode.getMessage())
-                .status(errorCode.getStatus().value())
-                .build();
-
-        return new ResponseEntity<>(response, errorCode.getStatus());
-    }
     @ExceptionHandler(NotFoundReviewException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundReviewException(NotFoundReviewException e) {
         ErrorCode errorCode = ErrorCode.NOT_FOUND_REVIEW;
@@ -239,6 +227,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ReviewDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleReviewDuplicatedException(ReviewDuplicatedException e) {
         ErrorCode errorCode = ErrorCode.REVIEW_DUPLICATED;
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+    @ExceptionHandler(LikesDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleLikesDuplicatedException(LikesDuplicatedException e){
+        ErrorCode errorCode = ErrorCode.LIKES_DUPLICATED;
+
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
