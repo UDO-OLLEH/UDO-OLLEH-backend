@@ -216,7 +216,6 @@ public class BoardServiceTests {
     }
 
     @Test
-    @Transactional
     @DisplayName("좋아요 한 게시판 조회 테스트(성공)")
     void getLikeBoardTest(){
         User user = User.builder()
@@ -233,6 +232,14 @@ public class BoardServiceTests {
                 .build();
         board = boardRepository.save(board);
 
+
+        Board board1 = Board.builder()
+                .title("제목1")
+                .context("내용1")
+                .user(user)
+                .build();
+        board1 = boardRepository.save(board1);
+
         //좋아요
         Likes like = Likes.builder()
                 .board(board)
@@ -240,9 +247,19 @@ public class BoardServiceTests {
                 .build();
         like = likeRepository.save(like);
 
+
+        //좋아요
+        Likes like1 = Likes.builder()
+                .board(board1)
+                .user(user)
+                .build();
+        like1 = likeRepository.save(like1);
+
         //페이지 크기 설정
         Pageable pageable = PageRequest.of(0, 3);
         Page<ResponseBoard.getLikeBoardDto> response =  boardService.getLikeBoard("test", pageable);
         assertNotNull(response);
+        assertEquals(2, response.getTotalElements());
+
     }
 }
