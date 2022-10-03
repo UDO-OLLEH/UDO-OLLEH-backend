@@ -150,11 +150,6 @@ public class BoardService implements BoardServiceInterface {
         if (user == null) {
             throw new NotFoundUserException();
         }
-//        List<Likes> likeList = likeRepository.findByUser(user);
-//        for(Likes item : likeList){
-//            boardList.add(item.getBoard());
-//        }
-//        Page<Board> response = new PageImpl<>(boardList);
 
         Page<Board> response = boardRepository.findLikeBoard(user, pageable);
         return response.map(ResponseBoard.getLikeBoardDto::of);
