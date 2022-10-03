@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -109,6 +110,21 @@ public class BoardController {
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 삭제 성공")
+                .build());
+    }
+
+    @GetMapping("/board/like")
+    public ResponseEntity<CommonResponse> getLikeBoard(HttpServletRequest request, @PageableDefault Pageable pageable){
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        Page<ResponseBoard.getLikeBoardDto> response = boardService.getLikeBoard(email, pageable);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("좋아요 한 게시판 조회 성공")
+                .list(response)
                 .build());
     }
 }

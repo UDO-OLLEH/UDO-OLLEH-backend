@@ -38,6 +38,10 @@ public class Board {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Likes> likeList = new ArrayList<>(); //좋아요
+
+
     @Builder
     public Board(String title, String context, User user) {
         this.title = title;
@@ -49,7 +53,9 @@ public class Board {
         this.title = title;
         this.context = context;
     }
-
+    public void addLike(Likes like){
+        likeList.add(like);
+    }
     public void updatePhoto(String photo) {
         this.photo = photo;
     }

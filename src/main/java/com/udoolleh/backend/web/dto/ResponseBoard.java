@@ -47,4 +47,21 @@ public class ResponseBoard {
         }
 
     }
+
+    @Builder
+    @Data
+    public static class getLikeBoardDto {
+        private String title;
+        private String context;
+        private Date createAt;
+
+        public static getLikeBoardDto of(Board board) {
+            return getLikeBoardDto.builder()
+                    .title(board.getTitle())
+                    .context(board.getContext())
+                    .createAt(board.getCreateAt())
+                    .build();
+        }
+
+    }
 }

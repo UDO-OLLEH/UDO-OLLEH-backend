@@ -25,4 +25,7 @@ public interface BoardServiceInterface {
     void modifyPosts(MultipartFile file,String userEmail, String boardId, RequestBoard.updatesDto modifyDto);
 
     void deletePosts(String userEmail, String boardId);
+
+    //좋아요 누른 게시글 조회
+    Page<ResponseBoard.getLikeBoardDto> getLikeBoard(String email, Pageable pageable);
 }
