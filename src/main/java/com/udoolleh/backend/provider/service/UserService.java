@@ -88,6 +88,14 @@ public class UserService implements UserServiceInterface {
 
     @Transactional
     @Override
+    public void logout(String email) {
+        User user = userRepository.findByEmail(email);
+
+        user.changeRefreshToken("");
+    }
+
+    @Transactional
+    @Override
     public Optional<ResponseUser.Token> refreshToken(String token) {
         if(token == null || token.equals("null")) {
             throw new CustomJwtRuntimeException();
