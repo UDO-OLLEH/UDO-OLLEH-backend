@@ -223,6 +223,30 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+    @ExceptionHandler(NotFoundReviewException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundReviewException(NotFoundReviewException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_REVIEW;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(ReviewDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleReviewDuplicatedException(ReviewDuplicatedException e) {
+        ErrorCode errorCode = ErrorCode.REVIEW_DUPLICATED;
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
 }
 
 
