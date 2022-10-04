@@ -1,8 +1,10 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Board;
+import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.repository.BoardRepository;
+import com.udoolleh.backend.repository.LikeRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
@@ -27,6 +29,8 @@ public class BoardServiceTests {
     private UserRepository userRepository;
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private LikeRepository likeRepository;
     @Autowired
     private BoardService boardService;
     @Autowired
@@ -250,5 +254,63 @@ public class BoardServiceTests {
         Page<ResponseBoard.listBoardDto> list = boardService.getMyBoard(user.getEmail(), pageable);
         //then
         assertEquals(2 ,list.toList().size());
+
+        Board board3 = Board.builder()
+                .title("다른 사용자의 게시물")
+                .context("내용입니다3")
+                .build();
+        boardRepository.save(board3);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        //when
+        Page<ResponseBoard.listBoardDto> list = boardService.getMyBoard(user.getEmail(), pageable);
+        //then
+        assertEquals(2 ,list.toList().size());
+    }
+    @Test
+    @DisplayName("좋아요 한 게시판 조회 테스트(성공)")
+    void getLikeBoardTest(){
+        User user = User.builder()
+                .email("test")
+                .nickname("nick")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Board board = Board.builder()
+                .title("제목")
+                .context("내용")
+                .user(user)
+                .build();
+        board = boardRepository.save(board);
+
+
+        Board board1 = Board.builder()
+                .title("제목1")
+                .context("내용1")
+                .user(user)
+                .build();
+        board1 = boardRepository.save(board1);
+
+        //좋아요
+        Likes like = Likes.builder()
+                .board(board)
+                .user(user)
+                .build();
+        like = likeRepository.save(like);
+
+
+        //좋아요
+        Likes like1 = Likes.builder()
+                .board(board1)
+                .user(user)
+                .build();
+        like1 = likeRepository.save(like1);
+
+        //페이지 크기 설정
+        Pageable pageable = PageRequest.of(0, 3);
+        Page<ResponseBoard.getLikeBoardDto> response =  boardService.getLikeBoard("test", pageable);
+        assertNotNull(response);
+        assertEquals(2, response.getTotalElements());
     }
 }
