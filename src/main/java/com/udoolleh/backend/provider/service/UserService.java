@@ -148,7 +148,7 @@ public class UserService implements UserServiceInterface {
     public void updateUser(String email, MultipartFile file, RequestUser.updateDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){
-            throw new NotFoundUserException();
+            throw new CustomJwtRuntimeException();
         }
         User user1 = userRepository.findByNickname(requestDto.getNickname());
         if(user1 != null){//닉네임 중복시

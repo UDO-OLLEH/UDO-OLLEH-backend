@@ -32,7 +32,7 @@ public class BoardService implements BoardServiceInterface {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final S3Service s3Service;
-    private final LikeRepository likeRepository;
+
     //게시글 전체 조회
     @Transactional(readOnly = true)
     @Override
@@ -147,7 +147,7 @@ public class BoardService implements BoardServiceInterface {
     public Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable){
         User user = userRepository.findByEmail(email);
         if(user == null){
-            throw new NotFoundUserException();
+            throw new CustomJwtRuntimeException();
         }
         Page<Board> boardList = boardRepository.findByUser(user, pageable);
 
@@ -155,10 +155,9 @@ public class BoardService implements BoardServiceInterface {
     }
 
     public Page<ResponseBoard.getLikeBoardDto> getLikeBoard(String email, Pageable pageable){
-        List<Board> boardList = new ArrayList<>();
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new NotFoundUserException();
+            throw new CustomJwtRuntimeException();
         }
 
         Page<Board> response = boardRepository.findLikeBoard(user, pageable);
