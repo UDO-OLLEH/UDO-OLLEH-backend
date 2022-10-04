@@ -62,7 +62,4 @@ public class User {
         this.reviewList.add(review);
     }
 
-    public void addLikes(Likes likes) {
-        this.likesList.add(likes);
-    }
 }
