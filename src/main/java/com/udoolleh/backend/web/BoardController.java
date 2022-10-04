@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -114,17 +115,31 @@ public class BoardController {
 
     @GetMapping("/user/board")
     public ResponseEntity<CommonResponse> getMyBoardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+            Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+            String email = null;
+            if (token.isPresent()) {
+                JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+                email = jwtAuthToken.getData().getSubject();
+            }
+            Page<ResponseBoard.listBoardDto> myBoardList = boardService.getMyBoard(email,pageable);
+
+            return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("내 게시물 조회 성공")
+                .list(myBoardList)
+                .build());
+      }
+    @GetMapping("/board/like")
+    public ResponseEntity<CommonResponse> getLikeBoard(HttpServletRequest request, @PageableDefault Pageable pageable){
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        Page<ResponseBoard.listBoardDto> myBoardList = boardService.getMyBoard(email,pageable);
-
+        Page<ResponseBoard.getLikeBoardDto> response = boardService.getLikeBoard(email, pageable);
         return ResponseEntity.ok().body(CommonResponse.builder()
-                .message("내 게시물 조회 성공")
-                .list(myBoardList)
+                .message("좋아요 한 게시판 조회 성공")
+                .list(response)
                 .build());
     }
 }

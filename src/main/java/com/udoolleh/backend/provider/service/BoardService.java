@@ -2,16 +2,19 @@ package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.BoardServiceInterface;
 import com.udoolleh.backend.entity.Board;
+import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
 import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.repository.BoardRepository;
+import com.udoolleh.backend.repository.LikeRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,7 @@ public class BoardService implements BoardServiceInterface {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final S3Service s3Service;
-
+    private final LikeRepository likeRepository;
     //게시글 전체 조회
     @Transactional(readOnly = true)
     @Override
@@ -151,4 +154,14 @@ public class BoardService implements BoardServiceInterface {
         return boardList.map(ResponseBoard.listBoardDto::of);
     }
 
+    public Page<ResponseBoard.getLikeBoardDto> getLikeBoard(String email, Pageable pageable){
+        List<Board> boardList = new ArrayList<>();
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new NotFoundUserException();
+        }
+
+        Page<Board> response = boardRepository.findLikeBoard(user, pageable);
+        return response.map(ResponseBoard.getLikeBoardDto::of);
+    }
 }
