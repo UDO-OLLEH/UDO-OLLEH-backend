@@ -136,6 +136,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
+  
         Page<ResponseBoard.getLikeBoardDto> response = boardService.getLikeBoard(email, pageable);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("좋아요 한 게시판 조회 성공")

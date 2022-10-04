@@ -25,6 +25,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
+
     @PostMapping("/user")
     public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.registerDto registerDto) {
 
@@ -50,6 +51,23 @@ public class UserController {
                 .status(HttpStatus.OK.value())
                 .message("성공")
                 .list(map)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse> logout(HttpServletRequest request) {
+
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+
+        CommonResponse response = CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("로그아웃 성공")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

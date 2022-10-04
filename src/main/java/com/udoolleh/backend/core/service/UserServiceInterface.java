@@ -12,5 +12,6 @@ public interface UserServiceInterface {
     Optional<ResponseUser.Token> refreshToken(String token);
     String createAccessToken(String id);
     String createRefreshToken(String id);
+    void logout(String email);
     void updateUser(String email, MultipartFile file, RequestUser.updateDto updateDto);
 }

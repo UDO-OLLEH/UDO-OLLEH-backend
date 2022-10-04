@@ -254,6 +254,18 @@ public class BoardServiceTests {
         Page<ResponseBoard.listBoardDto> list = boardService.getMyBoard(user.getEmail(), pageable);
         //then
         assertEquals(2 ,list.toList().size());
+
+        Board board3 = Board.builder()
+                .title("다른 사용자의 게시물")
+                .context("내용입니다3")
+                .build();
+        boardRepository.save(board3);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        //when
+        Page<ResponseBoard.listBoardDto> list = boardService.getMyBoard(user.getEmail(), pageable);
+        //then
+        assertEquals(2 ,list.toList().size());
     }
     @Test
     @DisplayName("좋아요 한 게시판 조회 테스트(성공)")

@@ -91,6 +91,26 @@ public class UserServiceTests {
         assertNotNull(loginResponse.getRefreshToken());
     }
 
+    //서버에서는 리프레시 토큰이 제대로 변경 되었는지 확인
+    @Test
+    @DisplayName("로그아웃 테스트")
+    void logoutTest() {
+        //given
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .nickname("him")
+                .build();
+        user = userRepository.save(user);
+
+        user.changeRefreshToken("refreshToken");
+        assertEquals(user.getRefreshToken(), "refreshToken");
+        //when
+        userService.logout("test"); //객체를 변경시키기 때문에 새로운 참조값으로 변함
+        //then
+        assertEquals(userRepository.findByEmail("test").getRefreshToken(), "");
+    }
+
     @Transactional
     @Test
     @DisplayName("토큰 갱신 테스트")
