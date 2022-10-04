@@ -20,8 +20,6 @@ public class ResponseBoard {
         private Date createAt;
         private String nickname;
         private Long countLikes;
-
-
         //private Reply reply;
         //private Category category;
 
@@ -34,6 +32,7 @@ public class ResponseBoard {
         private String context;
         private Date createAt;
         private long countVisit;
+        private long countLikes;
 
         public static listBoardDto of(Board board) {
             return listBoardDto.builder()
@@ -41,6 +40,7 @@ public class ResponseBoard {
                     .context(board.getContext())
                     .createAt(board.getCreateAt())
                     .countVisit(board.getCountVisit())
+                    .countLikes(board.getCountLikes())
                     .build();
         }
 

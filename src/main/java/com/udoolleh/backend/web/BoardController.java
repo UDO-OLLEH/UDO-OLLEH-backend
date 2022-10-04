@@ -34,7 +34,7 @@ public class BoardController {
 
     @GetMapping("/board/list")
     public ResponseEntity<CommonResponse> boardList(HttpServletRequest request,
-                                                    @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                    @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
@@ -115,14 +115,14 @@ public class BoardController {
     }
 
     @PostMapping("/board/{id}/likes")
-    public ResponseEntity<CommonResponse> addLikes(HttpServletRequest request, @PathVariable String id) {
+    public ResponseEntity<CommonResponse> updateLikes(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.addLikes(email, id);
+        boardService.updateLikes(email, id);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시글 좋아요 성공")
                 .build());

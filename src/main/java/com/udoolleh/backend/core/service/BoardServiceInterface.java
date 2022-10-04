@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface BoardServiceInterface {
     //게시판 목록 조회
-    Page<ResponseBoard.listBoardDto> boardList(String userEmail, int pageNo, String orderCriteria, Pageable pageable);
+    Page<ResponseBoard.listBoardDto> boardList(String userEmail, Pageable pageable);
 
     //게시글 상세 조회
     ResponseBoard.detailBoardDto boardDetail(String userEmail, String id);
@@ -28,8 +28,7 @@ public interface BoardServiceInterface {
 
     void updateVisit(String userEmail, String id);
 
-    //void updateLikes(String userEmail, String id);
-    void addLikes(String userEmail, String id);
+    void updateLikes(String userEmail, String id);
 
     void deleteLikes(String userEmail, String likedId, String id);
 

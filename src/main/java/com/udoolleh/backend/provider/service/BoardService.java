@@ -42,14 +42,16 @@ public class BoardService implements BoardServiceInterface {
     //게시글 전체 조회
     @Transactional(readOnly = true)
     @Override
-    public Page<ResponseBoard.listBoardDto> boardList(String userEmail, int pageNo, String orderCriteria, Pageable pageable) {
+    public Page<ResponseBoard.listBoardDto> boardList(String userEmail, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
-        pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, orderCriteria));
+
         Page<Board> board = boardRepository.findAll(pageable);
         return board.map(ResponseBoard.listBoardDto::of);
+
+
 
     }
 
@@ -70,6 +72,7 @@ public class BoardService implements BoardServiceInterface {
                 .photo(board.getPhoto())
                 .createAt(board.getCreateAt())
                 .nickname(board.getUser().getNickname())
+                .countLikes(board.getCountLikes())
                 .build();
     }
 
@@ -87,16 +90,10 @@ public class BoardService implements BoardServiceInterface {
         }
 
         long countVisit = board.getCountVisit() + 1;
+        board.updateVisit(countVisit);
 
-        RequestBoard.countDto dto = RequestBoard.countDto.builder()
-                .countVisit(countVisit)
-                .build();
-
-        board.updateVisit(dto.getCountVisit());
-
-        //board.updateVisit(countVisit);
-        System.out.println("조회수: " + countVisit);
     }
+
     //게시글 등록 API
     @Override
     @Transactional
@@ -176,7 +173,7 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void addLikes(String userEmail, String id) {
+    public void updateLikes(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -185,9 +182,12 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new NotFoundBoardException();
         }
-        likesRepository.findByUserAndBoard(user, board).ifPresent(none -> {
-            throw new NotFoundLikesException();
+        likesRepository.findByUserAndBoard(user, board).ifPresent(duplicate -> {
+            throw new LikesDuplicatedException();
         });
+
+        long countLikes = board.getCountLikes() + 1;
+        board.updateLikes(countLikes);
 
         likesRepository.save(
                 Likes.builder()
@@ -205,9 +205,14 @@ public class BoardService implements BoardServiceInterface {
         }
         Board board = boardRepository.findById(id).get();
         if (board == null) {
-            throw new LikesDuplicatedException();
+            throw new NotFoundBoardException();
         }
-        likesRepository.findByUserAndBoard(user, board).orElseThrow(() -> new RuntimeException());
+        likesRepository.findByUserAndBoard(user, board).orElseThrow(
+                () -> new NotFoundLikesException());
+
+        long countLikes = board.getCountLikes() - 1L;
+        board.deleteLikes(countLikes);
+
         likesRepository.deleteById(likesId);
     }
 }
