@@ -34,16 +34,14 @@ public class BoardController {
 
     @GetMapping("/board/list")
     public ResponseEntity<CommonResponse> boardList(HttpServletRequest request,
-                                                    @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-                                                    @RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
-                                                    Pageable pageable) {
+                                                    @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        Page<ResponseBoard.listBoardDto> listBoards = boardService.boardList(email, pageNo, orderCriteria, pageable);
+        Page<ResponseBoard.listBoardDto> listBoards = boardService.boardList(email, pageable);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 조회 성공")
