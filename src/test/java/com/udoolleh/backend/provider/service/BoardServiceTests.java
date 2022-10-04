@@ -214,7 +214,47 @@ public class BoardServiceTests {
         assertNull(boardRepository.findByUserAndId(user, board.getId()));
         assertFalse(user.getBoardList().contains(board));
     }
+    @Test
+    @DisplayName("자신의 게시물 조회 테스트")
+    void getMyBoardListTest() {
+        //given
+        User user = User.builder()
+                .email("him1")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+        User otherUser = User.builder()
+                .email("him2")
+                .password("9999")
+                .build();
+        userRepository.save(otherUser);
 
+        Board board1 = Board.builder()
+                .user(user)
+                .title("제목입니다1")
+                .context("내용입니다1")
+                .build();
+        boardRepository.save(board1);
+
+        Board board2 = Board.builder()
+                .user(user)
+                .title("제목입니다2")
+                .context("내용입니다2")
+                .build();
+        boardRepository.save(board2);
+
+        Board board3 = Board.builder()
+                .title("다른 사용자의 게시물")
+                .context("내용입니다3")
+                .build();
+        boardRepository.save(board3);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        //when
+        Page<ResponseBoard.listBoardDto> list = boardService.getMyBoard(user.getEmail(), pageable);
+        //then
+        assertEquals(2 ,list.toList().size());
+    }
     @Test
     @DisplayName("좋아요 한 게시판 조회 테스트(성공)")
     void getLikeBoardTest(){
@@ -260,6 +300,5 @@ public class BoardServiceTests {
         Page<ResponseBoard.getLikeBoardDto> response =  boardService.getLikeBoard("test", pageable);
         assertNotNull(response);
         assertEquals(2, response.getTotalElements());
-
     }
 }

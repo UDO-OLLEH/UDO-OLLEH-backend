@@ -18,6 +18,8 @@ public interface BoardRepository extends JpaRepository<Board, String> {
 
     Board findByUserAndId(User user, String id);
 
+    Page<Board> findByUser(User user, Pageable pageable);
+
     @Query(value = "SELECT b FROM Board b WHERE b.id IN (SELECT l.board FROM Likes l inner join l.user Where l.user = :user)")
     Page<Board> findLikeBoard(User user, Pageable pageable);
  }

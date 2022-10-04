@@ -144,6 +144,16 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
+    public Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable){
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new NotFoundUserException();
+        }
+        Page<Board> boardList = boardRepository.findByUser(user, pageable);
+
+        return boardList.map(ResponseBoard.listBoardDto::of);
+    }
+
     public Page<ResponseBoard.getLikeBoardDto> getLikeBoard(String email, Pageable pageable){
         List<Board> boardList = new ArrayList<>();
         User user = userRepository.findByEmail(email);
