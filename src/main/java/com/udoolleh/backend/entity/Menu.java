@@ -23,7 +23,7 @@ public class Menu {
     private String photo;
 
     @Column(name = "price")
-    private Integer price;
+    private int price;
 
     @Column(name = "description")
     private String description;
@@ -33,7 +33,7 @@ public class Menu {
     private Restaurant restaurant;
 
     @Builder
-    public Menu(String name, Integer price, String description, Restaurant restaurant){
+    public Menu(String name, int price, String description, Restaurant restaurant){
         this.name = name;
         this.price = price;
         this.description = description;

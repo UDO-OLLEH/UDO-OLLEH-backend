@@ -1,6 +1,7 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.errors.UserNicknameDuplicatedException;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
@@ -8,12 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,6 +40,29 @@ public class UserServiceTests {
         assertEquals(dto.getEmail(), user.getEmail());
         System.out.println(user.getEmail());
         System.out.println(user.getPassword());
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트(실패 - 닉네임 중복됐을 경우)")
+    @Transactional
+    void registerTestWhenDuplicatedNickname() {
+        //given
+        RequestUser.registerDto dto = RequestUser.registerDto.builder()
+                .email("hello")
+                .nickname("nickname")
+                .password("itsmypassword")
+                .build();
+        //when
+        userService.register(dto);
+
+        //닉네임 중복
+        RequestUser.registerDto dto1 = RequestUser.registerDto.builder()
+                .email("test")
+                .nickname("nickname")
+                .password("1234")
+                .build();
+        //then
+        assertThrows(UserNicknameDuplicatedException.class, ()-> userService.register(dto1));
     }
 
     @Transactional
@@ -92,5 +116,28 @@ public class UserServiceTests {
         System.out.println(tokenResponse.getAccessToken());
         System.out.println(tokenResponse.getRefreshToken());
     }
+
+    @Test
+    @DisplayName("회원정보 수정 테스트(성공)")
+    void ChangeUserInfoTest(){
+        User user = User.builder()
+                .email("email")
+                .password("password")
+                .nickname("nick")
+                .build();
+        userRepository.save(user);
+        //회원정보 변경
+        RequestUser.updateDto updateDto = RequestUser.updateDto.builder()
+                .password("changedpassword")
+                .nickname("changednick")
+                .build();
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test2.png",
+                "image/png", "test data".getBytes());
+        userService.updateUser("email",mockMultipartFile,updateDto);
+        User updateUser = userRepository.findByEmail("email");
+        assertEquals(updateDto.getNickname(), updateUser.getNickname());
+        assertNotNull(updateUser.getProfile());
+        }
+
 
 }

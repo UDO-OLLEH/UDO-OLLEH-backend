@@ -36,7 +36,9 @@ public class RestaurantService implements RestaurantServiceInterface {
     @Override
     @Transactional
     public void registerRestaurantImage(List<MultipartFile> multipartFiles, String restaurantName) {
+        System.out.println(restaurantName);
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
+        System.out.println(restaurant+"======");
         if (restaurant == null) {
             throw new NotFoundRestaurantException();
         }
@@ -116,6 +118,8 @@ public class RestaurantService implements RestaurantServiceInterface {
                     .name(item.getName())
                     .category(item.getCategory())
                     .imagesUrl(imageUrlList)
+                    .xCoordinate(item.getXCoordinate())
+                    .yCoordinate(item.getYCoordinate())
                     .build();
             restaurantLists.add(restaurantDto);
         }

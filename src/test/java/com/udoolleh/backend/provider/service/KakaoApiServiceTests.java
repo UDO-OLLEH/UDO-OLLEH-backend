@@ -66,6 +66,5 @@ public class KakaoApiServiceTests {
             e.printStackTrace();
         }
         assertEquals(totalCount, restaurantRepository.findAll().size());
-
     }
 }
