@@ -7,15 +7,19 @@ import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.LikesDuplicatedException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
+import com.udoolleh.backend.exception.errors.NotFoundUserException;
 import com.udoolleh.backend.exception.errors.NotFoundLikesException;
+
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.LikesRepository;
 import com.udoolleh.backend.repository.UserRepository;
+
 import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.domain.Sort;
@@ -210,9 +214,33 @@ public class BoardService implements BoardServiceInterface {
         likesRepository.findByUserAndBoard(user, board).orElseThrow(
                 () -> new NotFoundLikesException());
 
-        long countLikes = board.getCountLikes() - 1L;
+        long countLikes = board.getCountLikes() - 1;
         board.deleteLikes(countLikes);
 
         likesRepository.deleteById(likesId);
+       }
+
+    @Override
+    @Transactional
+    public Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable){
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new CustomJwtRuntimeException();
+        }
+        Page<Board> boardList = boardRepository.findByUser(user, pageable);
+
+        return boardList.map(ResponseBoard.listBoardDto::of);
+    }
+    
+    @Override
+    @Transactional
+    public Page<ResponseBoard.getLikeBoardDto> getLikeBoard(String email, Pageable pageable){
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new CustomJwtRuntimeException();
+        }
+
+        Page<Board> response = boardRepository.findLikeBoard(user, pageable);
+        return response.map(ResponseBoard.getLikeBoardDto::of);
     }
 }

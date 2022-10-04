@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface MenuServiceInterface {
     void registerMenu(MultipartFile file, RequestMenu.registerDto requestDto);
-    List<ResponseMenu.getMenuDto> getMenu(String restaurantId);
+    List<ResponseMenu.getMenuDto> getMenu(String restaurantName);
     void deleteMenu(String restaurantId, String menuName);
 }

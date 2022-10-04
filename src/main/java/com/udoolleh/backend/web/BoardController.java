@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -67,7 +68,7 @@ public class BoardController {
     }
 
     @PostMapping("/board")
-    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart MultipartFile file,
+    public ResponseEntity<CommonResponse> registerPosts(HttpServletRequest request, @RequestPart(required = false) MultipartFile file,
                                                         @Valid @RequestPart RequestBoard.registerDto postDto) {
 
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
@@ -139,6 +140,38 @@ public class BoardController {
         boardService.deleteLikes(email, likesId, id);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시글 좋아요 취소 성공")
+                .build());
+    }
+    
+    @GetMapping("/user/board")
+    public ResponseEntity<CommonResponse> getMyBoardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+            Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+            String email = null;
+            if (token.isPresent()) {
+                JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+                email = jwtAuthToken.getData().getSubject();
+            }
+            Page<ResponseBoard.listBoardDto> myBoardList = boardService.getMyBoard(email,pageable);
+
+            return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("내 게시물 조회 성공")
+                .list(myBoardList)
+                .build());
+      }
+      
+    @GetMapping("/board/like")
+    public ResponseEntity<CommonResponse> getLikeBoard(HttpServletRequest request, @PageableDefault Pageable pageable){
+
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        Page<ResponseBoard.getLikeBoardDto> response = boardService.getLikeBoard(email, pageable);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("좋아요 한 게시판 조회 성공")
+                .list(response)
                 .build());
     }
 }
