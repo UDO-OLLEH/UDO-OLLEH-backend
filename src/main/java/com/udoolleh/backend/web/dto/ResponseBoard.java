@@ -9,23 +9,17 @@ import java.util.Date;
 
 public class ResponseBoard {
 
+    @Builder
     @Getter
     public static class detailBoardDto {
-        private String boardId;
+
+        private String id;
         private String title;
         private String context;
         private String photo;
         private Date createAt;
-        private User user;
-
-        public detailBoardDto(Board board) {
-            this.title = board.getTitle();
-            this.context = board.getContext();
-            this.photo = board.getPhoto();
-            this.createAt = board.getCreateAt();
-            this.user = board.getUser();
-        }
-        //private Like like;
+        private String nickname;
+        private Long countLikes;
         //private Reply reply;
         //private Category category;
 
@@ -37,12 +31,16 @@ public class ResponseBoard {
         private String title;
         private String context;
         private Date createAt;
+        private long countVisit;
+        private long countLikes;
 
         public static listBoardDto of(Board board) {
             return listBoardDto.builder()
                     .title(board.getTitle())
                     .context(board.getContext())
                     .createAt(board.getCreateAt())
+                    .countVisit(board.getCountVisit())
+                    .countLikes(board.getCountLikes())
                     .build();
         }
 

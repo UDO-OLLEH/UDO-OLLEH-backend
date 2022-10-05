@@ -8,26 +8,26 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Table(name = "likes")
-@Entity
-@Getter
 @NoArgsConstructor
+@Getter
+@Entity
 public class Likes {
     @Id
-    @Column(name = "like_id")
-    private String id = UUID.randomUUID().toString();
-
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "likes_id")
+    public String id = UUID.randomUUID().toString();
 
     @ManyToOne(targetEntity = Board.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
-    private Board board;
+    public Board board;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    public User user;
 
     @Builder
-    public Likes(User user, Board board) {
-        this.user = user;
+    public Likes(Board board, User user) {
         this.board = board;
+        this.user = user;
     }
 
 }
