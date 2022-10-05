@@ -30,7 +30,9 @@ public enum ErrorCode {
     NOT_FOUND_PHOTO(HttpStatus.NOT_FOUND, "PHOTO_001", "NOT_FOUND_PHOTO"),
     MENU_DUPLICATED(HttpStatus.FORBIDDEN, "MENU_001", "MENU_DUPLICATED"),
     NOT_FOUND_MENU(HttpStatus.NOT_FOUND, "MENU_002", "NOT_FOUND_MENU"),
-    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND,"BOARD_001","게시글 내용이 없습니다.");
+    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND,"BOARD_001","게시글 내용이 없습니다."),
+
+    TRAVEL_COURSE_DUPLICATED(HttpStatus.FORBIDDEN,"COURSE_001","TRAVEL_COURSE_DUPLICATED");
 
 
     private final String code;
