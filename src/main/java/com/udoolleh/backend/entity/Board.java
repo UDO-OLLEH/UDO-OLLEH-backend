@@ -71,8 +71,5 @@ public class Board {
     public void updateLikes(long countLikes) {
         this.countLikes = countLikes;
     }
-    public void deleteLikes(long countLikes){
-        this.countLikes = countLikes;
-    }
 }
 
