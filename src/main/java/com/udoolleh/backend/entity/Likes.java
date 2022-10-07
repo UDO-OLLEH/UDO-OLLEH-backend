@@ -29,4 +29,5 @@ public class Likes {
         this.board = board;
         this.user = user;
     }
+
 }

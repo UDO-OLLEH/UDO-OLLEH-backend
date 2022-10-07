@@ -16,6 +16,9 @@ public class ResponseRestaurant {
         private String category;
         private String address;
         private List<String> imagesUrl;
-        private Double totalGrade;
+        private double totalGrade;
+        private String xCoordinate;
+        private String yCoordinate;
+
     }
 }

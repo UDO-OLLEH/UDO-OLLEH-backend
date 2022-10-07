@@ -4,10 +4,7 @@ import com.udoolleh.backend.core.service.ReviewServiceInterface;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
-import com.udoolleh.backend.exception.errors.NotFoundReviewException;
-import com.udoolleh.backend.exception.errors.NotFoundUserException;
-import com.udoolleh.backend.exception.errors.ReviewDuplicatedException;
+import com.udoolleh.backend.exception.errors.*;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
 import com.udoolleh.backend.repository.UserRepository;
@@ -37,9 +34,12 @@ public class ReviewService implements ReviewServiceInterface {
     public void registerReview(MultipartFile file,  String email, RequestReview.registerDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
-            throw new NotFoundUserException();
+            throw new CustomJwtRuntimeException();
         }
-        Restaurant restaurant = restaurantRepository.findById(requestDto.getRestaurantId()).orElseThrow(()-> new NotFoundRestaurantException());
+        Restaurant restaurant = restaurantRepository.findByName(requestDto.getRestaurantName());
+        if(restaurant == null){
+            throw new NotFoundReviewException();
+        }
 
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         if(review != null){ //이미 리뷰가 있다면
@@ -80,7 +80,7 @@ public class ReviewService implements ReviewServiceInterface {
     public void modifyReview(MultipartFile file, String email, String reviewId, RequestReview.modifyDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
-            throw new NotFoundUserException();
+            throw new CustomJwtRuntimeException();
         }
         Review review = reviewRepository.findByUserAndId(user, reviewId);
         if(review == null){
@@ -118,7 +118,7 @@ public class ReviewService implements ReviewServiceInterface {
     public void deleteReview(String email, String reviewId){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
-            throw new NotFoundUserException();
+            throw new CustomJwtRuntimeException();
         }
         Review review = reviewRepository.findByUserAndId(user, reviewId);
         if(review == null){
@@ -142,13 +142,17 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     @Transactional
-    public List<ResponseReview.getReviewDto> getReview(String restaurantId){
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
+    public List<ResponseReview.getReviewDto> getReview(String restaurantName){
+        Restaurant restaurant = restaurantRepository.findByName(restaurantName);
+        if(restaurant == null){
+            throw new NotFoundReviewException();
+        }
         List<Review> reviewList =  reviewRepository.findByRestaurant(restaurant);
         List<ResponseReview.getReviewDto> list = new ArrayList<>();
 
         for(Review item : reviewList){
             ResponseReview.getReviewDto response = ResponseReview.getReviewDto.builder()
+                    .reviewId(item.getId())
                     .nickname(item.getUser().getNickname())
                     .context(item.getContext())
                     .photo(item.getPhoto())

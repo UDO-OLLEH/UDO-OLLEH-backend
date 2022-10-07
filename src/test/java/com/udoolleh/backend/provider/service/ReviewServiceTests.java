@@ -49,7 +49,7 @@ public class ReviewServiceTests {
 
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -80,7 +80,7 @@ public class ReviewServiceTests {
 
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -115,7 +115,7 @@ public class ReviewServiceTests {
 
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -123,7 +123,7 @@ public class ReviewServiceTests {
         reviewService.registerReview(null, "test", requestDto);
 
         RequestReview.registerDto requestDto1 = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(4.5)
                 .build();
@@ -149,7 +149,7 @@ public class ReviewServiceTests {
 
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -176,7 +176,7 @@ public class ReviewServiceTests {
 
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -212,7 +212,7 @@ public class ReviewServiceTests {
 
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();
@@ -275,7 +275,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
         //리뷰 등록
         RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
-                .restaurantId(restaurant.getId())
+                .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
                 .build();

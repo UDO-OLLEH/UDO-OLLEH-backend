@@ -34,6 +34,12 @@ public class Restaurant {
     @Column(name = "total_grade")
     private double totalGrade;
 
+    @Column(name = "x_coordinate")
+    private String xCoordinate;
+
+    @Column(name = "y_coordinate")
+    private String yCoordinate;
+
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menuList = new ArrayList<>();
 
@@ -44,12 +50,14 @@ public class Restaurant {
     private List<Photo> photoList = new ArrayList<>();
 
     @Builder
-    public Restaurant(String name, String category,PlaceType placeType, String address, double totalGrade){
+    public Restaurant(String name, String category,PlaceType placeType, String address, double totalGrade, String xCoordinate, String yCoordinate){
         this.name = name;
         this.category = category;
         this.placeType = placeType;
         this.address = address;
         this.totalGrade = totalGrade;
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
     }
 
     public void addMenu(Menu menu){
