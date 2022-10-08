@@ -34,7 +34,8 @@ public class BoardController {
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @GetMapping("/board/list")
-    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<CommonResponse> boardList(HttpServletRequest request,
+                                                    @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
@@ -50,14 +51,15 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String boardId) {
+    public ResponseEntity<CommonResponse> boardDetail(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        ResponseBoard.detailBoardDto detailBoards = boardService.boardDetail(email, boardId);
+        ResponseBoard.detailBoardDto detailBoards = boardService.boardDetail(email, id);
+        boardService.updateVisit(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 상세 조회 성공")
@@ -83,15 +85,15 @@ public class BoardController {
     }
 
     @PutMapping("/board/{id}")
-    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String boardId,
-                                                      @Valid @RequestBody RequestBoard.updatesDto modifyDto) {
+    public ResponseEntity<CommonResponse> modifyPosts(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String id,
+                                                      @Valid @RequestPart RequestBoard.updatesDto modifyDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.modifyPosts(file, email, boardId, modifyDto);
+        boardService.modifyPosts(file, email, id, modifyDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 수정 성공")
@@ -99,20 +101,48 @@ public class BoardController {
     }
 
     @DeleteMapping("/board/{id}")
-    public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String boardId) {
+    public ResponseEntity<CommonResponse> deletePosts(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.deletePosts(email, boardId);
+        boardService.deletePosts(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 삭제 성공")
                 .build());
     }
 
+    @PostMapping("/board/{id}/likes")
+    public ResponseEntity<CommonResponse> updateLikes(HttpServletRequest request, @PathVariable String id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardService.updateLikes(email, id);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시글 좋아요 성공")
+                .build());
+    }
+
+    @DeleteMapping("/board/{id}/likes/{likesId}")
+    public ResponseEntity<CommonResponse> deleteLikes(HttpServletRequest request, @PathVariable String id, @PathVariable String likesId) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardService.deleteLikes(email, likesId, id);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("게시글 좋아요 취소 성공")
+                .build());
+    }
+    
     @GetMapping("/user/board")
     public ResponseEntity<CommonResponse> getMyBoardList(HttpServletRequest request, @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
             Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
@@ -128,15 +158,16 @@ public class BoardController {
                 .list(myBoardList)
                 .build());
       }
+      
     @GetMapping("/board/like")
     public ResponseEntity<CommonResponse> getLikeBoard(HttpServletRequest request, @PageableDefault Pageable pageable){
+
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-  
         Page<ResponseBoard.getLikeBoardDto> response = boardService.getLikeBoard(email, pageable);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("좋아요 한 게시판 조회 성공")

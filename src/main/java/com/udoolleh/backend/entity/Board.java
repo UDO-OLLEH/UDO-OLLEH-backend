@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +29,15 @@ public class Board {
     @Column(name = "photo")
     private String photo;
 
+    @Column(name = "countVisit")
+    private long countVisit;
+
+    @Column(name = "countLikes")
+    private long countLikes;
+
+    @Column(name = "category")
+    private String category;
+
     @CreationTimestamp
     @Column(name = "create_at")
     private Date createAt = new Date();
@@ -43,10 +51,12 @@ public class Board {
 
 
     @Builder
-    public Board(String title, String context, User user) {
+    public Board(String title, String context, User user, long countVisit, long countLikes) {
         this.title = title;
         this.context = context;
         this.user = user;
+        this.countVisit = countVisit;
+        this.countLikes = countLikes;
     }
 
     public void modifyPosts(String title, String context) {
@@ -59,4 +69,16 @@ public class Board {
     public void updatePhoto(String photo) {
         this.photo = photo;
     }
+
+    public void updateVisit(long countVisit) {
+        this.countVisit = countVisit;
+    }
+
+    public void updateLikes(long countLikes) {
+        this.countLikes = countLikes;
+    }
+    public void deleteLikes(long countLikes){
+        this.countLikes = countLikes;
+    }
 }
+

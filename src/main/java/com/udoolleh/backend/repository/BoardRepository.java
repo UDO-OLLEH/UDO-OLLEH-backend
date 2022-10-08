@@ -3,6 +3,7 @@ package com.udoolleh.backend.repository;
 import com.udoolleh.backend.entity.Board;
 
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.web.dto.ResponseBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

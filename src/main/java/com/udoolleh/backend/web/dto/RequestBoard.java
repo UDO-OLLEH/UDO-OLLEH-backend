@@ -35,4 +35,11 @@ public class RequestBoard {
         @NotEmpty(message = "내용이 없습니다.")
         private String context;
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class countDto{
+        private long countVisit;
+    }
 }
