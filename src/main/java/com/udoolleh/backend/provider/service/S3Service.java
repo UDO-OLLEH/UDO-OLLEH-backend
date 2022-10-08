@@ -24,6 +24,7 @@ public class S3Service{
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    //(multipartfile : 파일, dirName: S3에 사진을 넣을 디렉토리 이름)
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         //S3에 Multipartfile 타입은 전송이 안되므로 file로 타입 전환
         File uploadFile = convert(multipartFile)
