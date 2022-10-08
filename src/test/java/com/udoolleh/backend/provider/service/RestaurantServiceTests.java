@@ -66,7 +66,7 @@ public class RestaurantServiceTests {
     @DisplayName("식당 사진 삭제")
     @Transactional
     @Test
-    void deleteRestaurantImageSelectionTest() {
+    void deleteRestaurantImageTest() {
         //given
         Restaurant res = Restaurant.builder()
                 .name("식당")
@@ -97,11 +97,13 @@ public class RestaurantServiceTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        restaurantService.deleteRestaurantImageSelection("식당",imageUrls);
-
-        System.out.println(restaurant.getPhotoList().size());
-        System.out.println(photoRepository.findByRestaurant(restaurant).size()+"--------");
+        assertEquals(4,restaurant.getPhotoList().size());
+        assertEquals(4,photoRepository.findByRestaurant(restaurant).size());
+        //when
+        restaurantService.deleteRestaurantImage(restaurant.getId());
+        //then
+        assertEquals(0, restaurantRepository.findByName("식당").getPhotoList().size());
+        assertEquals(0, photoRepository.findAll().size());
     }
 
     @DisplayName("식당 등록 테스트")

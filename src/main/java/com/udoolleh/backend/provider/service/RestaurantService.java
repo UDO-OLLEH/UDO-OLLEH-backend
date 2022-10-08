@@ -36,9 +36,7 @@ public class RestaurantService implements RestaurantServiceInterface {
     @Override
     @Transactional
     public void registerRestaurantImage(List<MultipartFile> multipartFiles, String restaurantName) {
-        System.out.println(restaurantName);
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
-        System.out.println(restaurant+"======");
         if (restaurant == null) {
             throw new NotFoundRestaurantException();
         }
@@ -75,26 +73,16 @@ public class RestaurantService implements RestaurantServiceInterface {
         restaurantRepository.save(restaurant);
     }
 
-    //url은 ","로 구분한 url 여러개일 수 있음
+    //식당 이미지 전체 삭제
     @Override
     @Transactional
-    public void deleteRestaurantImageSelection(String name, String[] urls){
-        List<String> photoList = new ArrayList<>();
-        if (urls.length == 0) {
-            throw new NotFoundPhotoException();
+    public void deleteRestaurantImage(String id){
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(()-> new NotFoundRestaurantException());
+        List<Photo> photoList = photoRepository.findByRestaurant(restaurant);
+        for(Photo photo : photoList){
+            s3Service.deleteFile(photo.getUrl().substring(s3BucketUrl.length()+1));
+            restaurant.getPhotoList().remove(photo);
         }
-        for (int i=0; i < urls.length; i++) {
-            if(photoRepository.findByUrl(urls[i]) == null){ //해당 사진이 없으면 예외 던지기
-                throw new NotFoundPhotoException();
-            }
-            photoList.add(urls[i]);
-        }
-        Restaurant restaurant = restaurantRepository.findByName(name);
-        restaurant.getPhotoList().remove(photoList);
-        for(int i=0; i < urls.length; i++){
-            s3Service.deleteFile(urls[i].substring(s3BucketUrl.length()+1));
-        }
-        restaurant.getPhotoList().clear();
     }
 
     @Override
@@ -113,6 +101,7 @@ public class RestaurantService implements RestaurantServiceInterface {
                 imageUrlList.add(photo.getUrl());
             }
             ResponseRestaurant.restaurantDto restaurantDto = ResponseRestaurant.restaurantDto.builder()
+                    .id(item.getId())
                     .address(item.getAddress())
                     .totalGrade(item.getTotalGrade())
                     .name(item.getName())
