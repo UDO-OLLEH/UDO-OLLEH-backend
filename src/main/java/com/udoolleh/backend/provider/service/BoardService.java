@@ -243,4 +243,6 @@ public class BoardService implements BoardServiceInterface {
         Page<Board> response = boardRepository.findLikeBoard(user, pageable);
         return response.map(ResponseBoard.getLikeBoardDto::of);
     }
+
+
 }
