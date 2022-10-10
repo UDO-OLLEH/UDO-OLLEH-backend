@@ -6,6 +6,7 @@ import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.BoardComment;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.errors.NotFoundBoardCommentException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
 import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
 import com.udoolleh.backend.repository.BoardCommentRepository;
@@ -14,6 +15,7 @@ import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoardComment;
 import com.udoolleh.backend.web.dto.ResponseBoardComment;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +45,7 @@ public class BoardCommentService implements BoardCommentServiceInterface {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ResponseBoardComment.boardCommentDto> getBoardComment(String email, String boardId){
         Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomJwtRuntimeException());
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundBoardException());
@@ -64,4 +66,32 @@ public class BoardCommentService implements BoardCommentServiceInterface {
         return responseDto;
     }
 
+    /**
+     * @param email
+     * @param modifyDto
+     * 댓글 수정 - 댓글 수정시 댓글의 createAt도 새로 변경됨
+     */
+    @Override
+    @Transactional
+    public void modifyBoardComment(String email, RequestBoardComment.modifyDto modifyDto) {
+        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomJwtRuntimeException());
+        BoardComment boardComment = boardCommentRepository.findById(modifyDto.getCommentId()).orElseThrow(()->new NotFoundBoardCommentException());
+        if(!email.equals(boardComment.getUser().getEmail())){
+            throw new CustomJwtRuntimeException();  //같은 사용자가 아니면 예외 던짐
+        }
+        boardComment.updateContext(modifyDto.getContext());
+    }
+
+    @Override
+    public void deleteBoardComment(String email, String id) {
+        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomJwtRuntimeException());
+        BoardComment boardComment = boardCommentRepository.findById(id).orElseThrow(()->new NotFoundBoardCommentException());
+        if(!email.equals(boardComment.getUser().getEmail())){
+            throw new CustomJwtRuntimeException();  //같은 사용자가 아니면 예외 던짐
+        }
+        Board board = boardRepository.findById(boardComment.getBoard().getId()).orElseThrow(() -> new NotFoundBoardException());
+        boardComment.removeUser();
+        board.getBoardComments().remove(boardComment);
+        boardRepository.flush();
+    }
 }

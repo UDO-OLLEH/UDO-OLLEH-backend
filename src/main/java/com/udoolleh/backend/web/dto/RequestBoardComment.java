@@ -15,5 +15,13 @@ public class RequestBoardComment {
         @NotEmpty(message = "댓글 내용이 비었습니다.")
         private String context;
     }
+    @Builder
+    @Data
+    public static class modifyDto{
+        @NotEmpty(message = "댓글의 아이디가 비어있습니다.")
+        private String commentId;
+        @NotEmpty(message = "댓글 내용이 비었습니다.")
+        private String context;
+    }
 
 }

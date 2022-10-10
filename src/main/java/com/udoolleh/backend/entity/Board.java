@@ -50,7 +50,7 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Likes> likeList = new ArrayList<>(); //좋아요
 
-    @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<BoardComment> boardComments = new ArrayList<>(); //댓글
 
 
