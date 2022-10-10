@@ -91,7 +91,6 @@ public class BoardCommentService implements BoardCommentServiceInterface {
             throw new CustomJwtRuntimeException();  //같은 사용자가 아니면 예외 던짐
         }
         Board board = boardRepository.findById(boardComment.getBoard().getId()).orElseThrow(() -> new NotFoundBoardException());
-        boardComment.removeUser();
         board.getBoardComments().remove(boardComment);
     }
 }
