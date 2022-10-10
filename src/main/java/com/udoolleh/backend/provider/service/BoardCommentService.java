@@ -83,6 +83,7 @@ public class BoardCommentService implements BoardCommentServiceInterface {
     }
 
     @Override
+    @Transactional
     public void deleteBoardComment(String email, String id) {
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomJwtRuntimeException());
         BoardComment boardComment = boardCommentRepository.findById(id).orElseThrow(()->new NotFoundBoardCommentException());
@@ -92,6 +93,5 @@ public class BoardCommentService implements BoardCommentServiceInterface {
         Board board = boardRepository.findById(boardComment.getBoard().getId()).orElseThrow(() -> new NotFoundBoardException());
         boardComment.removeUser();
         board.getBoardComments().remove(boardComment);
-        boardRepository.flush();
     }
 }
