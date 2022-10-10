@@ -41,24 +41,28 @@ public class CourseService implements CourseServiceInterface {
                 .build();
         course = travelCourseRepository.save(course);
 
-        for(RequestCourse.DetailDto item : requestDto.getDetail()){
-            CourseDetail detail = CourseDetail.builder()
-                    .type(item.getType())
-                    .context(item.getContext())
-                    .travelCourse(course)
-                    .build();
-            detail = courseDetailRepository.save(detail);
-            course.addDetail(detail);
+        if(requestDto.getDetail() != null){
+            for(RequestCourse.DetailDto item : requestDto.getDetail()){
+                CourseDetail detail = CourseDetail.builder()
+                        .type(item.getType())
+                        .context(item.getContext())
+                        .travelCourse(course)
+                        .build();
+                detail = courseDetailRepository.save(detail);
+                course.addDetail(detail);
+            }
         }
 
-        for(RequestCourse.GpsDto item : requestDto.getGps()){
-            Gps gps = Gps.builder()
-                    .latitude(item.getLatitude())
-                    .longitude(item.getLongitude())
-                    .travelCourse(course)
-                    .build();
-            gps = gpsRepository.save(gps);
-            course.addGps(gps);
+        if(requestDto.getGps() != null){
+            for(RequestCourse.GpsDto item : requestDto.getGps()){
+                Gps gps = Gps.builder()
+                        .latitude(item.getLatitude())
+                        .longitude(item.getLongitude())
+                        .travelCourse(course)
+                        .build();
+                gps = gpsRepository.save(gps);
+                course.addGps(gps);
+            }
         }
     }
 

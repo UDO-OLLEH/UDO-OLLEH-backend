@@ -63,6 +63,51 @@ public class CourseServiceTests {
         assertNotNull(course.getGpsList());
         }
 
+    @Test
+    @DisplayName("여행지 코스 등록 테스트(성공 - gps값이 없을 경우)")
+    void registerCourseTestWhenNotExistGps(){
+        List<RequestCourse.DetailDto> detail = new ArrayList<>();
+        detail.add(RequestCourse.DetailDto.builder()
+                .type(CourseDetailType.TEXT)
+                .context("여기여기")
+                .build());
+
+        RequestCourse.RegisterDto requestDto = RequestCourse.RegisterDto.builder()
+                .courseName("우도 여행")
+                .course("선착장 - 식당 - 올레길")
+                .detail(detail)
+                .build();
+        //여행지 코스 등록
+        courseService.registerCourse(requestDto);
+
+        assertNotNull(travelCourseRepository.findByCourseName(requestDto.getCourseName()));
+        TravelCourse course = travelCourseRepository.findByCourseName(requestDto.getCourseName());
+        assertNotNull(course.getDetailList());
+        }
+
+
+    @Test
+    @DisplayName("여행지 코스 등록 테스트(성공 - 상세 없을 경우)")
+    void registerCourseTestWhenNotExistDetails(){
+               List<RequestCourse.GpsDto> gps = new ArrayList<>();
+        gps.add(RequestCourse.GpsDto.builder()
+                .latitude(34.12313)
+                .longitude(127.342324)
+                .build());
+
+        RequestCourse.RegisterDto requestDto = RequestCourse.RegisterDto.builder()
+                .courseName("우도 여행")
+                .course("선착장 - 식당 - 올레길")
+                .gps(gps)
+                .build();
+        //여행지 코스 등록
+        courseService.registerCourse(requestDto);
+
+        assertNotNull(travelCourseRepository.findByCourseName(requestDto.getCourseName()));
+        TravelCourse course = travelCourseRepository.findByCourseName(requestDto.getCourseName());
+        assertNotNull(course.getGpsList());
+    }
+
         @Test
         @DisplayName("여행지 코스 조회 테스트(성공)")
         void getCourseTest(){
