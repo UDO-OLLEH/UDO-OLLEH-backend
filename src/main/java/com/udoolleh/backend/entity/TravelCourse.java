@@ -26,11 +26,11 @@ public class TravelCourse {
     private String course;
 
     @BatchSize(size = 100)
-    @OneToMany(mappedBy = "travelCourse")
+    @OneToMany(mappedBy = "travelCourse", cascade = CascadeType.REMOVE)
     private List<CourseDetail> detailList = new ArrayList<>();
 
     @BatchSize(size = 100)
-    @OneToMany(mappedBy = "travelCourse")
+    @OneToMany(mappedBy = "travelCourse", cascade = CascadeType.REMOVE)
     private List<Gps> gpsList = new ArrayList<>();
 
     @Builder

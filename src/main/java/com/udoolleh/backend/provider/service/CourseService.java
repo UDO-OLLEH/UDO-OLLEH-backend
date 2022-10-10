@@ -1,9 +1,11 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.CourseServiceInterface;
+import com.udoolleh.backend.core.type.CourseDetailType;
 import com.udoolleh.backend.entity.CourseDetail;
 import com.udoolleh.backend.entity.Gps;
 import com.udoolleh.backend.entity.TravelCourse;
+import com.udoolleh.backend.exception.errors.NotFoundTravelCourseException;
 import com.udoolleh.backend.exception.errors.TravelCourseDuplicatedException;
 import com.udoolleh.backend.repository.CourseDetailRepository;
 import com.udoolleh.backend.repository.GpsRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class CourseService implements CourseServiceInterface {
     private final TravelCourseRepository travelCourseRepository;
     private final GpsRepository gpsRepository;
     private final CourseDetailRepository courseDetailRepository;
+    private final S3Service s3Service;
 
     @Override
     @Transactional
@@ -75,6 +79,7 @@ public class CourseService implements CourseServiceInterface {
             }
 
             ResponseCourse.GetDto dto = ResponseCourse.GetDto.builder()
+                    .id(item.getId())
                     .courseName(item.getCourseName())
                     .course(item.getCourse())
                     .detail(detailList)
@@ -83,5 +88,19 @@ public class CourseService implements CourseServiceInterface {
             response.add(dto);
         }
         return response;
+    }
+
+    @Override
+    @Transactional
+    public void deleteCourse(Long id){
+        TravelCourse course = travelCourseRepository.findCourse(id).orElseThrow(()-> new NotFoundTravelCourseException());
+
+        //s3에서 사진 삭제
+        for(CourseDetail detail : course.getDetailList()){
+            if(detail.getType().equals(CourseDetailType.PHOTO)){
+                s3Service.deleteFile(detail.getContext());
+            }
+        }
+        travelCourseRepository.delete(course);
     }
 }

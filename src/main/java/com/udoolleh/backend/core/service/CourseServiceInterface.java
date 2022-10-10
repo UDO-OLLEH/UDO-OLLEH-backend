@@ -13,4 +13,5 @@ import java.util.List;
 public interface CourseServiceInterface {
   void registerCourse(RequestCourse.RegisterDto RequestDto);
   List<ResponseCourse.GetDto> getCourses();
+  void deleteCourse(Long id);
   }

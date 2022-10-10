@@ -12,6 +12,7 @@ public class ResponseCourse {
     @Builder
     @Data
     public static class GetDto{
+        private Long id;
         private String courseName;
         private String course;
         private List<DetailDto> detail;

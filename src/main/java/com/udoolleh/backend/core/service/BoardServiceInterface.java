@@ -32,7 +32,6 @@ public interface BoardServiceInterface {
 
     void deleteLikes(String userEmail, String likedId, String id);
 
-    void deletePosts(String userEmail, String boardId);
 
     Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable);
     

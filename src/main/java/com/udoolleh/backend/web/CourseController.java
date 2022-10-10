@@ -7,10 +7,7 @@ import com.udoolleh.backend.web.dto.ResponseCourse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -36,5 +33,11 @@ public class CourseController {
                 .list(response)
                 .build(), HttpStatus.OK);
     }
-
+    @DeleteMapping("/course/{id}")
+    public ResponseEntity<CommonResponse> getCourses(@PathVariable Long id){
+        courseService.deleteCourse(id);
+        return new ResponseEntity<>(CommonResponse.builder()
+                .message("여행지 상세 삭제 성공")
+                .build(), HttpStatus.OK);
+    }
 }

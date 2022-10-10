@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -97,7 +98,7 @@ public class CourseServiceTests {
             course.addGps(gps1);
             course.addDetail(detail);
             TravelCourse course1 = TravelCourse.builder()
-                    .courseName("우도 여행")
+                    .courseName("우도 여행1")
                     .course("선착장 - 식당 - 올레길")
                     .build();
             course1 = travelCourseRepository.save(course1);
@@ -125,4 +126,78 @@ public class CourseServiceTests {
             assertNotNull(list);
         }
 
+    @Test
+    @DisplayName("여행지 코스 삭제 테스트(성공)")
+    void deleteCourseTest(){
+        //등록
+        TravelCourse course = TravelCourse.builder()
+                .courseName("우도 여행")
+                .course("선착장 - 식당 - 올레길")
+                .build();
+        course = travelCourseRepository.save(course);
+
+        Gps gps = Gps.builder()
+                .latitude(34.12311)
+                .longitude(127.3423423)
+                .travelCourse(course)
+                .build();
+        gps = gpsRepository.save(gps);
+
+        Gps gps1 = Gps.builder()
+                .latitude(34.12311)
+                .longitude(127.3423423)
+                .travelCourse(course)
+                .build();
+        gpsRepository.save(gps1);
+
+        CourseDetail detail = CourseDetail.builder()
+                .type(CourseDetailType.TEXT)
+                .context("우도우도")
+                .travelCourse(course)
+                .build();
+        detail = courseDetailRepository.save(detail);
+
+
+        CourseDetail detail2 = CourseDetail.builder()
+                .type(CourseDetailType.TEXT)
+                .context("우도우도")
+                .travelCourse(course)
+                .build();
+        detail2 = courseDetailRepository.save(detail2);
+
+        course.addGps(gps);
+        course.addGps(gps1);
+        course.addDetail(detail);
+        course.addDetail(detail2);
+        TravelCourse course1 = TravelCourse.builder()
+                .courseName("우도 여행1")
+                .course("선착장 - 식당 - 올레길")
+                .build();
+        course1 = travelCourseRepository.save(course1);
+        Gps gps2 = Gps.builder()
+                .latitude(34.12311)
+                .longitude(127.3423423)
+                .travelCourse(course1)
+                .build();
+        gpsRepository.save(gps2);
+
+        CourseDetail detail1 = CourseDetail.builder()
+                .type(CourseDetailType.TEXT)
+                .context("우도우도")
+                .travelCourse(course1)
+                .build();
+        courseDetailRepository.save(detail1);
+
+
+        course1.addGps(gps2);
+        course1.addDetail(detail1);
+
+
+        //삭제
+        courseService.deleteCourse(course.getId());
+        assertNull(travelCourseRepository.findByCourseName("우도 여행"));
+        assertNull(gpsRepository.findById(gps.getId()).orElse(null));
+        assertNull(courseDetailRepository.findById(detail.getId()).orElse(null));
+
+    }
 }
