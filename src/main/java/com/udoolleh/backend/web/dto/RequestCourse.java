@@ -11,27 +11,27 @@ import java.util.List;
 public class RequestCourse {
     @Builder
     @Data
-    public static class registerDto{
+    public static class RegisterDto{
         @NotEmpty(message = "코스명이 비어있습니다.")
         private String courseName;
         @NotEmpty(message = "코스가 비어있습니다.")
         private String course;
-        private List<detailDto> detail;
-        private List<gpsDto> gps;
+        private List<DetailDto> detail;
+        private List<GpsDto> gps;
 
 
     }
 
     @Builder
     @Data
-    public static class detailDto{
+    public static class DetailDto{
         private CourseDetailType type;
         private String context;
     }
 
     @Builder
     @Data
-    public static class gpsDto{
+    public static class GpsDto{
         private Double latitude;
         private Double longitude;
     }

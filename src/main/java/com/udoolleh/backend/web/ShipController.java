@@ -25,7 +25,6 @@ public class ShipController {
         shipService.registerWharfCourse(wharfCourse.get("wharfCourse"));
 
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("선착장 코스 등록 성공")
                 .build(), HttpStatus.OK);
     }
@@ -35,7 +34,6 @@ public class ShipController {
         shipService.registerWharfTimetable(requestDto.getWharfCourse(), requestDto.getDepartureTime(), requestDto.getMonthType());
 
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("배 시간 등록 성공")
                 .build(), HttpStatus.OK);
     }
@@ -44,7 +42,6 @@ public class ShipController {
     public ResponseEntity<CommonResponse> listWharf(){
         List<String> wharfList = shipService.getAllWharf().orElseGet(()-> null);
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("선착장 조회 성공")
                 .list(wharfList)
                 .build(), HttpStatus.OK);
@@ -54,7 +51,6 @@ public class ShipController {
     public ResponseEntity<CommonResponse> getWharfTimetable(@RequestParam ShipCourseType wharfCourse, @RequestParam ShipTimetableType monthType){
         ResponseWharfTimetable.wharfTimetableDto list = shipService.getWharfTimetable(wharfCourse, monthType).orElseGet(()->null);
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("배시간 조회 성공")
                 .list(list)
                 .build(), HttpStatus.OK);
@@ -65,7 +61,6 @@ public class ShipController {
         shipService.deleteWharf(wharfCourse);
 
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("선착장 코스 삭제 성공")
                 .build(), HttpStatus.OK);
 
@@ -74,7 +69,6 @@ public class ShipController {
     public ResponseEntity<CommonResponse> deleteWharf(@PathVariable("wharfCourse") ShipCourseType wharfCourse, @PathVariable("monthType") ShipTimetableType monthType){
         shipService.deleteWharfTimetable(wharfCourse, monthType);
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("배 시간 삭제 성공")
                 .build(), HttpStatus.OK);
 

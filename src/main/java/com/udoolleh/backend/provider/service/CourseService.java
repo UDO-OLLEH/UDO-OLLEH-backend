@@ -9,10 +9,13 @@ import com.udoolleh.backend.repository.CourseDetailRepository;
 import com.udoolleh.backend.repository.GpsRepository;
 import com.udoolleh.backend.repository.TravelCourseRepository;
 import com.udoolleh.backend.web.dto.RequestCourse;
+import com.udoolleh.backend.web.dto.ResponseCourse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,7 @@ public class CourseService implements CourseServiceInterface {
 
     @Override
     @Transactional
-    public void registerCourse(RequestCourse.registerDto requestDto){
+    public void registerCourse(RequestCourse.RegisterDto requestDto){
         TravelCourse course = travelCourseRepository.findByCourseName(requestDto.getCourseName());
         if(course != null){ //코스명이 중복됐을 경우
             throw new TravelCourseDuplicatedException();
@@ -34,7 +37,7 @@ public class CourseService implements CourseServiceInterface {
                 .build();
         course = travelCourseRepository.save(course);
 
-        for(RequestCourse.detailDto item : requestDto.getDetail()){
+        for(RequestCourse.DetailDto item : requestDto.getDetail()){
             CourseDetail detail = CourseDetail.builder()
                     .type(item.getType())
                     .context(item.getContext())
@@ -44,7 +47,7 @@ public class CourseService implements CourseServiceInterface {
             course.addDetail(detail);
         }
 
-        for(RequestCourse.gpsDto item : requestDto.getGps()){
+        for(RequestCourse.GpsDto item : requestDto.getGps()){
             Gps gps = Gps.builder()
                     .latitude(item.getLatitude())
                     .longitude(item.getLongitude())
@@ -53,5 +56,32 @@ public class CourseService implements CourseServiceInterface {
             gps = gpsRepository.save(gps);
             course.addGps(gps);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<ResponseCourse.GetDto> getCourses(){
+        List<ResponseCourse.GetDto> response = new ArrayList<>();
+        List<ResponseCourse.GpsDto> gpsList = new ArrayList<>();
+        List<ResponseCourse.DetailDto> detailList = new ArrayList<>();
+        List<TravelCourse> courseList = travelCourseRepository.findAllCourse();
+
+        for(TravelCourse item : courseList){
+            for(Gps gps : item.getGpsList()){
+                gpsList.add(ResponseCourse.GpsDto.of(gps));
+            }
+            for(CourseDetail detail : item.getDetailList()){
+                detailList.add(ResponseCourse.DetailDto.of(detail));
+            }
+
+            ResponseCourse.GetDto dto = ResponseCourse.GetDto.builder()
+                    .courseName(item.getCourseName())
+                    .course(item.getCourse())
+                    .detail(detailList)
+                    .gps(gpsList)
+                    .build();
+            response.add(dto);
+        }
+        return response;
     }
 }

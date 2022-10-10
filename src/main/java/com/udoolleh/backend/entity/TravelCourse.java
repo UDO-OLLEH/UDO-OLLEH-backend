@@ -3,6 +3,7 @@ package com.udoolleh.backend.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,9 +25,11 @@ public class TravelCourse {
     @Column(name = "course")
     private String course;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "travelCourse")
     private List<CourseDetail> detailList = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "travelCourse")
     private List<Gps> gpsList = new ArrayList<>();
 
