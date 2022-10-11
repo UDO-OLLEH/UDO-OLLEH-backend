@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @NoArgsConstructor
 @Entity

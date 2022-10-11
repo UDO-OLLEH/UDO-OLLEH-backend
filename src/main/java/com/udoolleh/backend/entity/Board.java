@@ -22,8 +22,7 @@ public class Board {
     @Column(name = "title", length = 30, nullable = false)
     private String title;
 
-    @Lob
-    @Column(name = "context")
+    @Column(name = "context", length = 2500)
     private String context;
 
     @Column(name = "photo")
@@ -63,9 +62,6 @@ public class Board {
         this.title = title;
         this.context = context;
     }
-    public void addLike(Likes like){
-        likeList.add(like);
-    }
     public void updatePhoto(String photo) {
         this.photo = photo;
     }
@@ -75,9 +71,6 @@ public class Board {
     }
 
     public void updateLikes(long countLikes) {
-        this.countLikes = countLikes;
-    }
-    public void deleteLikes(long countLikes){
         this.countLikes = countLikes;
     }
 }

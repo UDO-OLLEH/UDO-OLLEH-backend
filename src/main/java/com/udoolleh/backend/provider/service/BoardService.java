@@ -215,8 +215,7 @@ public class BoardService implements BoardServiceInterface {
                 () -> new NotFoundLikesException());
 
         long countLikes = board.getCountLikes() - 1;
-        board.deleteLikes(countLikes);
-
+        board.updateLikes(countLikes);
         likesRepository.deleteById(likesId);
        }
 
