@@ -32,8 +32,6 @@ public interface BoardServiceInterface {
 
     void deleteLikes(String userEmail, String likedId, String id);
 
-    void deletePosts(String userEmail, String boardId);
-
     Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable);
     
     //좋아요 누른 게시글 조회

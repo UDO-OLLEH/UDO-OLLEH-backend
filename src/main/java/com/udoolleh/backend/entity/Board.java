@@ -22,8 +22,7 @@ public class Board {
     @Column(name = "title", length = 30, nullable = false)
     private String title;
 
-    @Lob
-    @Column(name = "context")
+    @Column(name = "context", length = 2500)
     private String context;
 
     @Column(name = "photo")
