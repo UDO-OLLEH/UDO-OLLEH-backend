@@ -45,6 +45,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
 
+
     @Builder
     public User(String email, String password, String nickname, String salt) {
         this.email = email;

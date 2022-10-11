@@ -55,5 +55,32 @@ public class BoardCommentController {
                 .list(boardCommentDtoList)
                 .build());
     }
+    @PutMapping("/board/comment")
+    public ResponseEntity<CommonResponse> modifyBoardComment(HttpServletRequest request, @RequestBody RequestBoardComment.modifyDto modifyDto) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardCommentService.modifyBoardComment(email, modifyDto);
 
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("댓글 수정 성공")
+                .build());
+    }
+    @DeleteMapping("/board/comment/{id}")
+    public ResponseEntity<CommonResponse> deleteBoardComment(HttpServletRequest request, @PathVariable(required = true) String id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        boardCommentService.deleteBoardComment(email, id);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("댓글 삭제 성공")
+                .build());
+    }
 }

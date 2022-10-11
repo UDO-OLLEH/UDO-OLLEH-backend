@@ -25,7 +25,7 @@ public class BoardComment {
     private LocalDateTime createAt = LocalDateTime.now();
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @JoinColumn(name = "board_id")
@@ -37,5 +37,13 @@ public class BoardComment {
         this.context = context;
         this.user = user;
         this.board = board;
+    }
+
+    public void updateContext(String context){
+        this.context = context;
+        this.createAt = LocalDateTime.now();
+    }
+    public void removeUser(){
+        this.user = null;
     }
 }

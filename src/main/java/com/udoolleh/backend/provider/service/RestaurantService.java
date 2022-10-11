@@ -83,6 +83,7 @@ public class RestaurantService implements RestaurantServiceInterface {
             s3Service.deleteFile(photo.getUrl().substring(s3BucketUrl.length()+1));
             restaurant.getPhotoList().remove(photo);
         }
+        restaurantRepository.flush();
     }
 
     @Override
