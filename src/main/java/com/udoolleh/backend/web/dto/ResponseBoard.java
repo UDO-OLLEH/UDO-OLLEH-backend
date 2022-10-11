@@ -20,14 +20,14 @@ public class ResponseBoard {
         private Date createAt;
         private String nickname;
         private Long countLikes;
-        //private Reply reply;
-        //private Category category;
+        private String hashtag;
 
     }
 
     @Builder
     @Data
     public static class listBoardDto {
+        private String id;
         private String title;
         private String context;
         private Date createAt;
@@ -36,6 +36,7 @@ public class ResponseBoard {
 
         public static listBoardDto of(Board board) {
             return listBoardDto.builder()
+                    .id(board.getId())
                     .title(board.getTitle())
                     .context(board.getContext())
                     .createAt(board.getCreateAt())
