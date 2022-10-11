@@ -18,8 +18,6 @@ public class RequestCourse {
         private String course;
         private List<DetailDto> detail;
         private List<GpsDto> gps;
-
-
     }
 
     @Builder

@@ -34,7 +34,8 @@ public enum ErrorCode {
     TRAVEL_COURSE_DUPLICATED(HttpStatus.FORBIDDEN,"COURSE_001","TRAVEL_COURSE_DUPLICATED"),
     NOT_FOUND_TRAVEL_COURSE(HttpStatus.FORBIDDEN,"COURSE_002","NOT_FOUND_TRAVEL_COURSE"),
     NOT_FOUND_LIKES(HttpStatus.NOT_FOUND, "LIKES_001", "해당 게시글에 좋아요 내역이 없습니다."),
-    LIKES_DUPLICATED(HttpStatus.FORBIDDEN, "LIKES_002", "이미 좋아요 한 게시물 입니다.");
+    LIKES_DUPLICATED(HttpStatus.FORBIDDEN, "LIKES_002", "이미 좋아요 한 게시물 입니다."),
+    NOT_FOUND_BOARD_COMMENT(HttpStatus.NOT_FOUND, "BOARD_COMMNET_001", "해당 게시판 댓글이 없습니다.");
 
     private final String code;
     private final String message;

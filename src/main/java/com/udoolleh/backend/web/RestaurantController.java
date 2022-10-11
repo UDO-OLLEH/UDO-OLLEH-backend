@@ -107,10 +107,9 @@ public class RestaurantController {
                 .build(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/admin/restaurant/{name}/images/{url}")
-    public ResponseEntity<CommonResponse> deleteRestaurantImages(@PathVariable String name,@PathVariable String url) {
-        String[] urls = url.split(",");
-        restaurantService.deleteRestaurantImageSelection(name, urls);
+    @DeleteMapping("/admin/restaurant/{id}/images")
+    public ResponseEntity<CommonResponse> deleteRestaurantImages(@PathVariable String id){
+        restaurantService.deleteRestaurantImage(id);
         return new ResponseEntity<>(CommonResponse.builder()
                 .message("맛집 이미지 삭제 성공")
                 .build(), HttpStatus.OK);

@@ -28,6 +28,7 @@ public class ResponseBoard {
     @Builder
     @Data
     public static class listBoardDto {
+        private String id;
         private String title;
         private String context;
         private Date createAt;
@@ -36,6 +37,7 @@ public class ResponseBoard {
 
         public static listBoardDto of(Board board) {
             return listBoardDto.builder()
+                    .id(board.getId())
                     .title(board.getTitle())
                     .context(board.getContext())
                     .createAt(board.getCreateAt())
@@ -49,12 +51,14 @@ public class ResponseBoard {
     @Builder
     @Data
     public static class getLikeBoardDto {
+        private String id;
         private String title;
         private String context;
         private Date createAt;
 
         public static getLikeBoardDto of(Board board) {
             return getLikeBoardDto.builder()
+                    .id(board.getId())
                     .title(board.getTitle())
                     .context(board.getContext())
                     .createAt(board.getCreateAt())

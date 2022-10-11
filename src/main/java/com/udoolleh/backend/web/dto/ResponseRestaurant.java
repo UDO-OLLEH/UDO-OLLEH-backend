@@ -11,6 +11,7 @@ public class ResponseRestaurant {
     @Builder
     @Data
     public static class restaurantDto{
+        private String id;
         private String name;
         private PlaceType placeType;
         private String category;

@@ -22,8 +22,7 @@ public class Board {
     @Column(name = "title", length = 30, nullable = false)
     private String title;
 
-    @Lob
-    @Column(name = "context")
+    @Column(name = "context", length = 2500)
     private String context;
 
     @Column(name = "photo")
@@ -38,6 +37,7 @@ public class Board {
     @Column(name = "category")
     private String category;
 
+
     @CreationTimestamp
     @Column(name = "create_at")
     private Date createAt = new Date();
@@ -48,6 +48,9 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Likes> likeList = new ArrayList<>(); //좋아요
+
+    @OneToMany(mappedBy = "board", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<BoardComment> boardComments = new ArrayList<>(); //댓글
 
 
     @Builder
@@ -66,6 +69,9 @@ public class Board {
     public void addLike(Likes like){
         likeList.add(like);
     }
+    public void addBoardComment(BoardComment boardComment){
+        this.boardComments.add(boardComment);
+    }
     public void updatePhoto(String photo) {
         this.photo = photo;
     }
@@ -75,9 +81,6 @@ public class Board {
     }
 
     public void updateLikes(long countLikes) {
-        this.countLikes = countLikes;
-    }
-    public void deleteLikes(long countLikes){
         this.countLikes = countLikes;
     }
 }
