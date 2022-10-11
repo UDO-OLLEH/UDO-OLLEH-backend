@@ -276,6 +276,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+    
+    @ExceptionHandler(NotFoundTravelCourseException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundTravelCourseException(NotFoundTravelCourseException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_TRAVEL_COURSE;
+        
+                ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
     @ExceptionHandler(NotFoundBoardCommentException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundBoardCommentException(NotFoundBoardCommentException e) {
         ErrorCode errorCode = ErrorCode.NOT_FOUND_BOARD_COMMENT;

@@ -50,7 +50,6 @@ public class RestaurantController {
                                                        @Valid @RequestPart RequestMenu.registerDto requestDto){
         menuService.registerMenu(file, requestDto);
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("메뉴 등록 성공")
                 .build(), HttpStatus.OK);
     }
@@ -59,7 +58,6 @@ public class RestaurantController {
         List<ResponseMenu.getMenuDto> list = menuService.getMenu(name);
 
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("메뉴 조회 성공")
                 .list(list)
                 .build(), HttpStatus.OK);
@@ -71,7 +69,6 @@ public class RestaurantController {
         menuService.deleteMenu(id, name);
 
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("메뉴 삭제 성공")
                 .build(), HttpStatus.OK);
     }
@@ -80,7 +77,6 @@ public class RestaurantController {
     public ResponseEntity<CommonResponse> registerRestaurantInfo(@RequestBody Map<String, PlaceType> placeType){
         kakaoApiService.callKakaoApi("우도",1,placeType.get("placeType"),UdoCoordinateType.ONE_QUADRANT); //1사분면 저장
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("카카오 맛집 등록 성공")
                 .build(), HttpStatus.OK);
     }
@@ -89,7 +85,6 @@ public class RestaurantController {
     public ResponseEntity<CommonResponse> registerRestaurantImage(@RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="restaurantName") Map<String, String> restaurantName){
         restaurantService.registerRestaurantImage(images, restaurantName.get("restaurantName"));
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("맛집 사진 등록 성공")
                 .build(), HttpStatus.OK);
     }

@@ -32,7 +32,6 @@ public class UserController {
         userService.register(registerDto);
 
         CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("성공")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -48,7 +47,6 @@ public class UserController {
         map.put("refreshToken", manager.getRefreshToken());
 
         CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("성공")
                 .list(map)
                 .build();
@@ -66,7 +64,6 @@ public class UserController {
         }
 
         CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("로그아웃 성공")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -77,7 +74,6 @@ public class UserController {
         ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(() -> new CustomJwtRuntimeException());
 
         CommonResponse response = CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("성공")
                 .list(token)
                 .build();
@@ -95,7 +91,6 @@ public class UserController {
         }
         userService.updateUser(email, file, updateDto);
         return new ResponseEntity<>(CommonResponse.builder()
-                .status(HttpStatus.OK.value())
                 .message("유저 정보 수정 성공")
                 .build(), HttpStatus.OK);
 
