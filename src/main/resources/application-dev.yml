@@ -5,6 +5,10 @@ spring:
     username: udo
     password: 1234
 
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
+
   jpa:
     database: mysql
     show-sql: true
