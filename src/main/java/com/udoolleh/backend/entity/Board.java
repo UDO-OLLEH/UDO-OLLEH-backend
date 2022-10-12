@@ -22,6 +22,9 @@ public class Board {
     @Column(name = "title", length = 30, nullable = false)
     private String title;
 
+    @Column(name = "hashtag")
+    private String hashtag;
+
     @Column(name = "context", length = 2500)
     private String context;
 
@@ -34,8 +37,6 @@ public class Board {
     @Column(name = "countLikes")
     private Long countLikes;
 
-    @Column(name = "hashtag")
-    private String hashtag;
 
 
     @CreationTimestamp
@@ -54,16 +55,18 @@ public class Board {
 
 
     @Builder
-    public Board(String title, String context, User user, long countVisit, long countLikes) {
+    public Board(String title, String context, User user, Long countVisit, Long countLikes, String hashtag) {
         this.title = title;
+        this.hashtag = hashtag;
         this.context = context;
         this.user = user;
         this.countVisit = countVisit;
         this.countLikes = countLikes;
     }
 
-    public void modifyPosts(String title, String context) {
+    public void modifyPosts(String title, String hashtag, String context) {
         this.title = title;
+        this.hashtag = hashtag;
         this.context = context;
     }
     public void addLike(Likes like){

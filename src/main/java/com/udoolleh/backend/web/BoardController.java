@@ -42,7 +42,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        Page<ResponseBoard.BoardListDto> boardList = boardService.boardList(email, pageable);
+        Page<ResponseBoard.BoardListDto> boardList = boardService.getBoardList(email, pageable);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 조회 성공")
@@ -58,7 +58,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        ResponseBoard.BoardDto detailBoards = boardService.boardDetail(email, id);
+        ResponseBoard.BoardDto detailBoards = boardService.getBoardDetail(email, id);
         boardService.updateVisit(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -77,7 +77,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.registerPosts(file, email, requestDto);
+        boardService.registerBoard(file, email, requestDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 등록 성공")
@@ -93,7 +93,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.modifyPosts(file, email, id, updateBoardDto);
+        boardService.updateBoard(file, email, id, updateBoardDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 수정 성공")
@@ -108,7 +108,7 @@ public class BoardController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardService.deletePosts(email, id);
+        boardService.deleteBoard(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("게시판 삭제 성공")

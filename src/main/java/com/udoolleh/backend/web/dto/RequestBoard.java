@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class RequestBoard {
     @Data
@@ -18,6 +19,8 @@ public class RequestBoard {
 
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
+        @NotNull(message = "해시태그가 없습니다.")
+        private String hashtag; // 해시태크가 없으면 ""로 들어와야 함
         @NotEmpty(message = "내용이 없습니다.")
         private String context;
 
@@ -32,6 +35,8 @@ public class RequestBoard {
 
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
+        @NotNull(message = "해시태그가 없습니다.")
+        private String hashtag; // 해시태크가 없으면 ""로 들어와야 함
         @NotEmpty(message = "내용이 없습니다.")
         private String context;
     }

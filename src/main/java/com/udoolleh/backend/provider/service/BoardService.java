@@ -107,6 +107,7 @@ public class BoardService implements BoardServiceInterface {
 
         Board board = Board.builder()
                 .title(postDto.getTitle())
+                .hashtag(postDto.getHashtag())
                 .context(postDto.getContext())
                 .user(user)
                 .build();
@@ -149,7 +150,7 @@ public class BoardService implements BoardServiceInterface {
                 System.out.println("s3 등록 실패");
             }
         }
-        board.modifyPosts(modifyDto.getTitle(), modifyDto.getContext());
+        board.modifyPosts(modifyDto.getTitle(), modifyDto.getHashtag(), modifyDto.getContext());
     }
 
     @Override
