@@ -46,23 +46,23 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto = RequestBoard.RegisterBoardDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null, "k", dto);
+        boardService.registerBoard(null, "k", dto);
 
-        RequestBoard.registerDto dto2 = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto2 = RequestBoard.RegisterBoardDto.builder()
                 .title("아")
                 .context("우아")
                 .build();
-        boardService.registerPosts(null, "k", dto2);
+        boardService.registerBoard(null, "k", dto2);
 
         Pageable pageable = PageRequest.of(0, 10);
 
-        Page<ResponseBoard.listBoardDto> list = boardService.boardList(user.getEmail(), pageable);
+        Page<ResponseBoard.BoardListDto> list = boardService.getBoardList(user.getEmail(), pageable);
         assertNotNull(list);
-        for (ResponseBoard.listBoardDto listBoard : list) {
+        for (ResponseBoard.BoardListDto listBoard : list) {
             System.out.println(listBoard.getTitle() + listBoard.getContext() + listBoard.getCreateAt());
         }
 
@@ -78,7 +78,7 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto = RequestBoard.RegisterBoardDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
@@ -86,7 +86,7 @@ public class BoardServiceTests {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
                 "image/png", "test data".getBytes());
 
-        boardService.registerPosts(mockMultipartFile, "k", dto);
+        boardService.registerBoard(mockMultipartFile, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
@@ -106,11 +106,11 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto = RequestBoard.RegisterBoardDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null, "k", dto);
+        boardService.registerBoard(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
@@ -129,19 +129,19 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto = RequestBoard.RegisterBoardDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null, "k", dto);
+        boardService.registerBoard(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
-        RequestBoard.updatesDto mDto = RequestBoard.updatesDto.builder()
+        RequestBoard.UpdateBoardDto mDto = RequestBoard.UpdateBoardDto.builder()
                 .title("수정한 제목")
                 .context("게시글 수정 내용")
                 .build();
-        boardService.modifyPosts(null, "k", board.getId(), mDto);
+        boardService.updateBoard(null, "k", board.getId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
@@ -161,15 +161,15 @@ public class BoardServiceTests {
                 .build();
         user = userRepository.save(user);
 
-        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto = RequestBoard.RegisterBoardDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null, "k", dto);
+        boardService.registerBoard(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
-        RequestBoard.updatesDto mDto = RequestBoard.updatesDto.builder()
+        RequestBoard.UpdateBoardDto mDto = RequestBoard.UpdateBoardDto.builder()
                 .title("수정한 제목")
                 .context("게시글 수정 내용")
                 .build();
@@ -177,7 +177,7 @@ public class BoardServiceTests {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
                 "image/png", "test data".getBytes());
 
-        boardService.modifyPosts(mockMultipartFile, "k", board.getId(), mDto);
+        boardService.updateBoard(mockMultipartFile, "k", board.getId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
@@ -199,16 +199,16 @@ public class BoardServiceTests {
         user = userRepository.save(user);
 
 
-        RequestBoard.registerDto dto = RequestBoard.registerDto.builder()
+        RequestBoard.RegisterBoardDto dto = RequestBoard.RegisterBoardDto.builder()
                 .title("지금 몇시냐")
                 .context("잘 자")
                 .build();
-        boardService.registerPosts(null, "k", dto);
+        boardService.registerBoard(null, "k", dto);
 
         Board board = boardRepository.findByTitleAndContext(dto.getTitle(), dto.getContext());
 
 
-        boardService.deletePosts("k", board.getId());
+        boardService.deleteBoard("k", board.getId());
 
         assertNull(boardRepository.findByUserAndId(user, board.getId()));
         assertFalse(user.getBoardList().contains(board));
@@ -250,7 +250,7 @@ public class BoardServiceTests {
 
         Pageable pageable = PageRequest.of(0, 10);
         //when
-        Page<ResponseBoard.listBoardDto> list = boardService.getMyBoard(user.getEmail(), pageable);
+        Page<ResponseBoard.BoardListDto> list = boardService.getMyBoard(user.getEmail(), pageable);
         //then
         assertEquals(2 ,list.toList().size());
     }
@@ -296,7 +296,7 @@ public class BoardServiceTests {
 
         //페이지 크기 설정
         Pageable pageable = PageRequest.of(0, 3);
-        Page<ResponseBoard.getLikeBoardDto> response =  boardService.getLikeBoard("test", pageable);
+        Page<ResponseBoard.LikeBoardDto> response =  boardService.getLikeBoard("test", pageable);
         assertNotNull(response);
         assertEquals(2, response.getTotalElements());
     }

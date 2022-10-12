@@ -32,7 +32,7 @@ public class BoardCommentService implements BoardCommentServiceInterface {
 
     @Override
     @Transactional
-    public void registerBoardComment(String email, RequestBoardComment.registerDto registerDto){
+    public void registerBoardComment(String email, RequestBoardComment.RegisterBoardCommentDto registerDto){
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomJwtRuntimeException());
         Board board = boardRepository.findById(registerDto.getBoardId()).orElseThrow(() -> new NotFoundRestaurantException());
 
@@ -46,15 +46,15 @@ public class BoardCommentService implements BoardCommentServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseBoardComment.boardCommentDto> getBoardComment(String email, String boardId){
+    public List<ResponseBoardComment.BoardCommentDto> getBoardComment(String email, String boardId){
         Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomJwtRuntimeException());
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundBoardException());
 
         List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
-        List<ResponseBoardComment.boardCommentDto> responseDto = new ArrayList<>();
+        List<ResponseBoardComment.BoardCommentDto> responseDto = new ArrayList<>();
 
         for(BoardComment boardComment : boardComments){
-            ResponseBoardComment.boardCommentDto item = ResponseBoardComment.boardCommentDto.builder()
+            ResponseBoardComment.BoardCommentDto item = ResponseBoardComment.BoardCommentDto.builder()
                     .id(boardComment.getId())
                     .createAt(boardComment.getCreateAt())
                     .nickname(boardComment.getUser().getNickname())
@@ -73,7 +73,7 @@ public class BoardCommentService implements BoardCommentServiceInterface {
      */
     @Override
     @Transactional
-    public void modifyBoardComment(String email, RequestBoardComment.modifyDto modifyDto) {
+    public void modifyBoardComment(String email, RequestBoardComment.UpdateBoardCommentDto modifyDto) {
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomJwtRuntimeException());
         BoardComment boardComment = boardCommentRepository.findById(modifyDto.getCommentId()).orElseThrow(()->new NotFoundBoardCommentException());
         if(!email.equals(boardComment.getUser().getEmail())){

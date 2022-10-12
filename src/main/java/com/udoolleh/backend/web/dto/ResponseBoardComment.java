@@ -9,7 +9,7 @@ import java.util.Date;
 public class ResponseBoardComment {
     @Builder
     @Getter
-    public static class boardCommentDto {
+    public static class BoardCommentDto {
         private String id;
         private String context;
         private String nickname;

@@ -1,12 +1,12 @@
 package com.udoolleh.backend.web.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 public class ResponseReview {
     @Builder
-    @Data
-    public static class getReviewDto{
+    @Getter
+    public static class ReviewDto{
         private String reviewId;
         private String nickname;
         private String context;

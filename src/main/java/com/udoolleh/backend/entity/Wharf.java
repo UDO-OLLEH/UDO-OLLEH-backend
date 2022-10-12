@@ -16,7 +16,7 @@ import java.util.List;
 public class Wharf {
     @Id
     @Column(name="wharf_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "wharf_course")

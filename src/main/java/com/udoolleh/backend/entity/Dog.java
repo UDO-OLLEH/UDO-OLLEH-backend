@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Dog {      //테스트 엔티티
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")

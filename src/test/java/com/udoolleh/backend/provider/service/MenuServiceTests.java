@@ -39,7 +39,7 @@ public class MenuServiceTests {
                 .build();
         restaurant = restaurantRepository.save(restaurant);
 
-        RequestMenu.registerDto requestDto = RequestMenu.registerDto.builder()
+        RequestMenu.RegisterMenuDto requestDto = RequestMenu.RegisterMenuDto.builder()
                 .restaurantName(restaurant.getName())
                 .name("메뉴 이름")
                 .description("설명")
@@ -62,7 +62,7 @@ public class MenuServiceTests {
                 .build();
         restaurant = restaurantRepository.save(restaurant);
 
-        RequestMenu.registerDto requestDto = RequestMenu.registerDto.builder()
+        RequestMenu.RegisterMenuDto requestDto = RequestMenu.RegisterMenuDto.builder()
                 .restaurantName(restaurant.getName())
                 .name("메뉴 이름")
                 .description("설명")
@@ -99,7 +99,7 @@ public class MenuServiceTests {
         menu.updatePhoto("사진 url");
 
         //메뉴 조회
-        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getName());
+        List<ResponseMenu.MenuDto> result = menuService.getMenu(restaurant.getName());
         assertNotNull(result);
     }
 
@@ -121,7 +121,7 @@ public class MenuServiceTests {
         restaurant.addMenu(menu);
 
         //메뉴 조회
-        List<ResponseMenu.getMenuDto> result = menuService.getMenu(restaurant.getName());
+        List<ResponseMenu.MenuDto> result = menuService.getMenu(restaurant.getName());
         assertNotNull(result);
     }
 

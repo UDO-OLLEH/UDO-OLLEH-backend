@@ -29,7 +29,7 @@ public class Review {
     private String photo;
 
     @Column(name = "grade")
-    private double grade;
+    private Double grade;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

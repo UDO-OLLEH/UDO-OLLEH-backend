@@ -63,7 +63,7 @@ public class RestaurantServiceTests {
         //then
         assertEquals(restaurantRepository.findByName("식당").getPhotoList().size(), 4);
     }
-    @DisplayName("식당 사진 삭제")
+    @DisplayName("식당 사진 삭제 테스트")
     @Transactional
     @Test
     void deleteRestaurantImageTest() {
@@ -111,7 +111,7 @@ public class RestaurantServiceTests {
     @Test
     void registerRestaurantTest() {
         //given
-        RequestRestaurant.registerDto registerDto = RequestRestaurant.registerDto.builder()
+        RequestRestaurant.RegisterRestaurantDto registerDto = RequestRestaurant.RegisterRestaurantDto.builder()
                 .name("타코집")
                 .category("음식점>한식")
                 .address("우도 ~~~")
@@ -150,7 +150,7 @@ public class RestaurantServiceTests {
         }
         Pageable pageable =  PageRequest.of(0, 10, Sort.by("totalGrade").descending());
         //when
-        List<ResponseRestaurant.restaurantDto> restaurantDtoList = restaurantService.getRestaurant(pageable);
+        List<ResponseRestaurant.RestaurantDto> restaurantDtoList = restaurantService.getRestaurant(pageable);
         //then
         assertEquals(Optional.ofNullable(restaurantDtoList.get(0).getTotalGrade()),Optional.of(19.0));   //별점 기준 내림차순으로 정렬확인
         assertEquals(Optional.ofNullable(restaurantDtoList.get(1).getTotalGrade()),Optional.of(18.0));

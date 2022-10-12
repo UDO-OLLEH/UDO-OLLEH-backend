@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CourseServiceInterface {
-  void registerCourse(RequestCourse.RegisterDto RequestDto);
-  List<ResponseCourse.GetDto> getCourses();
+  void registerCourse(RequestCourse.RegisterCourseDto RequestDto);
+  List<ResponseCourse.CourseDto> getCourseList();
   void deleteCourse(Long id);
   }

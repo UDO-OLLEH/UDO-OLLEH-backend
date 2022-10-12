@@ -2,11 +2,12 @@ package com.udoolleh.backend.web.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 public class ResponseMenu {
     @Builder
-    @Data
-    public static class getMenuDto{
+    @Getter
+    public static class MenuDto{
         private String name;
         private String photo;
         private Integer price;

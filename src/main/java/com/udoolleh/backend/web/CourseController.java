@@ -18,26 +18,29 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping("/course")
-    public ResponseEntity<CommonResponse> registerCourse(@Valid @RequestBody RequestCourse.RegisterDto requestDto){
+    public ResponseEntity<CommonResponse> registerCourse(@Valid @RequestBody RequestCourse.RegisterCourseDto requestDto){
         courseService.registerCourse(requestDto);
-        return new ResponseEntity<>(CommonResponse.builder()
-                .message("여행지 상세 등록 성공")
-                .build(), HttpStatus.OK);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("여행지 추천 코스 등록 성공")
+                .build());
     }
 
     @GetMapping("/course")
-    public ResponseEntity<CommonResponse> getCourses(){
-        List<ResponseCourse.GetDto> response = courseService.getCourses();
-        return new ResponseEntity<>(CommonResponse.builder()
-                .message("여행지 상세 조회 성공")
+    public ResponseEntity<CommonResponse> getCourseList(){
+        List<ResponseCourse.CourseDto> response = courseService.getCourseList();
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("여행지 추천 코스 조회 성공")
                 .list(response)
-                .build(), HttpStatus.OK);
+                .build());
     }
     @DeleteMapping("/course/{id}")
-    public ResponseEntity<CommonResponse> getCourses(@PathVariable Long id){
+    public ResponseEntity<CommonResponse> deleteCourse(@PathVariable Long id){
         courseService.deleteCourse(id);
-        return new ResponseEntity<>(CommonResponse.builder()
-                .message("여행지 상세 삭제 성공")
-                .build(), HttpStatus.OK);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("여행지 추천 코스 삭제 성공")
+                .build());
     }
 }

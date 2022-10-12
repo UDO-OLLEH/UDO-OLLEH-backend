@@ -14,8 +14,8 @@ import com.udoolleh.backend.web.dto.RequestCourse;
 import com.udoolleh.backend.web.dto.ResponseCourse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class CourseService implements CourseServiceInterface {
 
     @Override
     @Transactional
-    public void registerCourse(RequestCourse.RegisterDto requestDto){
+    public void registerCourse(RequestCourse.RegisterCourseDto requestDto){
         TravelCourse course = travelCourseRepository.findByCourseName(requestDto.getCourseName());
         if(course != null){ //코스명이 중복됐을 경우
             throw new TravelCourseDuplicatedException();
@@ -67,11 +67,11 @@ public class CourseService implements CourseServiceInterface {
     }
 
     @Override
-    @Transactional
-    public List<ResponseCourse.GetDto> getCourses(){
-        List<ResponseCourse.GetDto> response = new ArrayList<>();
+    @Transactional(readOnly = true)
+    public List<ResponseCourse.CourseDto> getCourseList(){
+        List<ResponseCourse.CourseDto> response = new ArrayList<>();
         List<ResponseCourse.GpsDto> gpsList = new ArrayList<>();
-        List<ResponseCourse.DetailDto> detailList = new ArrayList<>();
+        List<ResponseCourse.CourseDetailDto> detailList = new ArrayList<>();
         List<TravelCourse> courseList = travelCourseRepository.findAllCourse();
 
         for(TravelCourse item : courseList){
@@ -79,10 +79,10 @@ public class CourseService implements CourseServiceInterface {
                 gpsList.add(ResponseCourse.GpsDto.of(gps));
             }
             for(CourseDetail detail : item.getDetailList()){
-                detailList.add(ResponseCourse.DetailDto.of(detail));
+                detailList.add(ResponseCourse.CourseDetailDto.of(detail));
             }
 
-            ResponseCourse.GetDto dto = ResponseCourse.GetDto.builder()
+            ResponseCourse.CourseDto dto = ResponseCourse.CourseDto.builder()
                     .id(item.getId())
                     .courseName(item.getCourseName())
                     .course(item.getCourse())

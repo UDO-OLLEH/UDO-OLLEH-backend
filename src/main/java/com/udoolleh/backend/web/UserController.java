@@ -27,30 +27,27 @@ public class UserController {
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @PostMapping("/user")
-    public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.registerDto registerDto) {
-
+    public ResponseEntity<CommonResponse> requestRegister(@Valid @RequestBody RequestUser.RegisterUserDto registerDto) {
         userService.register(registerDto);
 
-        CommonResponse response = CommonResponse.builder()
-                .message("성공")
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("유저 회원가입 성공")
+                .build());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.loginDto loginDto) {
+    public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.LoginDto loginDto) {
 
-        ResponseUser.Login manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());
+        ResponseUser.Token manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("accessToken", manager.getAccessToken());
         map.put("refreshToken", manager.getRefreshToken());
 
-        CommonResponse response = CommonResponse.builder()
-                .message("성공")
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("유저 로그인 성공")
                 .list(map)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+                .build());
     }
 
     @PostMapping("/logout")
@@ -63,25 +60,23 @@ public class UserController {
             email = jwtAuthToken.getData().getSubject();
         }
 
-        CommonResponse response = CommonResponse.builder()
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("로그아웃 성공")
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+                .build());
     }
 
     @PostMapping("/refreshToken")
     public ResponseEntity<CommonResponse> refreshToken(@RequestBody Map<String, String> payload) {
         ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(() -> new CustomJwtRuntimeException());
 
-        CommonResponse response = CommonResponse.builder()
-                .message("성공")
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("refreshToken 갱신 성공")
                 .list(token)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+                .build());
     }
     @PutMapping("/user")
     public ResponseEntity<CommonResponse> updateUser(HttpServletRequest request, @RequestPart(value = "file", required = false) MultipartFile file,
-                                                     @RequestPart(value = "requestDto") RequestUser.updateDto updateDto){
+                                                     @Valid @RequestPart(value = "requestDto") RequestUser.UpdateUserDto updateDto){
         //유저 확인
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -90,9 +85,9 @@ public class UserController {
             email = jwtAuthToken.getData().getSubject();
         }
         userService.updateUser(email, file, updateDto);
-        return new ResponseEntity<>(CommonResponse.builder()
-                .message("유저 정보 수정 성공")
-                .build(), HttpStatus.OK);
 
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("유저 정보 수정 성공")
+                .build());
     }
 }

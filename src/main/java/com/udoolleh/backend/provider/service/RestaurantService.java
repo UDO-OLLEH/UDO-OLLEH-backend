@@ -58,7 +58,7 @@ public class RestaurantService implements RestaurantServiceInterface {
 
     @Override
     @Transactional
-    public void registerRestaurant(RequestRestaurant.registerDto restaurantDto) {
+    public void registerRestaurant(RequestRestaurant.RegisterRestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantRepository.findByName(restaurantDto.getName());
         if (restaurant != null) {
             throw new RestaurantDuplicatedException();
@@ -87,9 +87,9 @@ public class RestaurantService implements RestaurantServiceInterface {
     }
 
     @Override
-    @Transactional
-    public List<ResponseRestaurant.restaurantDto> getRestaurant(Pageable pageable){
-        List<ResponseRestaurant.restaurantDto> restaurantLists = new ArrayList<>();
+    @Transactional(readOnly = true)
+    public List<ResponseRestaurant.RestaurantDto> getRestaurant(Pageable pageable){
+        List<ResponseRestaurant.RestaurantDto> restaurantLists = new ArrayList<>();
         Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
 
         if(restaurants == null){
@@ -101,7 +101,7 @@ public class RestaurantService implements RestaurantServiceInterface {
             for(Photo photo : photoList) {
                 imageUrlList.add(photo.getUrl());
             }
-            ResponseRestaurant.restaurantDto restaurantDto = ResponseRestaurant.restaurantDto.builder()
+            ResponseRestaurant.RestaurantDto restaurantDto = ResponseRestaurant.RestaurantDto.builder()
                     .id(item.getId())
                     .address(item.getAddress())
                     .totalGrade(item.getTotalGrade())

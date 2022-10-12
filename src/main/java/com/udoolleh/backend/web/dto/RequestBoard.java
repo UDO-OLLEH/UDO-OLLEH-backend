@@ -14,7 +14,7 @@ public class RequestBoard {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class registerDto {
+    public static class RegisterBoardDto {
 
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
@@ -28,7 +28,7 @@ public class RequestBoard {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class updatesDto {
+    public static class UpdateBoardDto {
 
         @NotEmpty(message = "제목이 비어있습니다.")
         private String title;
@@ -39,7 +39,7 @@ public class RequestBoard {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class countDto{
-        private long countVisit;
+    public static class CountDto{
+        private Long countVisit;
     }
 }

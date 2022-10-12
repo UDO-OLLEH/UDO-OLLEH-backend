@@ -55,7 +55,7 @@ public class BoardCommentServiceTests {
                 .build();
         board = boardRepository.save(board);
 
-        RequestBoardComment.registerDto registerDto = RequestBoardComment.registerDto.builder()
+        RequestBoardComment.RegisterBoardCommentDto registerDto = RequestBoardComment.RegisterBoardCommentDto.builder()
                 .boardId(board.getId())
                 .context("댓글 내용")
                 .build();
@@ -96,7 +96,7 @@ public class BoardCommentServiceTests {
         board.addBoardComment(boardCommentRepository.save(boardComment));
 
         //then
-        List<ResponseBoardComment.boardCommentDto> boardComments = boardCommentService.getBoardComment("test",board.getId());
+        List<ResponseBoardComment.BoardCommentDto> boardComments = boardCommentService.getBoardComment("test",board.getId());
 
         assertEquals(boardComments.size() , 1);
         assertEquals(boardComments.get(0).getNickname(), "nickname");
@@ -130,7 +130,7 @@ public class BoardCommentServiceTests {
         boardComment = boardCommentRepository.findByContext("댓글 내용");
 
         LocalDateTime beforeModificationTime = boardComment.getCreateAt();
-        RequestBoardComment.modifyDto modifyDto = RequestBoardComment.modifyDto.builder()
+        RequestBoardComment.UpdateBoardCommentDto modifyDto = RequestBoardComment.UpdateBoardCommentDto.builder()
                 .commentId(boardComment.getId())
                 .context("댓글 내용 변경")
                 .build();

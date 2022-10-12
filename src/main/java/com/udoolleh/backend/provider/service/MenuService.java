@@ -29,7 +29,7 @@ public class MenuService implements MenuServiceInterface {
 
     @Override
     @Transactional
-    public void registerMenu(MultipartFile file, RequestMenu.registerDto requestDto){
+    public void registerMenu(MultipartFile file, RequestMenu.RegisterMenuDto requestDto){
         Restaurant restaurant = restaurantRepository.findByName(requestDto.getRestaurantName());
         if(restaurant == null){
             throw new NotFoundRestaurantException();
@@ -64,17 +64,17 @@ public class MenuService implements MenuServiceInterface {
     }
 
     @Override
-    @Transactional
-    public List<ResponseMenu.getMenuDto> getMenu(String restaurantName){
+    @Transactional(readOnly = true)
+    public List<ResponseMenu.MenuDto> getMenu(String restaurantName){
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
         if(restaurant == null){
             throw new NotFoundRestaurantException();
         }
-        List<ResponseMenu.getMenuDto> list = new ArrayList<>();
+        List<ResponseMenu.MenuDto> list = new ArrayList<>();
         List<Menu> menuList = restaurant.getMenuList();
 
         for(Menu item : menuList){
-            ResponseMenu.getMenuDto response = ResponseMenu.getMenuDto.builder()
+            ResponseMenu.MenuDto response = ResponseMenu.MenuDto.builder()
                     .name(item.getName())
                     .photo(item.getPhoto())
                     .price(item.getPrice())

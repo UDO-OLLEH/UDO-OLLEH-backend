@@ -46,22 +46,19 @@ public class BoardService implements BoardServiceInterface {
     //게시글 전체 조회
     @Transactional(readOnly = true)
     @Override
-    public Page<ResponseBoard.listBoardDto> boardList(String userEmail, Pageable pageable) {
+    public Page<ResponseBoard.BoardListDto> getBoardList(String userEmail, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
 
         Page<Board> board = boardRepository.findAll(pageable);
-        return board.map(ResponseBoard.listBoardDto::of);
-
-
-
+        return board.map(ResponseBoard.BoardListDto::of);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public ResponseBoard.detailBoardDto boardDetail(String userEmail, String id) {
+    public ResponseBoard.BoardDto getBoardDetail(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -69,7 +66,7 @@ public class BoardService implements BoardServiceInterface {
         Optional<Board> optionalBoard = boardRepository.findById(id);
         Board board = optionalBoard.orElseThrow(() -> new NotFoundBoardException());
 
-        return ResponseBoard.detailBoardDto.builder()
+        return ResponseBoard.BoardDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())
                 .context(board.getContext())
@@ -101,7 +98,7 @@ public class BoardService implements BoardServiceInterface {
     //게시글 등록 API
     @Override
     @Transactional
-    public void registerPosts(MultipartFile file, String userEmail, RequestBoard.registerDto postDto) { //postDto = title, context + category 추후 추가
+    public void registerBoard(MultipartFile file, String userEmail, RequestBoard.RegisterBoardDto postDto) { //postDto = title, context + category 추후 추가
         User user = userRepository.findByEmail(userEmail);
 
         if (user == null) {
@@ -130,7 +127,7 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void modifyPosts(MultipartFile file, String userEmail, String id, RequestBoard.updatesDto modifyDto) {
+    public void updateBoard(MultipartFile file, String userEmail, String id, RequestBoard.UpdateBoardDto modifyDto) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -157,7 +154,7 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public void deletePosts(String userEmail, String id) {
+    public void deleteBoard(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new CustomJwtRuntimeException();
@@ -221,26 +218,26 @@ public class BoardService implements BoardServiceInterface {
 
     @Override
     @Transactional
-    public Page<ResponseBoard.listBoardDto> getMyBoard(String email, Pageable pageable){
+    public Page<ResponseBoard.BoardListDto> getMyBoard(String email, Pageable pageable){
         User user = userRepository.findByEmail(email);
         if(user == null){
             throw new CustomJwtRuntimeException();
         }
         Page<Board> boardList = boardRepository.findByUser(user, pageable);
 
-        return boardList.map(ResponseBoard.listBoardDto::of);
+        return boardList.map(ResponseBoard.BoardListDto::of);
     }
     
     @Override
     @Transactional
-    public Page<ResponseBoard.getLikeBoardDto> getLikeBoard(String email, Pageable pageable){
+    public Page<ResponseBoard.LikeBoardDto> getLikeBoard(String email, Pageable pageable){
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new CustomJwtRuntimeException();
         }
 
         Page<Board> response = boardRepository.findLikeBoard(user, pageable);
-        return response.map(ResponseBoard.getLikeBoardDto::of);
+        return response.map(ResponseBoard.LikeBoardDto::of);
     }
 
 

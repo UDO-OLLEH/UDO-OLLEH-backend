@@ -13,7 +13,7 @@ public class ResponseWharfTimetable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class wharfTimetableDto{
+    public static class WharfTimetableDto{
         private String wharfCourse;
         private String monthType;
         private List<String> departureTime;

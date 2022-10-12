@@ -29,7 +29,7 @@ public class UserServiceTests {
     @Transactional
     void registerTest() {
         //given
-        RequestUser.registerDto dto = RequestUser.registerDto.builder()
+        RequestUser.RegisterUserDto dto = RequestUser.RegisterUserDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
@@ -47,7 +47,7 @@ public class UserServiceTests {
     @Transactional
     void registerTestWhenDuplicatedNickname() {
         //given
-        RequestUser.registerDto dto = RequestUser.registerDto.builder()
+        RequestUser.RegisterUserDto dto = RequestUser.RegisterUserDto.builder()
                 .email("hello")
                 .nickname("nickname")
                 .password("itsmypassword")
@@ -56,7 +56,7 @@ public class UserServiceTests {
         userService.register(dto);
 
         //닉네임 중복
-        RequestUser.registerDto dto1 = RequestUser.registerDto.builder()
+        RequestUser.RegisterUserDto dto1 = RequestUser.RegisterUserDto.builder()
                 .email("test")
                 .nickname("nickname")
                 .password("1234")
@@ -70,19 +70,19 @@ public class UserServiceTests {
     @DisplayName("로그인 서비스 테스트")
     void loginTest() {
         //given
-        RequestUser.registerDto dto = RequestUser.registerDto.builder()
+        RequestUser.RegisterUserDto dto = RequestUser.RegisterUserDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
         userService.register(dto);
 
-        RequestUser.loginDto loginRequest = RequestUser.loginDto.builder()
+        RequestUser.LoginDto loginRequest = RequestUser.LoginDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
 
         //when
-        ResponseUser.Login loginResponse = userService.login(loginRequest).orElseGet(()->null);
+        ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(()->null);
         System.out.println(loginResponse.getAccessToken());
         System.out.println(loginResponse.getRefreshToken());
 
@@ -116,19 +116,19 @@ public class UserServiceTests {
     @DisplayName("토큰 갱신 테스트")
     void refreshTokenTest() {
         //given
-        RequestUser.registerDto dto = RequestUser.registerDto.builder()
+        RequestUser.RegisterUserDto dto = RequestUser.RegisterUserDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
         userService.register(dto);
 
-        RequestUser.loginDto loginRequest = RequestUser.loginDto.builder()
+        RequestUser.LoginDto loginRequest = RequestUser.LoginDto.builder()
                 .email("hello")
                 .password("itsmypassword")
                 .build();
 
         //when
-        ResponseUser.Login loginResponse = userService.login(loginRequest).orElseGet(()->null);
+        ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(()->null);
         ResponseUser.Token tokenResponse = userService.refreshToken(loginResponse.getRefreshToken()).orElseGet(()->null);
         //then
         assertNotNull(tokenResponse.getRefreshToken());
@@ -147,7 +147,7 @@ public class UserServiceTests {
                 .build();
         userRepository.save(user);
         //회원정보 변경
-        RequestUser.updateDto updateDto = RequestUser.updateDto.builder()
+        RequestUser.UpdateUserDto updateDto = RequestUser.UpdateUserDto.builder()
                 .password("changedpassword")
                 .nickname("changednick")
                 .build();

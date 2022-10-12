@@ -2,16 +2,11 @@ package com.udoolleh.backend.web.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 public class ResponseUser {
     @Builder
-    @Data
-    public static class Login{
-        private String accessToken;
-        private String refreshToken;
-    }
-    @Builder
-    @Data
+    @Getter
     public static class Token {
         private String accessToken;
         private String refreshToken;

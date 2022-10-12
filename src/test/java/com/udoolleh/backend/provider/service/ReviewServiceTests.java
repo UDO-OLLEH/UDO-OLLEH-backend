@@ -48,7 +48,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
@@ -79,7 +79,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
@@ -114,7 +114,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
@@ -122,7 +122,7 @@ public class ReviewServiceTests {
 
         reviewService.registerReview(null, "test", requestDto);
 
-        RequestReview.registerDto requestDto1 = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto1 = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(4.5)
@@ -148,7 +148,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
@@ -175,7 +175,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
@@ -184,11 +184,11 @@ public class ReviewServiceTests {
 
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         //리뷰 수정
-        RequestReview.modifyDto request = RequestReview.modifyDto.builder()
+        RequestReview.UpdateReviewDto request = RequestReview.UpdateReviewDto.builder()
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
-        reviewService.modifyReview(null, "test", review.getId(), request);
+        reviewService.updateReview(null, "test", review.getId(), request);
 
         Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
         assertTrue(result.getContext().equals("리뷰 수정 내용"));
@@ -211,7 +211,7 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)
@@ -220,7 +220,7 @@ public class ReviewServiceTests {
 
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         //리뷰 수정
-        RequestReview.modifyDto request = RequestReview.modifyDto.builder()
+        RequestReview.UpdateReviewDto request = RequestReview.UpdateReviewDto.builder()
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
@@ -228,7 +228,7 @@ public class ReviewServiceTests {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
                 "image/png", "test data".getBytes());
 
-        reviewService.modifyReview(mockMultipartFile, "test", review.getId(), request);
+        reviewService.updateReview(mockMultipartFile, "test", review.getId(), request);
 
         Review result = reviewRepository.findByUserAndRestaurant(user, restaurant);
         assertTrue(result.getContext().equals("리뷰 수정 내용"));
@@ -251,11 +251,11 @@ public class ReviewServiceTests {
         restaurant = restaurantRepository.save(restaurant);
 
         //리뷰 수정
-        RequestReview.modifyDto request = RequestReview.modifyDto.builder()
+        RequestReview.UpdateReviewDto request = RequestReview.UpdateReviewDto.builder()
                 .context("리뷰 수정 내용")
                 .grade(5.0)
                 .build();
-        assertThrows(NotFoundReviewException.class, ()-> reviewService.modifyReview(null, "test", "옳지 않은 리뷰 아이디", request));
+        assertThrows(NotFoundReviewException.class, ()-> reviewService.updateReview(null, "test", "옳지 않은 리뷰 아이디", request));
     }
 
     @Test
@@ -274,7 +274,7 @@ public class ReviewServiceTests {
                 .build();
         restaurant = restaurantRepository.save(restaurant);
         //리뷰 등록
-        RequestReview.registerDto requestDto = RequestReview.registerDto.builder()
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
                 .restaurantName(restaurant.getName())
                 .context("리뷰 내용")
                 .grade(3.5)

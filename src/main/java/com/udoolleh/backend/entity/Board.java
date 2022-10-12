@@ -29,10 +29,10 @@ public class Board {
     private String photo;
 
     @Column(name = "countVisit")
-    private long countVisit;
+    private Long countVisit;
 
     @Column(name = "countLikes")
-    private long countLikes;
+    private Long countLikes;
 
     @Column(name = "category")
     private String category;

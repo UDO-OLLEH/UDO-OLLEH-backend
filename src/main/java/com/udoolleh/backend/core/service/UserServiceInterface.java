@@ -7,11 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 public interface UserServiceInterface {
-    void register(RequestUser.registerDto registerDto);
-    Optional<ResponseUser.Login> login(RequestUser.loginDto loginDto);
+    void register(RequestUser.RegisterUserDto registerDto);
+    Optional<ResponseUser.Token> login(RequestUser.LoginDto loginDto);
     Optional<ResponseUser.Token> refreshToken(String token);
     String createAccessToken(String id);
     String createRefreshToken(String id);
     void logout(String email);
-    void updateUser(String email, MultipartFile file, RequestUser.updateDto updateDto);
+    void updateUser(String email, MultipartFile file, RequestUser.UpdateUserDto updateDto);
 }

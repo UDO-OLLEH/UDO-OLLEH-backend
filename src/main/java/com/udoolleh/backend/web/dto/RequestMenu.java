@@ -11,7 +11,7 @@ public class RequestMenu {
 
     @Builder
     @Data
-    public static class registerDto{
+    public static class RegisterMenuDto{
         @NotEmpty(message = "가게이름이 비어있습니다.")
         private String restaurantName;
         @NotEmpty(message = "메뉴 이름이 비어있습니다.")

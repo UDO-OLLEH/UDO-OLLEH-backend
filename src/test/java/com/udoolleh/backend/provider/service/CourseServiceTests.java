@@ -48,7 +48,7 @@ public class CourseServiceTests {
                 .longitude(127.342324)
                 .build());
 
-        RequestCourse.RegisterDto requestDto = RequestCourse.RegisterDto.builder()
+        RequestCourse.RegisterCourseDto requestDto = RequestCourse.RegisterCourseDto.builder()
                 .courseName("우도 여행")
                 .course("선착장 - 식당 - 올레길")
                 .detail(detail)
@@ -72,7 +72,7 @@ public class CourseServiceTests {
                 .context("여기여기")
                 .build());
 
-        RequestCourse.RegisterDto requestDto = RequestCourse.RegisterDto.builder()
+        RequestCourse.RegisterCourseDto requestDto = RequestCourse.RegisterCourseDto.builder()
                 .courseName("우도 여행")
                 .course("선착장 - 식당 - 올레길")
                 .detail(detail)
@@ -95,7 +95,7 @@ public class CourseServiceTests {
                 .longitude(127.342324)
                 .build());
 
-        RequestCourse.RegisterDto requestDto = RequestCourse.RegisterDto.builder()
+        RequestCourse.RegisterCourseDto requestDto = RequestCourse.RegisterCourseDto.builder()
                 .courseName("우도 여행")
                 .course("선착장 - 식당 - 올레길")
                 .gps(gps)
@@ -167,7 +167,7 @@ public class CourseServiceTests {
 
 
             //조회
-            List<ResponseCourse.GetDto> list = courseService.getCourses();
+            List<ResponseCourse.CourseDto> list = courseService.getCourseList();
             assertNotNull(list);
         }
 

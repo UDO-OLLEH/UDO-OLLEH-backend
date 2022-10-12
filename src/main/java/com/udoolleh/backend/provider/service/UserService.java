@@ -33,7 +33,7 @@ public class UserService implements UserServiceInterface {
     //회원가입 API
     @Transactional
     @Override
-    public void register(RequestUser.registerDto registerDto) {
+    public void register(RequestUser.RegisterUserDto registerDto) {
         User user = userRepository.findByEmail(registerDto.getEmail());
         if (user != null) {
             throw new RegisterFailedException();
@@ -60,7 +60,7 @@ public class UserService implements UserServiceInterface {
     //로그인 API
     @Transactional
     @Override
-    public Optional<ResponseUser.Login> login(RequestUser.loginDto loginDto) {
+    public Optional<ResponseUser.Token> login(RequestUser.LoginDto loginDto) {
 
         User user = userRepository.findByEmail(loginDto.getEmail());
         if (user == null) {
@@ -70,11 +70,11 @@ public class UserService implements UserServiceInterface {
         String encryptedPassword = SHA256Util.getEncrypt(loginDto.getPassword(), salt);
 
         user = userRepository.findByEmailAndPassword(loginDto.getEmail(), encryptedPassword);
-        ResponseUser.Login login = null;
+        ResponseUser.Token login = null;
 
         if (user != null) {
             String refreshToken = createRefreshToken((user.getEmail()));
-            login = ResponseUser.Login.builder()
+            login = ResponseUser.Token.builder()
                     .accessToken(createAccessToken(user.getEmail()))
                     .refreshToken(refreshToken)
                     .build();
@@ -148,7 +148,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public void updateUser(String email, MultipartFile file, RequestUser.updateDto requestDto){
+    public void updateUser(String email, MultipartFile file, RequestUser.UpdateUserDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){
             throw new CustomJwtRuntimeException();

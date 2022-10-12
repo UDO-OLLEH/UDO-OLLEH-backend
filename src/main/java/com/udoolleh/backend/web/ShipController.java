@@ -1,5 +1,6 @@
 package com.udoolleh.backend.web;
 
+import com.amazonaws.Response;
 import com.udoolleh.backend.core.type.ShipCourseType;
 import com.udoolleh.backend.core.type.ShipTimetableType;
 import com.udoolleh.backend.exception.errors.NotFoundWharfException;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -21,57 +23,59 @@ public class ShipController {
     private final ShipService shipService;
 
     @PostMapping("/udo/wharf")
-    public ResponseEntity<CommonResponse> addWharf(@RequestBody Map<String, ShipCourseType> wharfCourse){
+    public ResponseEntity<CommonResponse> registerWharf(@RequestBody Map<String, ShipCourseType> wharfCourse){
         shipService.registerWharfCourse(wharfCourse.get("wharfCourse"));
 
-        return new ResponseEntity<>(CommonResponse.builder()
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("선착장 코스 등록 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @PostMapping("/udo/wharf/timetable")
-    public ResponseEntity<CommonResponse> addWharfTimetable(@RequestBody RequestWharfTimetable.wharfTimeDto requestDto){
+    public ResponseEntity<CommonResponse> registerWharfTimetable(@Valid @RequestBody RequestWharfTimetable.RegisterWharfTimeDto requestDto){
         shipService.registerWharfTimetable(requestDto.getWharfCourse(), requestDto.getDepartureTime(), requestDto.getMonthType());
 
-        return new ResponseEntity<>(CommonResponse.builder()
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("배 시간 등록 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @GetMapping("/udo/wharf")
-    public ResponseEntity<CommonResponse> listWharf(){
+    public ResponseEntity<CommonResponse> getWharfList(){
         List<String> wharfList = shipService.getAllWharf().orElseGet(()-> null);
-        return new ResponseEntity<>(CommonResponse.builder()
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("선착장 조회 성공")
                 .list(wharfList)
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @GetMapping("/udo/wharf/timetable")
     public ResponseEntity<CommonResponse> getWharfTimetable(@RequestParam ShipCourseType wharfCourse, @RequestParam ShipTimetableType monthType){
-        ResponseWharfTimetable.wharfTimetableDto list = shipService.getWharfTimetable(wharfCourse, monthType).orElseGet(()->null);
-        return new ResponseEntity<>(CommonResponse.builder()
+        ResponseWharfTimetable.WharfTimetableDto list = shipService.getWharfTimetable(wharfCourse, monthType).orElseGet(()->null);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("배시간 조회 성공")
                 .list(list)
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @DeleteMapping("/udo/wharf/{wharfCourse}")
     public ResponseEntity<CommonResponse> deleteWharf(@PathVariable("wharfCourse") ShipCourseType wharfCourse){
         shipService.deleteWharf(wharfCourse);
 
-        return new ResponseEntity<>(CommonResponse.builder()
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("선착장 코스 삭제 성공")
-                .build(), HttpStatus.OK);
+                .build());
 
     }
     @DeleteMapping("/udo/wharf/timetable/{wharfCourse}/{monthType}")
     public ResponseEntity<CommonResponse> deleteWharf(@PathVariable("wharfCourse") ShipCourseType wharfCourse, @PathVariable("monthType") ShipTimetableType monthType){
         shipService.deleteWharfTimetable(wharfCourse, monthType);
-        return new ResponseEntity<>(CommonResponse.builder()
-                .message("배 시간 삭제 성공")
-                .build(), HttpStatus.OK);
 
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("배 시간 삭제 성공")
+                .build());
     }
 
 }

@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class BoardCommentController {
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @PostMapping("/board/comment")
-    public ResponseEntity<CommonResponse> registerBoardComment(HttpServletRequest request, @RequestBody RequestBoardComment.registerDto registerDto) {
+    public ResponseEntity<CommonResponse> registerBoardComment(HttpServletRequest request, @Valid @RequestBody RequestBoardComment.RegisterBoardCommentDto registerDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
@@ -48,7 +49,7 @@ public class BoardCommentController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        List<ResponseBoardComment.boardCommentDto> boardCommentDtoList = boardCommentService.getBoardComment(email, id);
+        List<ResponseBoardComment.BoardCommentDto> boardCommentDtoList = boardCommentService.getBoardComment(email, id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("댓글 조회 성공")
@@ -56,14 +57,14 @@ public class BoardCommentController {
                 .build());
     }
     @PutMapping("/board/comment")
-    public ResponseEntity<CommonResponse> modifyBoardComment(HttpServletRequest request, @RequestBody RequestBoardComment.modifyDto modifyDto) {
+    public ResponseEntity<CommonResponse> updateBoardComment(HttpServletRequest request, @Valid @RequestBody RequestBoardComment.UpdateBoardCommentDto updateDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        boardCommentService.modifyBoardComment(email, modifyDto);
+        boardCommentService.modifyBoardComment(email, updateDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("댓글 수정 성공")

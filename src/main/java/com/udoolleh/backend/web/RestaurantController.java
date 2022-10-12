@@ -47,20 +47,21 @@ public class RestaurantController {
 
     @PostMapping("/admin/restaurant/menu")
     public ResponseEntity<CommonResponse> registerMenu(@RequestPart MultipartFile file,
-                                                       @Valid @RequestPart RequestMenu.registerDto requestDto){
+                                                       @Valid @RequestPart RequestMenu.RegisterMenuDto requestDto){
         menuService.registerMenu(file, requestDto);
-        return new ResponseEntity<>(CommonResponse.builder()
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("메뉴 등록 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
     @GetMapping("/restaurant/{name}/menu")
     public ResponseEntity<CommonResponse> getMenu(@PathVariable String name){
-        List<ResponseMenu.getMenuDto> list = menuService.getMenu(name);
+        List<ResponseMenu.MenuDto> list = menuService.getMenu(name);
 
-        return new ResponseEntity<>(CommonResponse.builder()
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("메뉴 조회 성공")
                 .list(list)
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @DeleteMapping("/admin/restaurant/{id}/menu/{name}")
@@ -68,50 +69,56 @@ public class RestaurantController {
 
         menuService.deleteMenu(id, name);
 
-        return new ResponseEntity<>(CommonResponse.builder()
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("메뉴 삭제 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @PostMapping("/admin/kakao/restaurant")
     public ResponseEntity<CommonResponse> registerRestaurantInfo(@RequestBody Map<String, PlaceType> placeType){
         kakaoApiService.callKakaoApi("우도",1,placeType.get("placeType"),UdoCoordinateType.ONE_QUADRANT); //1사분면 저장
-        return new ResponseEntity<>(CommonResponse.builder()
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("카카오 맛집 등록 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @PostMapping("/admin/restaurant/images")
-    public ResponseEntity<CommonResponse> registerRestaurantImage(@RequestPart(value="images") List<MultipartFile> images, @RequestPart(value="restaurantName") Map<String, String> restaurantName){
+    public ResponseEntity<CommonResponse> registerRestaurantImage(@RequestPart(value="images") List<MultipartFile> images,
+                                                                  @RequestPart(value="restaurantName") Map<String, String> restaurantName){
         restaurantService.registerRestaurantImage(images, restaurantName.get("restaurantName"));
-        return new ResponseEntity<>(CommonResponse.builder()
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("맛집 사진 등록 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @PostMapping("/admin/restaurant")
-    public ResponseEntity<CommonResponse> registerRestaurant(@RequestBody RequestRestaurant.registerDto registerDto){
+    public ResponseEntity<CommonResponse> registerRestaurant(@Valid @RequestBody RequestRestaurant.RegisterRestaurantDto registerDto){
         restaurantService.registerRestaurant(registerDto);
-        return new ResponseEntity<>(CommonResponse.builder()
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("이미지를 제외한 맛집 등록 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @GetMapping("/restaurant")
     public ResponseEntity<CommonResponse> getRestaurant(@PageableDefault (size=10, sort="totalGrade", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<ResponseRestaurant.restaurantDto> restaurantList = restaurantService.getRestaurant(pageable);
-        return new ResponseEntity<>(CommonResponse.builder()
-                .message("맛집 조회 성공")
+        List<ResponseRestaurant.RestaurantDto> restaurantList = restaurantService.getRestaurant(pageable);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("맛집 전체 조회 성공")
                 .list(restaurantList)
-                .build(), HttpStatus.OK);
+                .build());
     }
 
     @DeleteMapping("/admin/restaurant/{id}/images")
     public ResponseEntity<CommonResponse> deleteRestaurantImages(@PathVariable String id){
         restaurantService.deleteRestaurantImage(id);
-        return new ResponseEntity<>(CommonResponse.builder()
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("맛집 이미지 삭제 성공")
-                .build(), HttpStatus.OK);
+                .build());
     }
 }

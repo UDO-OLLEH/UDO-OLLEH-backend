@@ -23,7 +23,7 @@ public class Menu {
     private String photo;
 
     @Column(name = "price")
-    private int price;
+    private Integer price;
 
     @Column(name = "description")
     private String description;

@@ -5,29 +5,30 @@ import com.udoolleh.backend.entity.CourseDetail;
 import com.udoolleh.backend.entity.Gps;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
 public class ResponseCourse {
     @Builder
-    @Data
-    public static class GetDto{
+    @Getter
+    public static class CourseDto{
         private Long id;
         private String courseName;
         private String course;
-        private List<DetailDto> detail;
+        private List<CourseDetailDto> detail;
         private List<GpsDto> gps;
 
     }
 
     @Builder
-    @Data
-    public static class DetailDto{
+    @Getter
+    public static class CourseDetailDto{
         private CourseDetailType type;
         private String context;
 
-        public static DetailDto of(CourseDetail detail){
-            return DetailDto.builder()
+        public static CourseDetailDto of(CourseDetail detail){
+            return CourseDetailDto.builder()
                     .type(detail.getType())
                     .context(detail.getContext())
                     .build();
@@ -35,7 +36,7 @@ public class ResponseCourse {
     }
 
     @Builder
-    @Data
+    @Getter
     public static class GpsDto{
         private Double latitude;
         private Double longitude;

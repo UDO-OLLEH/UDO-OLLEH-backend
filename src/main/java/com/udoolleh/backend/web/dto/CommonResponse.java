@@ -14,8 +14,6 @@ public class CommonResponse {
     private String id = UUID.randomUUID().toString(); // uuid
     @Builder.Default
     private Date dateTime = new Date(); // date
-
-    private int status;
     private String message;
     private Object list;
 }

@@ -32,7 +32,7 @@ public class Restaurant {
     private String address;
 
     @Column(name = "total_grade")
-    private double totalGrade;
+    private Double totalGrade;
 
     @Column(name = "x_coordinate")
     private String xCoordinate;

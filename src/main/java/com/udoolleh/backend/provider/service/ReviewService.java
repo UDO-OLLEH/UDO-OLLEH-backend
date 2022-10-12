@@ -31,7 +31,7 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     @Transactional
-    public void registerReview(MultipartFile file,  String email, RequestReview.registerDto requestDto){
+    public void registerReview(MultipartFile file,  String email, RequestReview.RegisterReviewDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
             throw new CustomJwtRuntimeException();
@@ -77,7 +77,7 @@ public class ReviewService implements ReviewServiceInterface {
 
     @Override
     @Transactional
-    public void modifyReview(MultipartFile file, String email, String reviewId, RequestReview.modifyDto requestDto){
+    public void updateReview(MultipartFile file, String email, String reviewId, RequestReview.UpdateReviewDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
             throw new CustomJwtRuntimeException();
@@ -141,17 +141,17 @@ public class ReviewService implements ReviewServiceInterface {
     }
 
     @Override
-    @Transactional
-    public List<ResponseReview.getReviewDto> getReview(String restaurantName){
+    @Transactional(readOnly = true)
+    public List<ResponseReview.ReviewDto> getReview(String restaurantName){
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
         if(restaurant == null){
             throw new NotFoundReviewException();
         }
         List<Review> reviewList =  reviewRepository.findByRestaurant(restaurant);
-        List<ResponseReview.getReviewDto> list = new ArrayList<>();
+        List<ResponseReview.ReviewDto> list = new ArrayList<>();
 
         for(Review item : reviewList){
-            ResponseReview.getReviewDto response = ResponseReview.getReviewDto.builder()
+            ResponseReview.ReviewDto response = ResponseReview.ReviewDto.builder()
                     .reviewId(item.getId())
                     .nickname(item.getUser().getNickname())
                     .context(item.getContext())

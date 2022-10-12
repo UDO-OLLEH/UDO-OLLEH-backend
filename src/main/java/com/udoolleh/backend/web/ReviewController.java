@@ -26,7 +26,7 @@ public class ReviewController {
     @PostMapping("/restaurant/review")
     public ResponseEntity<CommonResponse> registerReview(HttpServletRequest request,
                                                   @RequestPart MultipartFile file,
-                                                  @Valid @RequestPart RequestReview.registerDto requestDto){
+                                                  @Valid @RequestPart RequestReview.RegisterReviewDto requestDto){
         //유저 확인
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -43,10 +43,10 @@ public class ReviewController {
     }
 
     @PutMapping("/restaurant/review/{id}")
-    public ResponseEntity<CommonResponse> modifyReview(HttpServletRequest request,
+    public ResponseEntity<CommonResponse> updateReview(HttpServletRequest request,
                                                 @PathVariable String id,
                                                 @RequestPart MultipartFile file,
-                                                @Valid @RequestPart RequestReview.modifyDto requestDto){
+                                                @Valid @RequestPart RequestReview.UpdateReviewDto requestDto){
         //유저 확인
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -55,7 +55,7 @@ public class ReviewController {
             email = jwtAuthToken.getData().getSubject();
         }
         //리뷰 수정
-        reviewService.modifyReview(file, email, id, requestDto);
+        reviewService.updateReview(file, email, id, requestDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("리뷰 수정 성공")
@@ -80,7 +80,7 @@ public class ReviewController {
     }
     @GetMapping("/restaurant/{name}/review")
     public ResponseEntity<CommonResponse> getReview(@PathVariable String name){
-        List<ResponseReview.getReviewDto> list = reviewService.getReview(name);
+        List<ResponseReview.ReviewDto> list = reviewService.getReview(name);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("리뷰 조회 성공")

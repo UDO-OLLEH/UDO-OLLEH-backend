@@ -11,7 +11,7 @@ public class ResponseBoard {
 
     @Builder
     @Getter
-    public static class detailBoardDto {
+    public static class BoardDto {
 
         private String id;
         private String title;
@@ -20,23 +20,21 @@ public class ResponseBoard {
         private Date createAt;
         private String nickname;
         private Long countLikes;
-        //private Reply reply;
-        //private Category category;
 
     }
 
     @Builder
-    @Data
-    public static class listBoardDto {
+    @Getter
+    public static class BoardListDto {
         private String id;
         private String title;
         private String context;
         private Date createAt;
-        private long countVisit;
-        private long countLikes;
+        private Long countVisit;
+        private Long countLikes;
 
-        public static listBoardDto of(Board board) {
-            return listBoardDto.builder()
+        public static BoardListDto of(Board board) {
+            return BoardListDto.builder()
                     .id(board.getId())
                     .title(board.getTitle())
                     .context(board.getContext())
@@ -49,15 +47,15 @@ public class ResponseBoard {
     }
 
     @Builder
-    @Data
-    public static class getLikeBoardDto {
+    @Getter
+    public static class LikeBoardDto {
         private String id;
         private String title;
         private String context;
         private Date createAt;
 
-        public static getLikeBoardDto of(Board board) {
-            return getLikeBoardDto.builder()
+        public static LikeBoardDto of(Board board) {
+            return LikeBoardDto.builder()
                     .id(board.getId())
                     .title(board.getTitle())
                     .context(board.getContext())
