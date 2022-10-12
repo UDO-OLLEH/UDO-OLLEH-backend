@@ -28,14 +28,14 @@ public class Board {
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "countVisit")
+    @Column(name = "count_visit")
     private long countVisit;
 
-    @Column(name = "countLikes")
+    @Column(name = "count_likes")
     private long countLikes;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "hashtag")
+    private String hashtag;
 
 
     @CreationTimestamp
