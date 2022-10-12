@@ -42,7 +42,7 @@ public class BoardCommentController {
                 .build());
     }
     @GetMapping("/board/{id}/comment")
-    public ResponseEntity<CommonResponse> getBoardComment(HttpServletRequest request, @PathVariable(required = true) String id) {
+    public ResponseEntity<CommonResponse> getBoardComment(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
@@ -71,7 +71,7 @@ public class BoardCommentController {
                 .build());
     }
     @DeleteMapping("/board/comment/{id}")
-    public ResponseEntity<CommonResponse> deleteBoardComment(HttpServletRequest request, @PathVariable(required = true) String id) {
+    public ResponseEntity<CommonResponse> deleteBoardComment(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
