@@ -20,6 +20,7 @@ public class ResponseBoard {
         private Date createAt;
         private String nickname;
         private Long countLikes;
+        private String hashtag;
 
     }
 

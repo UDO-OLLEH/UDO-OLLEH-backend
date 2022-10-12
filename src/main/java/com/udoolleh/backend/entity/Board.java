@@ -34,8 +34,8 @@ public class Board {
     @Column(name = "countLikes")
     private Long countLikes;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "hashtag")
+    private String hashtag;
 
 
     @CreationTimestamp
