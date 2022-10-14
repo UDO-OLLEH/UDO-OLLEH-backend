@@ -37,15 +37,18 @@ public class GlobalExceptionHandler {
         // 없는 경로로 요청 시
         return handleException(e, ErrorCode.NOT_FOUND_PATH);
     }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         // GET POST 방식이 잘못된 경우
         return handleException(e, ErrorCode.METHOD_NOT_ALLOWED);
     }
+
     @ExceptionHandler(RegisterFailedException.class)
     protected ResponseEntity<ErrorResponse> handleRegisterFaildException(RegisterFailedException e) {
         return handleException(e, ErrorCode.REGISTER_FAILED);
     }
+
     @ExceptionHandler(LoginFailedException.class)
     protected ResponseEntity<ErrorResponse> handleLoginFaildException(LoginFailedException e) {
         return handleException(e, ErrorCode.LOGIN_FAILED);
@@ -56,26 +59,32 @@ public class GlobalExceptionHandler {
         //Content-Type 이 잘못된 경우
         return handleException(e, ErrorCode.UNSUPPORTED_MEDIA_TYPE);
     }
+
     @ExceptionHandler(CustomJwtRuntimeException.class)
     protected ResponseEntity<ErrorResponse> handleJwtException(CustomJwtRuntimeException e) {
         return handleException(e, ErrorCode.INVALID_JWT_TOKEN);
     }
+
     @ExceptionHandler(WharfNameDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleWharfNameDuplicatedException(WharfNameDuplicatedException e) {
         return handleException(e, ErrorCode.WHARF_NAME_DUPLICATED);
     }
+
     @ExceptionHandler(NotFoundWharfException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundWharfException(NotFoundWharfException e) {
         return handleException(e, ErrorCode.NOT_FOUND_WHARF);
     }
+
     @ExceptionHandler(WharfTimeDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleWharfTimeDuplicatedException(WharfTimeDuplicatedException e) {
         return handleException(e, ErrorCode.WHARF_TIME_DUPLICATED);
     }
+
     @ExceptionHandler(NotFoundWharfTimetableException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundWharfTimetableException(NotFoundWharfTimetableException e) {
         return handleException(e, ErrorCode.NOT_FOUND_WHARF_TIMETABLE);
     }
+
     @ExceptionHandler(NotFoundUserException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException e) {
         return handleException(e, ErrorCode.NOT_FOUND_USER);
@@ -140,6 +149,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleNotFoundTravelCourseException(NotFoundTravelCourseException e) {
         return handleException(e, ErrorCode.NOT_FOUND_TRAVEL_COURSE);
     }
+
     @ExceptionHandler(NotFoundBoardCommentException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundBoardCommentException(NotFoundBoardCommentException e) {
         return handleException(e, ErrorCode.NOT_FOUND_BOARD_COMMENT);
