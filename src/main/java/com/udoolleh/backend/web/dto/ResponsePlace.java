@@ -13,13 +13,5 @@ public class ResponsePlace {
         private String placeName;
         private String context;
 
-        public static ListPlaceDto of(TravelPlace travelPlace) {
-            return ListPlaceDto.builder()
-                    .id(travelPlace.getId())
-                    .placeName(travelPlace.getPlaceName())
-                    .context(travelPlace.getContext())
-                    .build();
-        }
-
     }
 }

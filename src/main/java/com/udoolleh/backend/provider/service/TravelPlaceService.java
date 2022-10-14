@@ -4,12 +4,15 @@ import com.udoolleh.backend.core.service.TravelPlaceServiceInterface;
 import com.udoolleh.backend.entity.TravelPlace;
 import com.udoolleh.backend.repository.TravelPlaceRepository;
 import com.udoolleh.backend.web.dto.RequestPlace;
+import com.udoolleh.backend.web.dto.ResponsePlace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +22,23 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
     private final S3Service s3Service;
     private final TravelPlaceRepository travelPlaceRepository;
 
+    @Transactional
+    @Override
+    public List<ResponsePlace.ListPlaceDto> getPlaceList() {
+
+        List<TravelPlace> all = travelPlaceRepository.findAll();
+        List<ResponsePlace.ListPlaceDto> list = new ArrayList<>();
+
+        for (TravelPlace item : all) {
+            ResponsePlace.ListPlaceDto dto = ResponsePlace.ListPlaceDto.builder()
+                    .id(item.getId())
+                    .placeName(item.getPlaceName())
+                    .context(item.getContext())
+                    .build();
+            list.add(dto);
+        }
+        return list;
+    }
     @Transactional
     @Override
     public void registerPlace(MultipartFile file, RequestPlace.RegisterPlaceDto registerDto) {
