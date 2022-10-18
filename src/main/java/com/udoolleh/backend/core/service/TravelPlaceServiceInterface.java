@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface TravelPlaceServiceInterface {
 
-    List<ResponsePlace.ListPlaceDto> getPlaceList();
+    List<ResponsePlace.PlaceDto> getPlaceList();
+    ResponsePlace.PlaceDto getPlaceDetail(Long id);
     void registerPlace(MultipartFile file, RequestPlace.RegisterPlaceDto registerDto);
 
     void updatePlace(MultipartFile file, Long id, RequestPlace.UpdatePlaceDto updateDto);

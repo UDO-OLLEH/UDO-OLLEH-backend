@@ -25,10 +25,15 @@ public class Gps {
     @JoinColumn(name = "travel_course_id")
     private TravelCourse travelCourse;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_place_id")
+    private TravelPlace travelPlace;
+
     @Builder
-    public Gps(Double latitude, Double longitude, TravelCourse travelCourse) {
+    public Gps(Double latitude, Double longitude, TravelCourse travelCourse, TravelPlace travelPlace) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.travelCourse = travelCourse;
+        this.travelPlace = travelPlace;
     }
 }

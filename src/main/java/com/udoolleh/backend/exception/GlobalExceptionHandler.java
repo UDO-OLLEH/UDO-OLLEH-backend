@@ -13,7 +13,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     //코드 중복을 줄이기 위한 에러 핸들러 메서드
-    private ResponseEntity<ErrorResponse> handleException(Exception e, ErrorCode errorCode){
+    private ResponseEntity<ErrorResponse> handleException(Exception e, ErrorCode errorCode) {
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
@@ -131,9 +131,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(LikesDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleLikesDuplicatedException(LikesDuplicatedException e){
+    protected ResponseEntity<ErrorResponse> handleLikesDuplicatedException(LikesDuplicatedException e) {
         return handleException(e, ErrorCode.LIKES_DUPLICATED);
-   }
+    }
 
     @ExceptionHandler(UserNicknameDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleUserNicknameDuplicatedException(UserNicknameDuplicatedException e) {
@@ -144,7 +144,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleTravelCourseDuplicatedException(TravelCourseDuplicatedException e) {
         return handleException(e, ErrorCode.TRAVEL_COURSE_DUPLICATED);
     }
-    
+
     @ExceptionHandler(NotFoundTravelCourseException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundTravelCourseException(NotFoundTravelCourseException e) {
         return handleException(e, ErrorCode.NOT_FOUND_TRAVEL_COURSE);
@@ -153,6 +153,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundBoardCommentException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundBoardCommentException(NotFoundBoardCommentException e) {
         return handleException(e, ErrorCode.NOT_FOUND_BOARD_COMMENT);
+    }
+
+    @ExceptionHandler(NotFoundTravelPlaceException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundTravelPlaceException(NotFoundTravelPlaceException e) {
+        return handleException(e, ErrorCode.NOT_FOUND_TRAVEL_PLACE);
+    }
+
+    @ExceptionHandler(TravelPlaceDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleTravelPlaceDuplicatedException(TravelPlaceDuplicatedException e) {
+        return handleException(e, ErrorCode.TRAVEL_PLACE_DUPLICATED);
     }
 }
 
