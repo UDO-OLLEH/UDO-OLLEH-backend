@@ -41,7 +41,6 @@ public class TestController {
 
     @PostMapping("/test/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.LoginDto loginDto) {
-
         ResponseUser.Token manager = userService.login(loginDto).orElseThrow(()->new LoginFailedException());
 
         CommonResponse commonResponse = CommonResponse.builder()
