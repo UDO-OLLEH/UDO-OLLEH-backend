@@ -33,7 +33,7 @@ public class TestController {
                 .refreshToken("refreshToken")
                 .build();
         CommonResponse commonResponse = CommonResponse.builder()
-                .message("테스트 성공")
+                .message("성공")
                 .list(response)
                 .build();
         return ResponseEntity.ok().body(commonResponse);
@@ -41,11 +41,10 @@ public class TestController {
 
     @PostMapping("/test/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.LoginDto loginDto) {
-
         ResponseUser.Token manager = userService.login(loginDto).orElseThrow(()->new LoginFailedException());
 
         CommonResponse commonResponse = CommonResponse.builder()
-                .message("테스트 성공")
+                .message("성공")
                 .list(manager)
                 .build();
         return ResponseEntity.ok().body(commonResponse);
