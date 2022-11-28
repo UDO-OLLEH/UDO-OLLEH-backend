@@ -8,6 +8,7 @@ spring:
   flyway:
     enabled: true
     baselineOnMigrate: true
+    locations: classpath:db/migration/h2
 
   jpa:
     database: mysql
@@ -15,15 +16,7 @@ spring:
     generate-ddl: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
-
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type: trace

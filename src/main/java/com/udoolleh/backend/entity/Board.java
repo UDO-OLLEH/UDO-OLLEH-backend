@@ -25,7 +25,7 @@ public class Board {
     @Column(name = "hashtag")
     private String hashtag;
 
-    @Column(name = "context", length = 2500)
+    @Column(columnDefinition = "LONGTEXT",name = "context")
     private String context;
 
     @Column(name = "photo")
@@ -36,8 +36,6 @@ public class Board {
 
     @Column(name = "countLikes")
     private Long countLikes;
-
-
 
     @CreationTimestamp
     @Column(name = "create_at")
