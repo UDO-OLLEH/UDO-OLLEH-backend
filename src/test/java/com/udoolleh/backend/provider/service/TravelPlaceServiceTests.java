@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @DisplayName("test")
-public class PlaceServiceTests {
+public class TravelPlaceServiceTests {
 
     @Autowired
     private TravelPlaceService travelPlaceService;
