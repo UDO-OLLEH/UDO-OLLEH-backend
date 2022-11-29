@@ -65,8 +65,8 @@ public class MenuService implements MenuServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseMenu.MenuDto> getMenu(String restaurantName){
-        Restaurant restaurant = restaurantRepository.findByName(restaurantName);
+    public List<ResponseMenu.MenuDto> getMenu(String restaurantId){
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
         if(restaurant == null){
             throw new NotFoundRestaurantException();
         }
