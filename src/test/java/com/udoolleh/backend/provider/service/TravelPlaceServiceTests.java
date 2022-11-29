@@ -23,10 +23,8 @@ public class TravelPlaceServiceTests {
 
     @Autowired
     private TravelPlaceService travelPlaceService;
-
     @Autowired
     private TravelPlaceRepository travelPlaceRepository;
-
     @Autowired
     private GpsRepository gpsRepository;
 
