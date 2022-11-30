@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -40,6 +41,7 @@ public class LikesServiceTests {
     private Board boardEntity;
     private Likes likesEntity;
 
+    @Transactional
     @BeforeEach
     public void init() {
         User user = User.builder()
@@ -65,6 +67,7 @@ public class LikesServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 좋아요 테스트 - 성공")
     void insertTest() {
 
@@ -75,6 +78,7 @@ public class LikesServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 좋아요 취소 테스트 - 성공")
     void deleteTest() {
 
@@ -84,6 +88,7 @@ public class LikesServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글의 좋아요 개수 가져오기 - 성공")
     void likesCountTest() {
         int likesCount = getLikesCount();
@@ -114,6 +119,7 @@ public class LikesServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("사용자와 게시글을 이용해 좋아요 내역을 가져오기 - 성공")
     void findLikesTest() {
         User newUser = User.builder()

@@ -28,7 +28,7 @@ public class TravelPlaceServiceTests {
     @Autowired
     private GpsRepository gpsRepository;
 
-
+    //TODO: 수정해야하는 테스트
     @Test
     @DisplayName("추천 여행지 등록 테스트(성공)")
     void registerPlaceTest() {
