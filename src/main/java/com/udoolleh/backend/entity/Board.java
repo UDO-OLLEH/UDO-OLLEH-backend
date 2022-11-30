@@ -25,7 +25,7 @@ public class Board {
     @Column(name = "hashtag")
     private String hashtag;
 
-    @Column(columnDefinition = "LONGTEXT",name = "context")
+    @Column(name = "context", columnDefinition = "LONGTEXT")
     private String context;
 
     @Column(name = "photo")

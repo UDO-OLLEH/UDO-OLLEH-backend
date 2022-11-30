@@ -29,10 +29,9 @@ public class TravelPlace {
     @Column(name = "intro")
     private String intro;
 
-    @Column(name = "context", length = 2500)
+    @Column(name = "context", columnDefinition = "LONGTEXT")
     private String context;
 
-    @BatchSize(size=100)
     @OneToMany(mappedBy = "travelPlace", cascade = CascadeType.REMOVE)
     private List<Gps> gpsList = new ArrayList<>();
 
