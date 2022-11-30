@@ -26,6 +26,7 @@ public class Restaurant {
     private String category;
 
     @Column(name = "place_type")
+    @Enumerated(EnumType.STRING)
     private PlaceType placeType;
 
     @Column(name = "address")
