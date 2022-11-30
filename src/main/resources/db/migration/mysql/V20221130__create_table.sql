@@ -8,5 +8,5 @@ CREATE TABLE travel_place(
     context LONGTEXT
 );
 
-ALTER TABLE gps ADD COLUMN travel_place_id VARCHAR(63);
+ALTER TABLE gps ADD COLUMN travel_place_id BIGINT;
 ALTER TABLE gps ADD FOREIGN KEY(travel_place_id) REFERENCES travel_place(travel_place_id);
