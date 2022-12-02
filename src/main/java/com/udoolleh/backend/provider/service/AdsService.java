@@ -32,7 +32,7 @@ public class AdsService implements AdsServiceInterface {
         if (Optional.ofNullable(file).isPresent()) {
             String url = "";
             try {
-                url = s3Service.upload(file, "menu");
+                url = s3Service.upload(file, "ads");
                 ads.updatePhoto(url);
             } catch (IOException e) {
                 System.out.println("s3 등록 실패");

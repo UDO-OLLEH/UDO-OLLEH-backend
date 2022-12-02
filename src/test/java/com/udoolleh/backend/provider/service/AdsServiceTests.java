@@ -10,9 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -31,24 +33,11 @@ public class AdsServiceTests {
                 .context("우도 땅콩 아이스크림 광고 사진")
                 .build();
 
-        MockMultipartFile file = new MockMultipartFile("file", "test.png",
+        MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
 
-        adsService.registerAds(file, dto);
+        adsService.registerAds(mockMultipartfile, dto);
 
         assertNotNull(adsRepository.findAll());
-    }
-
-    @Test
-    @DisplayName("광고 사진 등록 기능 테스트(실패) - 사진 파일 오류")
-    void registerAdsFailedTest() {
-        RequestAds.RegisterAdsDto dto = RequestAds.RegisterAdsDto.builder()
-                .context("우도 땅콩 아이스크림 광고 사진")
-                .build();
-
-        MockMultipartFile file = new MockMultipartFile("file", "test.png", "application/json", "test fail".getBytes());
-        adsService.registerAds(file, dto);
-
-        //assertEquals(file.getContentType(), "image/png");
     }
 }

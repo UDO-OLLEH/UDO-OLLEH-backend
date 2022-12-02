@@ -34,7 +34,7 @@ public class TravelPlaceServiceTests {
                 .context("최고의 여행지 선정")
                 .build();
 
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test1.png",
                 "image/png", "test".getBytes());
 
         travelPlaceService.registerPlace(mockMultipartFile, registerDto);
