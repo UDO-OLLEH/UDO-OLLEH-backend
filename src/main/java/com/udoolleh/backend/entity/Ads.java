@@ -22,9 +22,16 @@ public class Ads {
     @Column(name = "photo")
     private String photo;
 
+    @Column(name = "context")
+    private String context;
+
     @Builder
-    public Ads(String id, String photo) {
-        this.id = id;
+    public Ads(String photo, String context) {
+        this.photo = photo;
+        this.context = context;
+    }
+
+    public void updatePhoto(String photo) {
         this.photo = photo;
     }
 }
