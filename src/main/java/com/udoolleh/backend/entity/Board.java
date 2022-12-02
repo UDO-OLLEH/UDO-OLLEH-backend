@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +26,7 @@ public class Board {
     @Column(name = "hashtag")
     private String hashtag;
 
-    @Column(columnDefinition = "LONGTEXT",name = "context")
+    @Column(columnDefinition = "LONGTEXT", name = "context")
     private String context;
 
     @Column(name = "photo")
@@ -67,12 +68,15 @@ public class Board {
         this.hashtag = hashtag;
         this.context = context;
     }
-    public void addLike(Likes like){
+
+    public void addLike(Likes like) {
         likeList.add(like);
     }
-    public void addBoardComment(BoardComment boardComment){
+
+    public void addBoardComment(BoardComment boardComment) {
         this.boardComments.add(boardComment);
     }
+
     public void updatePhoto(String photo) {
         this.photo = photo;
     }

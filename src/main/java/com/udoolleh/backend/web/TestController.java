@@ -22,12 +22,12 @@ public class TestController {
     private final UserService userService;
 
     @GetMapping("/home")
-    public String getHome(){
+    public String getHome() {
         return "Hello World!";
     }
 
     @GetMapping("/test")
-    public ResponseEntity<CommonResponse> test(){
+    public ResponseEntity<CommonResponse> test() {
         ResponseUser.Token response = ResponseUser.Token.builder()
                 .accessToken("accessToken")
                 .refreshToken("refreshToken")
@@ -41,7 +41,7 @@ public class TestController {
 
     @PostMapping("/test/login")
     public ResponseEntity<CommonResponse> requestLogin(@Valid @RequestBody RequestUser.LoginDto loginDto) {
-        ResponseUser.Token manager = userService.login(loginDto).orElseThrow(()->new LoginFailedException());
+        ResponseUser.Token manager = userService.login(loginDto).orElseThrow(() -> new LoginFailedException());
 
         CommonResponse commonResponse = CommonResponse.builder()
                 .message("성공")

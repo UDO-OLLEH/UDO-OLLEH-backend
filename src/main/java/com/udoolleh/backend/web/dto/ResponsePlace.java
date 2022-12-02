@@ -17,7 +17,6 @@ public class ResponsePlace {
         private String intro;
         private String context;
         private String photo;
-
         private List<GpsDto> gps;
     }
 
