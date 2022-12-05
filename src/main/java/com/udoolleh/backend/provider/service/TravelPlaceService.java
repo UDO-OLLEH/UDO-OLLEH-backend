@@ -36,7 +36,7 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
         List<ResponsePlace.GpsDto> gpsList = new ArrayList<>();
 
         for (TravelPlace item : all) {
-            for(Gps gps : item.getGpsList()){
+            for (Gps gps : item.getGpsList()) {
                 gpsList.add(ResponsePlace.GpsDto.of(gps));
             }
             ResponsePlace.PlaceDto dto = ResponsePlace.PlaceDto.builder()
