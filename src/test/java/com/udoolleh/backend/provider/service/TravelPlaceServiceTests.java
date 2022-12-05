@@ -24,6 +24,8 @@ public class TravelPlaceServiceTests {
     private TravelPlaceService travelPlaceService;
     @Autowired
     private TravelPlaceRepository travelPlaceRepository;
+    @Autowired
+    private GpsRepository gpsRepository;
 
     @Test
     @DisplayName("추천 여행지 등록 테스트(성공)")

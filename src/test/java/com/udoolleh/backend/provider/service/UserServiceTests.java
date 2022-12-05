@@ -24,6 +24,7 @@ public class UserServiceTests {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+
     @Test
     @DisplayName("회원가입 서비스 테스트")
     @Transactional

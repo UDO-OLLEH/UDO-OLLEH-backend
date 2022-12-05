@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -34,6 +35,7 @@ public class CourseServiceTests {
     private CourseDetailRepository courseDetailRepository;
 
     @Test
+    @Transactional
     @DisplayName("여행지 코스 등록 테스트(성공)")
     void registerCourseTest(){
         List<RequestCourse.DetailDto> detail = new ArrayList<>();
@@ -64,6 +66,7 @@ public class CourseServiceTests {
         }
 
     @Test
+    @Transactional
     @DisplayName("여행지 코스 등록 테스트(성공 - gps값이 없을 경우)")
     void registerCourseTestWhenNotExistGps(){
         List<RequestCourse.DetailDto> detail = new ArrayList<>();
@@ -87,6 +90,7 @@ public class CourseServiceTests {
 
 
     @Test
+    @Transactional
     @DisplayName("여행지 코스 등록 테스트(성공 - 상세 없을 경우)")
     void registerCourseTestWhenNotExistDetails(){
                List<RequestCourse.GpsDto> gps = new ArrayList<>();
@@ -109,6 +113,7 @@ public class CourseServiceTests {
     }
 
         @Test
+        @Transactional
         @DisplayName("여행지 코스 조회 테스트(성공)")
         void getCourseTest(){
         //등록
@@ -172,6 +177,7 @@ public class CourseServiceTests {
         }
 
     @Test
+    @Transactional
     @DisplayName("여행지 코스 삭제 테스트(성공)")
     void deleteCourseTest(){
         //등록

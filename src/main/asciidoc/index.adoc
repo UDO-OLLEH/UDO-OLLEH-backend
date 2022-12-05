@@ -1,0 +1,14 @@
+= UDO-OLLEH RESTful Notes API Guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectnums:
+:sectlinks:
+:sectanchors:
+
+== Spring REST Docs
+우도올레 프로젝트의 API 명세서입니다.
+
+include::restaurant-get.adoc[]

@@ -54,9 +54,9 @@ public class RestaurantController {
                 .message("메뉴 등록 성공")
                 .build());
     }
-    @GetMapping("/restaurant/{name}/menu")
-    public ResponseEntity<CommonResponse> getMenu(@PathVariable String name){
-        List<ResponseMenu.MenuDto> list = menuService.getMenu(name);
+    @GetMapping("/restaurant/{id}/menu")
+    public ResponseEntity<CommonResponse> getMenu(@PathVariable String id){
+        List<ResponseMenu.MenuDto> list = menuService.getMenu(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("메뉴 조회 성공")

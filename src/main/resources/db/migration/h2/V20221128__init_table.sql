@@ -1,4 +1,4 @@
-CREATE TABLE users(
+CREATE TABLE user(
     user_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(63) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -14,12 +14,12 @@ CREATE TABLE board(
     context LONGTEXT NOT NULL,
     create_at TIMESTAMP,
     hashtag VARCHAR(255),
-    photo VARCHAR(2500),
+    photo VARCHAR(255),
     count_visit BIGINT,
     count_likes BIGINT,
     likes_id VARCHAR(63),
     user_id BIGINT,
-    FOREIGN KEY(user_id) REFERENCES users(user_id)
+    FOREIGN KEY(user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE likes(
@@ -27,7 +27,7 @@ CREATE TABLE likes(
     board_id VARCHAR(63),
     FOREIGN KEY(board_id) REFERENCES board(board_id),
     user_id BIGINT,
-    FOREIGN KEY(user_id) REFERENCES users(user_id)
+    FOREIGN KEY(user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE restaurant(
@@ -44,11 +44,11 @@ CREATE TABLE restaurant(
 CREATE TABLE review(
     review_id VARCHAR(63) NOT NULL PRIMARY KEY,
     create_at TIMESTAMP,
-    context VARCHAR(2500),
-    photo VARCHAR(2500),
+    context VARCHAR(255),
+    photo VARCHAR(255),
     grade double,
     user_id BIGINT,
-    FOREIGN KEY(user_id) REFERENCES users(user_id),
+    FOREIGN KEY(user_id) REFERENCES user(user_id),
     restaurant_id VARCHAR(63),
     FOREIGN KEY(restaurant_id) REFERENCES restaurant(restaurant_id)
 );
@@ -56,7 +56,7 @@ CREATE TABLE review(
 CREATE TABLE menu(
     menu_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(63),
-    photo VARCHAR(2500),
+    photo VARCHAR(255),
     price BIGINT,
     description VARCHAR(63),
     restaurant_id VARCHAR(63),
