@@ -65,24 +65,24 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.INVALID_JWT_TOKEN);
     }
 
-    @ExceptionHandler(WharfNameDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleWharfNameDuplicatedException(WharfNameDuplicatedException e) {
-        return handleException(e, ErrorCode.WHARF_NAME_DUPLICATED);
+    @ExceptionHandler(HarborNameDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleHarborNameDuplicatedException(HarborNameDuplicatedException e) {
+        return handleException(e, ErrorCode.HARBOR_NAME_DUPLICATED);
     }
 
-    @ExceptionHandler(NotFoundWharfException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundWharfException(NotFoundWharfException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_WHARF);
+    @ExceptionHandler(NotFoundHarborException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundHarborException(NotFoundHarborException e) {
+        return handleException(e, ErrorCode.NOT_FOUND_HARBOR);
     }
 
-    @ExceptionHandler(WharfTimeDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleWharfTimeDuplicatedException(WharfTimeDuplicatedException e) {
-        return handleException(e, ErrorCode.WHARF_TIME_DUPLICATED);
+    @ExceptionHandler(HarborPeriodDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleHarborPeriodDuplicatedException(HarborPeriodDuplicatedException e) {
+        return handleException(e, ErrorCode.HARBOR_PERIOD_DUPLICATED);
     }
 
-    @ExceptionHandler(NotFoundWharfTimetableException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundWharfTimetableException(NotFoundWharfTimetableException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_WHARF_TIMETABLE);
+    @ExceptionHandler(NotFoundHarborTimetableException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundHarborTimetableException(NotFoundHarborTimetableException e) {
+        return handleException(e, ErrorCode.NOT_FOUND_HARBOR_TIMETABLE);
     }
 
     @ExceptionHandler(NotFoundUserException.class)

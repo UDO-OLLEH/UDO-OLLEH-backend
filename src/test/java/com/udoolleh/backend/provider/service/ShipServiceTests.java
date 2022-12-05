@@ -1,26 +1,31 @@
 package com.udoolleh.backend.provider.service;
 
-import com.udoolleh.backend.core.type.ShipCourseType;
-import com.udoolleh.backend.core.type.ShipTimetableType;
-import com.udoolleh.backend.entity.Wharf;
-import com.udoolleh.backend.entity.WharfTimetable;
-import com.udoolleh.backend.exception.errors.NotFoundWharfException;
-import com.udoolleh.backend.repository.WharfRepository;
-import com.udoolleh.backend.repository.WharfTimetableRepository;
-import com.udoolleh.backend.web.dto.ResponseWharfTimetable;
+import com.udoolleh.backend.entity.Harbor;
+import com.udoolleh.backend.entity.HarborTimetable;
+import com.udoolleh.backend.exception.errors.HarborNameDuplicatedException;
+import com.udoolleh.backend.exception.errors.HarborPeriodDuplicatedException;
+import com.udoolleh.backend.exception.errors.NotFoundHarborException;
+import com.udoolleh.backend.exception.errors.NotFoundHarborTimetableException;
+import com.udoolleh.backend.repository.HarborRepository;
+import com.udoolleh.backend.repository.HarborTimetableRepository;
+import com.udoolleh.backend.web.dto.ResponseHarbor;
+import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -28,110 +33,169 @@ public class ShipServiceTests {
     @Autowired
     ShipService shipService;
     @Autowired
-    WharfRepository wharfRepository;
+    HarborRepository harborRepository;
     @Autowired
-    WharfTimetableRepository wharfTimetableRepository;
+    HarborTimetableRepository harborTimetableRepository;
 
-    @DisplayName("선착장 등록 테스트")
+    @BeforeEach
+    void setUp() {
+        Harbor harbor = Harbor.builder()
+                .harborName("성산항")
+                .build();
+        harborRepository.save(harbor);
+    }
+
+    @DisplayName("항구 등록 테스트")
     @Transactional
     @Test
-    void registerWharfCourseTest(){
-        shipService.registerWharfCourse(ShipCourseType.JONGDAL_UDO);
-        Wharf wharf = wharfRepository.findByWharfCourse(ShipCourseType.JONGDAL_UDO);
-        assertNotNull(wharf);
-        System.out.println(wharf.getWharfCourse());
+    void registerHarborCourseTest() {
+        shipService.registerHarbor("종달항");
+        Harbor harbor = harborRepository.findByHarborName("종달항");
+        assertNotNull(harbor);
     }
+
+    @DisplayName("항구 중복 등록 예외 테스트")
+    @Transactional
+    @Test
+    void registerSameHarborTest() {
+        shipService.registerHarbor("종달항");
+        assertThrows(HarborNameDuplicatedException.class, () -> shipService.registerHarbor("종달항"));
+    }
+
     @DisplayName("배 시간 등록 테스트")
     @Transactional
     @Test
-    void registerWharfTimetableTest() throws ParseException {
-        shipService.registerWharfCourse(ShipCourseType.SEONGSAN_UDO);
-        Wharf wharf = wharfRepository.findByWharfCourse(ShipCourseType.SEONGSAN_UDO);
-        List<String> time =new ArrayList<>();
-        List<String> otherTime =new ArrayList<>();
-        time.add("8:00");
-        time.add("8:30");
-        time.add("9:00");
-        shipService.registerWharfTimetable(ShipCourseType.SEONGSAN_UDO, time, ShipTimetableType.SEONGSAN_One);
+    void registerHarborTimetableTest() {
+        //배 시간 엔티티에 잘 등록 되었는지 확인
+        Harbor harbor = harborRepository.findByHarborName("성산항");
+        shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30");
+        HarborTimetable harborTimetable = harborTimetableRepository.findByDestinationAndPeriodAndHarborId("하우목동항", "1,2월", harbor.getId());
+        assertNotNull(harborTimetable);
 
-        List<WharfTimetable> wharfTimetableList = wharfTimetableRepository.findByWharf(wharf);
-        assertNotNull(wharfTimetableList);
-        System.out.println(wharfTimetableList.get(0).getWharf().getWharfCourse()+" "+wharfTimetableList.get(0).getDepartureTime()+" "+wharfTimetableList.get(0).getMonthType().getMonth());
-        System.out.println(wharfTimetableList.get(1).getWharf().getWharfCourse()+" "+wharfTimetableList.get(1).getDepartureTime()+" "+wharfTimetableList.get(1).getMonthType().getMonth());
+        //항구(부모)에 잘 등록되어 있는지 확인
+        List<HarborTimetable> harborTimetables = harborRepository.findByHarborName("성산항").getHarborTimetables();
+        HarborTimetable harborTimetableFromHarbor = harborTimetables.get(0);
+        assertThat(harborTimetableFromHarbor).isEqualTo(harborTimetable);
     }
+
+    @DisplayName("배 시간 중복 등록 테스트")
+    @Transactional
+    @Test
+    void registerSameHarborTimetableTest() {
+        shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30");
+
+        assertThrows(HarborPeriodDuplicatedException.class, () -> shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30"));
+    }
+
     @DisplayName("선착장 조회 테스트")
     @Transactional
     @Test
-    void getAllWharfTest(){
-        Wharf wharf = Wharf.builder()
-                .wharfCourse(ShipCourseType.SEONGSAN_UDO)
+    void getAllHarborsTest() {
+        //given
+        Harbor harbor = Harbor.builder()
+                .harborName("종달항")
                 .build();
-        wharfRepository.save(wharf);
-        Wharf otherWharf = Wharf.builder()
-                .wharfCourse(ShipCourseType.UDO_JONGDAL)
-                .build();
-        wharfRepository.save(otherWharf);
-        List<String> wharfList = shipService.getAllWharf().orElseThrow(()-> new NotFoundWharfException());
-        assertNotNull(wharfList);
-        System.out.println(wharfList.get(0)+" "+wharfList.get(1));
+        harborRepository.save(harbor);
+
+        List<String> expectedResult = List.of("성산항", "종달항");
+        //when
+        List<ResponseHarbor.HarborDto> harborDtos = shipService.getAllHarbors();
+        List<String> result = harborDtos.stream()
+                .map(ResponseHarbor.HarborDto::getName)
+                .collect(Collectors.toList());
+        //then
+        assertThat(result).isEqualTo(expectedResult);
     }
+
     @DisplayName("배 시간 조회 테스트")
     @Transactional
-    @Test
-    void getWharfTimetableTest(){
-        Wharf wharf = Wharf.builder()
-                .wharfCourse(ShipCourseType.SEONGSAN_UDO)
+    @ParameterizedTest
+    @CsvSource({
+            "1 ~ 2월, 07:30 ~ 17:30, 하우목동항",
+            "4 ~ 6월, 07:00 ~ 17:00, 천진항"
+    })
+    void getHarborTimetableTest(String period, String operatingTime, String destination) {
+        //given
+        Harbor harbor = harborRepository.findByHarborName("성산항");
+        HarborTimetable harborTimetable = HarborTimetable.builder()
+                .harbor(harbor)
+                .destination(destination)
+                .period(period)
+                .operatingTime(operatingTime)
                 .build();
-        wharfRepository.save(wharf);
-        List<String> time = new ArrayList<>();
-        time.add("8:00");
-        time.add("8:30");
-        time.add("18:00");
-        time.add("18:30");
-        shipService.registerWharfTimetable(ShipCourseType.SEONGSAN_UDO, time, ShipTimetableType.SEONGSAN_One);
-        ResponseWharfTimetable.WharfTimetableDto wharfTimetable = shipService.getWharfTimetable(ShipCourseType.SEONGSAN_UDO, ShipTimetableType.SEONGSAN_One).orElseThrow(() -> null);
-        assertNotNull(wharfTimetable);
-        System.out.println(wharfTimetable.getDepartureTime()+" "+wharfTimetable.getWharfCourse()+" "+wharfTimetable.getMonthType());
+        harbor.addHarborTimetable(harborTimetable);
+        harborTimetable = harborTimetableRepository.save(harborTimetable);
+        ResponseHarborTimetable.TimetableDto timetableDto = ResponseHarborTimetable.TimetableDto.builder()
+                .id(harborTimetable.getId())
+                .period(period)
+                .operatingTime(operatingTime)
+                .build();
+        ResponseHarborTimetable.HarborTimetableDto harborTimetableDto = ResponseHarborTimetable.HarborTimetableDto.builder()
+                .timetableDto(List.of(timetableDto))
+                .destination(destination)
+                .build();
+
+        //when
+        ResponseHarborTimetable.HarborTimetableDto result = shipService.getHarborTimetable("성산항", destination);
+
+        //then
+        assertThat(result).isEqualTo(harborTimetableDto);
     }
-    @DisplayName("선착장 삭제 테스트")
+
+    @DisplayName("배 시간이 존재하지 않거나 항구가 등록되어 있지 않을 경우 테스트")
     @Transactional
     @Test
-    void deleteWharfTest(){
-        Wharf wharf = Wharf.builder()
-                .wharfCourse(ShipCourseType.SEONGSAN_UDO)
-                .build();
-        wharfRepository.save(wharf);
-        assertNotNull(wharfRepository.findAll());
-        shipService.deleteWharf(ShipCourseType.SEONGSAN_UDO);
-        List<String> emptyArray = new ArrayList<>();
-        assertEquals(emptyArray ,wharfRepository.findAll());
+    void getEmptyHarborOrEmptyTimetableTest() {
+        assertThrows(NotFoundHarborException.class, () -> shipService.getHarborTimetable("등록되지 않은 항구", "존재하지않은 목적지"));   //항구가 등록되어 있지 않을 경우
+        assertThrows(NotFoundHarborTimetableException.class, () -> shipService.getHarborTimetable("성산항", "존재하지 않는 목적지"));    //시간이 존재하지 않는 경우
     }
+
+    @DisplayName("항구 삭제 테스트")
+    @Transactional
+    @Test
+    void deleteHarborTest() {
+        Long harborId = harborRepository.findByHarborName("성산항").getId();
+        shipService.deleteHarbor(harborId);
+
+        List<Harbor> result = harborRepository.findAll();
+
+        assertThat(result).isEmpty();
+    }
+
+    @DisplayName("항구 삭제시 배 시간표 삭제 테스트")
+    @Transactional
+    @Test
+    void deleteHarborWithHarborTimetableTest() {
+        Harbor harbor = harborRepository.findByHarborName("성산항");
+        HarborTimetable harborTimetable = HarborTimetable.builder()
+                .operatingTime("07:30 ~ 17:30")
+                .period("1 ~ 2월")
+                .destination("하우목동항")
+                .harbor(harbor)
+                .build();
+        harborTimetableRepository.save(harborTimetable);
+        harbor.addHarborTimetable(harborTimetable);
+
+        shipService.deleteHarbor(harbor.getId());
+
+        assertThat(harborTimetableRepository.findAll()).isEmpty();
+    }
+
     @DisplayName("배 시간 삭제 테스트")
     @Transactional
     @Test
-    void deleteWharfTimetableTest(){
-        Wharf wharf = Wharf.builder()
-                .wharfCourse(ShipCourseType.SEONGSAN_UDO)
+    void deleteHarborTimetableTest() {
+        Harbor harbor = harborRepository.findByHarborName("성산항");
+        HarborTimetable harborTimetable = HarborTimetable.builder()
+                .operatingTime("07:30 ~ 17:30")
+                .period("1 ~ 2월")
+                .destination("하우목동항")
+                .harbor(harbor)
                 .build();
-        wharfRepository.save(wharf);
-        List<String> time = new ArrayList<>();
-        time.add("8:00");
-        time.add("8:30");
-        time.add("18:00");
-        time.add("18:30");
-        for(int i=0; time.size()>i; i++) {
-            WharfTimetable wharfTimetable = WharfTimetable.builder()
-                    .departureTime(time.get(i))
-                    .wharf(wharf)
-                    .monthType(ShipTimetableType.SEONGSAN_One)
-                    .build();
-            wharfTimetableRepository.save(wharfTimetable);
-            wharf.addTimetable(wharfTimetable);
-        }
-        assertNotNull(wharfTimetableRepository.findAll());
-        shipService.deleteWharfTimetable(ShipCourseType.SEONGSAN_UDO, ShipTimetableType.SEONGSAN_One);
-        List<String> emptyArray = new ArrayList<>();
-        assertEquals(emptyArray ,wharfTimetableRepository.findAll());
+        HarborTimetable harborTimetableEntity = harborTimetableRepository.save(harborTimetable);
+        harbor.addHarborTimetable(harborTimetable);
+
+        shipService.deleteHarborTimetable(harborTimetableEntity.getId());
     }
 
 }

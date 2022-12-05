@@ -1,18 +1,15 @@
 package com.udoolleh.backend.core.service;
 
-import com.udoolleh.backend.core.type.ShipCourseType;
-import com.udoolleh.backend.core.type.ShipTimetableType;
-import com.udoolleh.backend.web.dto.ResponseWharfTimetable;
+import com.udoolleh.backend.web.dto.ResponseHarbor;
+import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface ShipServiceInterface {
-    void registerWharfCourse(ShipCourseType wharfCourse);
-    void registerWharfTimetable(ShipCourseType wharfCourse, List<String> departureTime, ShipTimetableType monthType);
-    Optional<List<String>> getAllWharf();
-    Optional<ResponseWharfTimetable.WharfTimetableDto> getWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType);
-    void deleteWharf(ShipCourseType wharfCourse);
-    void deleteWharfTimetable(ShipCourseType wharfCourse, ShipTimetableType monthType);
+    void registerHarbor(String harbor);
+    void registerHarborTimetable(String harborName, String destination, String period, String operatingTime);
+    List<ResponseHarbor.HarborDto> getAllHarbors();
+    ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(String harborName, String destination);
+    void deleteHarbor(Long harborId);
+    void deleteHarborTimetable(Long harborTimetableId);
 }
