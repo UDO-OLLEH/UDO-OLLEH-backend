@@ -45,12 +45,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RegisterFailedException.class)
-    protected ResponseEntity<ErrorResponse> handleRegisterFaildException(RegisterFailedException e) {
+    protected ResponseEntity<ErrorResponse> handleRegisterFailedException(RegisterFailedException e) {
         return handleException(e, ErrorCode.REGISTER_FAILED);
     }
 
     @ExceptionHandler(LoginFailedException.class)
-    protected ResponseEntity<ErrorResponse> handleLoginFaildException(LoginFailedException e) {
+    protected ResponseEntity<ErrorResponse> handleLoginFailedException(LoginFailedException e) {
         return handleException(e, ErrorCode.LOGIN_FAILED);
     }
 
@@ -163,6 +163,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TravelPlaceDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleTravelPlaceDuplicatedException(TravelPlaceDuplicatedException e) {
         return handleException(e, ErrorCode.TRAVEL_PLACE_DUPLICATED);
+    }
+
+    @ExceptionHandler(ShipFareDuplicatedException.class)
+    protected ResponseEntity<ErrorResponse> handleShipFareDuplicatedException(ShipFareDuplicatedException e) {
+        return handleException(e, ErrorCode.SHIP_FARE_DUPLICATED);
+    }
+    @ExceptionHandler(NotFoundShipFareException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(NotFoundShipFareException e) {
+        return handleException(e, ErrorCode.NOT_FOUND_SHIP_FARE);
     }
 }
 

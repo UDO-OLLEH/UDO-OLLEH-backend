@@ -1,6 +1,7 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.TravelPlace;
+import com.udoolleh.backend.repository.GpsRepository;
 import com.udoolleh.backend.repository.TravelPlaceRepository;
 import com.udoolleh.backend.web.dto.RequestPlace;
 import com.udoolleh.backend.web.dto.ResponsePlace;
@@ -11,13 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@DisplayName("test")
+@ActiveProfiles("test")
 public class TravelPlaceServiceTests {
 
     @Autowired

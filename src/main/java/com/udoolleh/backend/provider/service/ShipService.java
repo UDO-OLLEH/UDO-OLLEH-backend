@@ -3,14 +3,20 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.core.service.ShipServiceInterface;
 import com.udoolleh.backend.entity.Harbor;
 import com.udoolleh.backend.entity.HarborTimetable;
+import com.udoolleh.backend.entity.ShipFare;
 import com.udoolleh.backend.exception.errors.HarborNameDuplicatedException;
 import com.udoolleh.backend.exception.errors.HarborPeriodDuplicatedException;
 import com.udoolleh.backend.exception.errors.NotFoundHarborException;
 import com.udoolleh.backend.exception.errors.NotFoundHarborTimetableException;
+import com.udoolleh.backend.exception.errors.NotFoundShipFareException;
+import com.udoolleh.backend.exception.errors.ShipFareDuplicatedException;
 import com.udoolleh.backend.repository.HarborRepository;
 import com.udoolleh.backend.repository.HarborTimetableRepository;
+import com.udoolleh.backend.repository.ShipFareRepository;
+import com.udoolleh.backend.web.dto.RequestShipFare;
 import com.udoolleh.backend.web.dto.ResponseHarbor;
 import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
+import com.udoolleh.backend.web.dto.ResponseShipFare;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShipService implements ShipServiceInterface {
     private final HarborRepository harborRepository;
     private final HarborTimetableRepository harborTimetableRepository;
+    private final ShipFareRepository shipFareRepository;
 
     @Transactional
     @Override
@@ -60,6 +67,26 @@ public class ShipService implements ShipServiceInterface {
                 .build();
         harborTimetableRepository.save(harborTimetable);
         harbor.addHarborTimetable(harborTimetable);
+    }
+
+    @Transactional
+    @Override
+    public void registerShipFare(RequestShipFare.RegisterShipFareDto registerShipFareDto) {
+        Harbor harbor = harborRepository.findById(registerShipFareDto.getHarborId())
+                .orElseThrow(() -> new NotFoundHarborException());
+        if(shipFareRepository.findByAgeGroupAndHarborId(registerShipFareDto.getAgeGroup(), registerShipFareDto.getHarborId()) != null){
+            throw new ShipFareDuplicatedException();
+        }
+
+        ShipFare shipFare = ShipFare.builder()
+                .ageGroup(registerShipFareDto.getAgeGroup())
+                .roundTrip(registerShipFareDto.getRoundTrip())
+                .enterIsland(registerShipFareDto.getEnterIsland())
+                .leaveIsland(registerShipFareDto.getLeaveIsland())
+                .harbor(harbor)
+                .build();
+        shipFareRepository.save(shipFare);
+        harbor.addShipFare(shipFare);
     }
 
     @Transactional(readOnly = true)
@@ -114,15 +141,57 @@ public class ShipService implements ShipServiceInterface {
 
     @Transactional
     @Override
-    public void deleteHarbor(Long harborId) {
+    public ResponseShipFare.HarborShipFare getShipFare(Long harborId) {
         Harbor harbor = harborRepository.findById(harborId).orElseThrow(() -> new NotFoundHarborException());
-        harborRepository.delete(harbor);
+
+        List<ShipFare> shipFares = shipFareRepository.findByHarborId(harborId);
+
+        if(shipFares.isEmpty()) {
+            throw new NotFoundShipFareException();
+        }
+
+        List<ResponseShipFare.ShipFare> responseShipFare = new ArrayList<>();
+        for(ShipFare shipFare : shipFares) {
+            responseShipFare.add(ResponseShipFare.ShipFare.builder()
+                    .id(shipFare.getId())
+                    .ageGroup(shipFare.getAgeGroup())
+                    .roundTrip(shipFare.getRoundTrip())
+                    .enterIsland(shipFare.getEnterIsland())
+                    .leaveIsland(shipFare.getLeaveIsland())
+                    .build());
+        }
+
+        ResponseShipFare.HarborShipFare responseHarborShipFare = ResponseShipFare.HarborShipFare.builder()
+                .harborName(harbor.getHarborName())
+                .shipFares(responseShipFare)
+                .build();
+
+        return responseHarborShipFare;
+    }
+
+    @Transactional
+    @Override
+    public void deleteHarbor(Long harborId) {
+        harborRepository.findById(harborId).orElseThrow(() -> new NotFoundHarborException());
+
+        harborRepository.deleteById(harborId);
     }
 
     @Transactional
     @Override
     public void deleteHarborTimetable(Long harborTimetableId) {
-        harborTimetableRepository.findById(harborTimetableId).orElseThrow(() -> new NotFoundHarborTimetableException());
+        HarborTimetable harborTimetable = harborTimetableRepository.findById(harborTimetableId).orElseThrow(() -> new NotFoundHarborTimetableException());
+
+        harborTimetable.getHarbor().getHarborTimetables().remove(harborTimetable);
         harborTimetableRepository.deleteById(harborTimetableId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteShipFare(Long shipFareId) {
+        ShipFare shipFare = shipFareRepository.findById(shipFareId).orElseThrow(() -> new NotFoundShipFareException());
+
+        shipFare.getHarbor().getShipFares().remove(shipFare);
+        shipFareRepository.deleteById(shipFareId);
     }
 }
