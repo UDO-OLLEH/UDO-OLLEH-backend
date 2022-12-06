@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Harbor {
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -30,15 +30,22 @@ public class Harbor {
     @Column(name = "harbor_name")
     private String harborName;
 
-    @OneToMany(mappedBy = "harbor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "harbor", cascade = CascadeType.REMOVE)
     private List<HarborTimetable> harborTimetables = new ArrayList<>(); // 시간표 리스트
 
+    @OneToMany(mappedBy = "harbor", cascade = CascadeType.REMOVE)
+    private List<ShipFare> shipFares = new ArrayList<>();
+
     @Builder
-    public Harbor(String harborName){
+    public Harbor(String harborName) {
         this.harborName = harborName;
     }
 
-    public void addHarborTimetable(HarborTimetable harborTimetable){
+    public void addHarborTimetable(HarborTimetable harborTimetable) {
         this.harborTimetables.add(harborTimetable);
+    }
+
+    public void addShipFare(ShipFare shipFare) {
+        this.shipFares.add(shipFare);
     }
 }

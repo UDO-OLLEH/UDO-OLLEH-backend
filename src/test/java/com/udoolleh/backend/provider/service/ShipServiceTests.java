@@ -2,14 +2,19 @@ package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Harbor;
 import com.udoolleh.backend.entity.HarborTimetable;
+import com.udoolleh.backend.entity.ShipFare;
 import com.udoolleh.backend.exception.errors.HarborNameDuplicatedException;
 import com.udoolleh.backend.exception.errors.HarborPeriodDuplicatedException;
 import com.udoolleh.backend.exception.errors.NotFoundHarborException;
 import com.udoolleh.backend.exception.errors.NotFoundHarborTimetableException;
+import com.udoolleh.backend.exception.errors.ShipFareDuplicatedException;
 import com.udoolleh.backend.repository.HarborRepository;
 import com.udoolleh.backend.repository.HarborTimetableRepository;
+import com.udoolleh.backend.repository.ShipFareRepository;
+import com.udoolleh.backend.web.dto.RequestShipFare;
 import com.udoolleh.backend.web.dto.ResponseHarbor;
 import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
+import com.udoolleh.backend.web.dto.ResponseShipFare;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.runner.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,18 +37,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 public class ShipServiceTests {
     @Autowired
-    ShipService shipService;
+    private ShipService shipService;
     @Autowired
-    HarborRepository harborRepository;
+    private HarborRepository harborRepository;
     @Autowired
-    HarborTimetableRepository harborTimetableRepository;
+    private HarborTimetableRepository harborTimetableRepository;
+    @Autowired
+    private ShipFareRepository shipFareRepository;
+
+    private Long setUpHarborId;
 
     @BeforeEach
     void setUp() {
         Harbor harbor = Harbor.builder()
                 .harborName("성산항")
                 .build();
-        harborRepository.save(harbor);
+        harbor = harborRepository.save(harbor);
+        setUpHarborId = harbor.getId();
     }
 
     @DisplayName("항구 등록 테스트")
@@ -67,9 +78,8 @@ public class ShipServiceTests {
     @Test
     void registerHarborTimetableTest() {
         //배 시간 엔티티에 잘 등록 되었는지 확인
-        Harbor harbor = harborRepository.findByHarborName("성산항");
         shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30");
-        HarborTimetable harborTimetable = harborTimetableRepository.findByDestinationAndPeriodAndHarborId("하우목동항", "1,2월", harbor.getId());
+        HarborTimetable harborTimetable = harborTimetableRepository.findByDestinationAndPeriodAndHarborId("하우목동항", "1,2월", setUpHarborId);
         assertNotNull(harborTimetable);
 
         //항구(부모)에 잘 등록되어 있는지 확인
@@ -87,7 +97,82 @@ public class ShipServiceTests {
         assertThrows(HarborPeriodDuplicatedException.class, () -> shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30"));
     }
 
-    @DisplayName("선착장 조회 테스트")
+    @DisplayName("배 요금 등록 테스트")
+    @Transactional
+    @Test
+    void registerShipFareTest() {
+        RequestShipFare.RegisterShipFareDto shipFareDto =
+                RequestShipFare.RegisterShipFareDto.builder()
+                        .ageGroup("성인")
+                        .leaveIsland(5000)
+                        .enterIsland(2000)
+                        .roundTrip(10000)
+                        .harborId(setUpHarborId)
+                        .build();
+
+        shipService.registerShipFare(shipFareDto);
+        assertThat(shipFareRepository.findAll()).isNotEmpty();
+    }
+
+    @DisplayName("배 요금 중복 등록 테스트")
+    @Transactional
+    @Test
+    void registerSameShipFareTest() {
+        RequestShipFare.RegisterShipFareDto shipFareDto =
+                RequestShipFare.RegisterShipFareDto.builder()
+                        .ageGroup("성인")
+                        .leaveIsland(5000)
+                        .enterIsland(2000)
+                        .roundTrip(10000)
+                        .harborId(setUpHarborId)
+                        .build();
+        RequestShipFare.RegisterShipFareDto sameAgeGroupShipFareDto =
+                RequestShipFare.RegisterShipFareDto.builder()
+                        .ageGroup("성인")
+                        .leaveIsland(4000)
+                        .enterIsland(2000)
+                        .roundTrip(50000)
+                        .harborId(setUpHarborId)
+                        .build();
+        shipService.registerShipFare(shipFareDto);
+
+        assertThrows(ShipFareDuplicatedException.class, () -> shipService.registerShipFare(sameAgeGroupShipFareDto));
+    }
+
+    @DisplayName("배 요금 조회 테스트")
+    @Transactional
+    @Test
+    void getShipFareTest() {
+        //given
+        Harbor setUpHarbor = harborRepository.findById(setUpHarborId).orElse(null);
+        ShipFare shipFare = ShipFare.builder()
+                .harbor(harborRepository.findById(setUpHarborId).orElse(null))
+                .ageGroup("중학생")
+                .leaveIsland(2000)
+                .enterIsland(5000)
+                .roundTrip(8000)
+                .build();
+        shipFareRepository.save(shipFare);
+        setUpHarbor.addShipFare(shipFare);
+
+        shipFare = ShipFare.builder()
+                .harbor(harborRepository.findById(setUpHarborId).orElse(null))
+                .ageGroup("성인")
+                .leaveIsland(5500)
+                .enterIsland(6000)
+                .roundTrip(12000)
+                .build();
+        shipFareRepository.save(shipFare);
+        setUpHarbor.addShipFare(shipFare);
+
+        //when
+        ResponseShipFare.HarborShipFare resultHarborShipFare = shipService.getShipFare(setUpHarborId);
+        //then
+        assertThat(resultHarborShipFare.getShipFares().size()).isEqualTo(2);
+        assertThat(resultHarborShipFare.getHarborName()).isEqualTo("성산항");
+    }
+
+    @DisplayName("항구 조회 테스트")
     @Transactional
     @Test
     void getAllHarborsTest() {
@@ -162,40 +247,73 @@ public class ShipServiceTests {
         assertThat(result).isEmpty();
     }
 
-    @DisplayName("항구 삭제시 배 시간표 삭제 테스트")
+    @DisplayName("항구 삭제시 배 시간표 및 배 요금 삭제 테스트")
     @Transactional
     @Test
     void deleteHarborWithHarborTimetableTest() {
-        Harbor harbor = harborRepository.findByHarborName("성산항");
+        Harbor setUpHarbor = harborRepository.findByHarborName("성산항");
         HarborTimetable harborTimetable = HarborTimetable.builder()
                 .operatingTime("07:30 ~ 17:30")
                 .period("1 ~ 2월")
                 .destination("하우목동항")
-                .harbor(harbor)
+                .harbor(setUpHarbor)
                 .build();
-        harborTimetableRepository.save(harborTimetable);
-        harbor.addHarborTimetable(harborTimetable);
 
-        shipService.deleteHarbor(harbor.getId());
+        ShipFare shipFare = ShipFare.builder()
+                .harbor(setUpHarbor)
+                .ageGroup("중학생")
+                .leaveIsland(2000)
+                .enterIsland(5000)
+                .roundTrip(8000)
+                .build();
+
+        harborTimetableRepository.save(harborTimetable);
+        setUpHarbor.addHarborTimetable(harborTimetable);
+        setUpHarbor.addShipFare(shipFare);
+
+        shipService.deleteHarbor(setUpHarborId);
 
         assertThat(harborTimetableRepository.findAll()).isEmpty();
+        assertThat(shipFareRepository.findAll()).isEmpty();
     }
 
     @DisplayName("배 시간 삭제 테스트")
     @Transactional
     @Test
     void deleteHarborTimetableTest() {
-        Harbor harbor = harborRepository.findByHarborName("성산항");
+        Harbor setUpHarbor = harborRepository.findByHarborName("성산항");
         HarborTimetable harborTimetable = HarborTimetable.builder()
                 .operatingTime("07:30 ~ 17:30")
                 .period("1 ~ 2월")
                 .destination("하우목동항")
-                .harbor(harbor)
+                .harbor(setUpHarbor)
                 .build();
         HarborTimetable harborTimetableEntity = harborTimetableRepository.save(harborTimetable);
-        harbor.addHarborTimetable(harborTimetable);
+        setUpHarbor.addHarborTimetable(harborTimetableEntity);
 
         shipService.deleteHarborTimetable(harborTimetableEntity.getId());
+        assertThat(harborTimetableRepository.findAll()).isEmpty();
+        assertThat(setUpHarbor.getHarborTimetables()).isEmpty();
+
     }
 
+    @DisplayName("배 요금 삭제 테스트")
+    @Transactional
+    @Test
+    void deleteShipFareTest() {
+        Harbor setUpHarbor = harborRepository.findById(setUpHarborId).orElse(null);
+        ShipFare shipFare = ShipFare.builder()
+                .harbor(setUpHarbor)
+                .ageGroup("중학생")
+                .leaveIsland(2000)
+                .enterIsland(5000)
+                .roundTrip(8000)
+                .build();
+        shipFareRepository.save(shipFare);
+        setUpHarbor.addShipFare(shipFare);
+
+        shipService.deleteShipFare(shipFare.getId());
+        assertThat(shipFareRepository.findAll()).isEmpty();
+        assertThat(setUpHarbor.getShipFares()).isEmpty();
+    }
 }
