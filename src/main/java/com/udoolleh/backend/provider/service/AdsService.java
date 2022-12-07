@@ -23,20 +23,20 @@ public class AdsService implements AdsServiceInterface {
 
     @Override
     @Transactional
-    public void registerAds(MultipartFile file, RequestAds.RegisterAdsDto requestDto) {
-        Ads ads = Ads.builder()
-                .context(requestDto.getContext())
-                .build();
-        adsRepository.save(ads);
-
+    public void registerAds(MultipartFile file) {
+        String url = "";
         if (Optional.ofNullable(file).isPresent()) {
-            String url = "";
             try {
                 url = s3Service.upload(file, "ads");
-                ads.updatePhoto(url);
             } catch (IOException e) {
                 System.out.println("s3 등록 실패");
             }
         }
+        Ads ads = Ads.builder()
+                .photo(url)
+                .build();
+        adsRepository.save(ads);
+
     }
+
 }

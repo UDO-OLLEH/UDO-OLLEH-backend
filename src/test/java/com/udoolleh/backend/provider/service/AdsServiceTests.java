@@ -29,14 +29,10 @@ public class AdsServiceTests {
     @Test
     @DisplayName("광고 사진 등록 기능 테스트(성공)")
     void registerAdsTest() {
-        RequestAds.RegisterAdsDto dto = RequestAds.RegisterAdsDto.builder()
-                .context("우도 땅콩 아이스크림 광고 사진")
-                .build();
-
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
 
-        adsService.registerAds(mockMultipartfile, dto);
+        adsService.registerAds(mockMultipartfile);
 
         assertNotNull(adsRepository.findAll());
     }

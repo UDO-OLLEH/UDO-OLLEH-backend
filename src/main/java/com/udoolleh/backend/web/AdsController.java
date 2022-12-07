@@ -23,9 +23,8 @@ public class AdsController {
     private AdsService adsService;
 
     @PostMapping("/ad")
-    public ResponseEntity<CommonResponse> registerAds(HttpServletRequest request, @RequestPart(required = false) MultipartFile file,
-                                                      @Valid @RequestPart RequestAds.RegisterAdsDto requestDto) {
-        adsService.registerAds(file, requestDto);
+    public ResponseEntity<CommonResponse> registerAds(HttpServletRequest request, @RequestPart(required = false) MultipartFile file) {
+        adsService.registerAds(file);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("광고 사진 등록 성공")
