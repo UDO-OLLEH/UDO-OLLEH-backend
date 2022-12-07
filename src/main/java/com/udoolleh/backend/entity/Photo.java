@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Photo {
     @Id
-    @Column(name="photo_id")
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

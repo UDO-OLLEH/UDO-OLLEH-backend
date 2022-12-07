@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Review {
     @Id
-    @Column(name="review_id")
+    @Column(name="id")
     private String id = UUID.randomUUID().toString();
 
     @CreationTimestamp

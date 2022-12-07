@@ -17,25 +17,25 @@ import java.util.UUID;
 @Entity
 public class Board {
     @Id
-    @Column(name = "board_id")
+    @Column(name = "id")
     private String id = UUID.randomUUID().toString();
 
-    @Column(name = "title", length = 30, nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "hashtag")
     private String hashtag;
 
-    @Column(name = "context", columnDefinition = "LONGTEXT")
+    @Column(name = "context", columnDefinition = "LONGTEXT", nullable = false)
     private String context;
 
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "countVisit")
+    @Column(name = "count_visit")
     private Long countVisit;
 
-    @Column(name = "countLikes")
+    @Column(name = "count_likes")
     private Long countLikes;
 
     @CreationTimestamp

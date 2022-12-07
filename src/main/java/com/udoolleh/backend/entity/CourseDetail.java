@@ -13,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class CourseDetail {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

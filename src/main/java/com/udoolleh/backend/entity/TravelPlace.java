@@ -14,10 +14,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class TravelPlace {
-
     @Id
-    @Column(name = "travel_place_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "place_name")

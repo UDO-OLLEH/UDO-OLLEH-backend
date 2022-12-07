@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 public class User {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -27,7 +27,7 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "refreshToken")
+    @Column(name = "refresh_token")
     private String refreshToken;
 
     @Column(name = "profile")

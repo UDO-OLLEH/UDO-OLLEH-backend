@@ -15,13 +15,13 @@ import java.util.UUID;
 @Entity
 public class BoardComment {
     @Id
-    @Column(name = "comment_id")
+    @Column(name = "id")
     private String id = UUID.randomUUID().toString();
 
-    @Column
+    @Column(name = "context", columnDefinition = "LONGTEXT", nullable = false)
     private String context;
 
-    @Column
+    @Column(name = "create_at")
     private LocalDateTime createAt = LocalDateTime.now();
 
     @JoinColumn(name = "user_id")

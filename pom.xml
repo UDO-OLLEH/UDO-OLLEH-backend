@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.199</version>
+			<version>1.4.200</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -113,16 +113,11 @@
 			<artifactId>spring-boot-test</artifactId>
 		</dependency>
 		<!-- flyway -->
-<!--		<dependency>-->
-<!--			<groupId>org.flywaydb</groupId>-->
-<!--			<artifactId>flyway-mysql</artifactId>-->
-<!--		</dependency>-->
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.flywaydb/flyway-maven-plugin &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>org.flywaydb</groupId>-->
-<!--			<artifactId>flyway-maven-plugin</artifactId>-->
-<!--			<version>8.5.10</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>7.5.1</version>
+		</dependency>
 		<!-- rest-docs -->
 		<dependency>
 			<groupId>org.springframework.restdocs</groupId>

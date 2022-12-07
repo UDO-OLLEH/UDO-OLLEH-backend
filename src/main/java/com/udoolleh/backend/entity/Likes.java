@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 public class Likes {
     @Id
-    @Column(name = "likes_id")
+    @Column(name = "id")
     public String id = UUID.randomUUID().toString();
 
     @ManyToOne(targetEntity = Board.class, fetch = FetchType.LAZY)

@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TravelCourse {
     @Id
-    @Column(name = "travel_course_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
