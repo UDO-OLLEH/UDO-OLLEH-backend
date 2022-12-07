@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Table(name = "harbor")
 @Getter
@@ -30,9 +31,11 @@ public class Harbor {
     @Column(name = "harbor_name")
     private String harborName;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "harbor", cascade = CascadeType.REMOVE)
     private List<HarborTimetable> harborTimetables = new ArrayList<>(); // 시간표 리스트
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "harbor", cascade = CascadeType.REMOVE)
     private List<ShipFare> shipFares = new ArrayList<>();
 

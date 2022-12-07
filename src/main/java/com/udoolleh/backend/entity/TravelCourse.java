@@ -34,16 +34,16 @@ public class TravelCourse {
     private List<Gps> gpsList = new ArrayList<>();
 
     @Builder
-    public TravelCourse(String courseName, String course){
+    public TravelCourse(String courseName, String course) {
         this.courseName = courseName;
         this.course = course;
     }
 
-    public void addDetail(CourseDetail detail){
+    public void addDetail(CourseDetail detail) {
         this.detailList.add(detail);
     }
 
-    public void addGps(Gps gps){
+    public void addGps(Gps gps) {
         this.gpsList.add(gps);
     }
 }
