@@ -67,7 +67,7 @@ CREATE TABLE menu(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(63),
     photo VARCHAR(255),
-    price TINYINT,
+    price INT,
     description VARCHAR(255),
     restaurant_id VARCHAR(63),
     FOREIGN KEY(restaurant_id) REFERENCES restaurant(id)
@@ -129,9 +129,15 @@ CREATE TABLE course_detail(
 CREATE TABLE ship_fare(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     age_group VARCHAR(63) NOT NULL,
-    round_trip TINYINT,
-    enter_island TINYINT,
-    leave_island TINYINT,
+    round_trip INT,
+    enter_island INT,
+    leave_island INT,
     harbor_id BIGINT,
     FOREIGN KEY(harbor_id) REFERENCES harbor(id)
 );
+
+CREATE TABLE ads(
+    id VARCHAR(63) NOT NULL PRIMARY KEY,
+    photo VARCHAR(255)
+);
+

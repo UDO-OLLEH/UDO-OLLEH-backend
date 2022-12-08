@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 public class Ads {
     @Id
-    @Column(name = "ads_id")
+    @Column(name = "id")
     private String id = UUID.randomUUID().toString();
 
     @Column(name = "photo")

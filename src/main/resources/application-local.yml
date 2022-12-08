@@ -6,16 +6,13 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test;NON_KEYWORDS=USER
+    url: jdbc:h2:mem:test
     username: sa
     password:
 
   flyway:
-    url: jdbc:h2:mem:test
-    user: sa
     enabled: true
     baselineOnMigrate: true
-    locations: classpath:/db/migration/h2,classpath:/db/migration/mysql
 
   jpa:
     show-sql: true
