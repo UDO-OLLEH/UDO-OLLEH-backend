@@ -173,6 +173,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(NotFoundShipFareException e) {
         return handleException(e, ErrorCode.NOT_FOUND_SHIP_FARE);
     }
+    @ExceptionHandler(RegisterFileToS3FailedException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(RegisterFileToS3FailedException e) {
+        return handleException(e, ErrorCode.REGISTER_FILE_TO_S3_FAILED);
+    }
 }
 
 

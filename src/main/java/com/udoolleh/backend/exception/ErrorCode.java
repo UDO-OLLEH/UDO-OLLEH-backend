@@ -1,5 +1,6 @@
 package com.udoolleh.backend.exception;
 
+import com.udoolleh.backend.exception.errors.RegisterFileToS3FailedException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -48,7 +49,11 @@ public enum ErrorCode {
     LIKES_DUPLICATED(HttpStatus.FORBIDDEN, "LIKES_002", "LIKES_DUPLICATED"),
 
     NOT_FOUND_TRAVEL_PLACE(HttpStatus.NOT_FOUND, "PLACE_001", "NOT_FOUND_TRAVEL_PLACE"),
-    TRAVEL_PLACE_DUPLICATED(HttpStatus.FORBIDDEN, "PLACE_002", "TRAVEL_PLACE_DUPLICATED");
+    TRAVEL_PLACE_DUPLICATED(HttpStatus.FORBIDDEN, "PLACE_002", "TRAVEL_PLACE_DUPLICATED"),
+
+    NOT_FOUND_ADS(HttpStatus.NOT_FOUND, "ADS_001", "NOT_FOUND_ADS"),
+
+    REGISTER_FILE_TO_S3_FAILED(HttpStatus.BAD_REQUEST,"S3_001", "REGISTER_FILE_TO_S3_FAILED");
 
     private final String code;
     private final String message;
