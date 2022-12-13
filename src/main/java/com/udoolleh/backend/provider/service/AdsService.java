@@ -1,12 +1,12 @@
-package com.udoolleh.backend.ads;
+package com.udoolleh.backend.provider.service;
 
-import com.udoolleh.backend.ads.dto.ResponseAds;
+import com.udoolleh.backend.repository.AdsRepository;
+import com.udoolleh.backend.web.dto.ResponseAds;
 import com.udoolleh.backend.core.service.AdsServiceInterface;
+import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.exception.errors.NotFoundAdsException;
 import com.udoolleh.backend.exception.errors.RegisterFileToS3FailedException;
-import com.udoolleh.backend.provider.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

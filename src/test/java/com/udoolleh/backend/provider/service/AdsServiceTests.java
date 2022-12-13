@@ -1,8 +1,7 @@
 package com.udoolleh.backend.provider.service;
 
-import com.udoolleh.backend.ads.Ads;
-import com.udoolleh.backend.ads.AdsService;
-import com.udoolleh.backend.ads.AdsRepository;
+import com.udoolleh.backend.entity.Ads;
+import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.exception.errors.NotFoundAdsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

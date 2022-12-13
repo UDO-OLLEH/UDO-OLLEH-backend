@@ -1,9 +1,9 @@
-package com.udoolleh.backend.ads;
+package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.ads.dto.ResponseAds;
+import com.udoolleh.backend.web.dto.ResponseAds;
+import com.udoolleh.backend.provider.service.AdsService;
 import com.udoolleh.backend.web.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.udoolleh.backend.ads;
+package com.udoolleh.backend.entity;
 
 import lombok.Builder;
 import lombok.Getter;

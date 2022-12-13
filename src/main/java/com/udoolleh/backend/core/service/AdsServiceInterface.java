@@ -1,6 +1,6 @@
 package com.udoolleh.backend.core.service;
 
-import com.udoolleh.backend.ads.dto.ResponseAds;
+import com.udoolleh.backend.web.dto.ResponseAds;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

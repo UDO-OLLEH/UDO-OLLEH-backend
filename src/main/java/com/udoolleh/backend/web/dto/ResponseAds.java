@@ -1,6 +1,6 @@
-package com.udoolleh.backend.ads.dto;
+package com.udoolleh.backend.web.dto;
 
-import com.udoolleh.backend.ads.Ads;
+import com.udoolleh.backend.entity.Ads;
 import lombok.Builder;
 import lombok.Getter;
 
