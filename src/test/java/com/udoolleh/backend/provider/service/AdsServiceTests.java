@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -25,6 +26,7 @@ public class AdsServiceTests {
     private AdsRepository adsRepository;
 
     @Test
+    @Transactional
     @DisplayName("광고 사진 등록 기능 테스트(성공)")
     void registerAdsTest() {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
@@ -36,6 +38,7 @@ public class AdsServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("광고 사진 조회 기능 테스트(성공)")
     void getAdsTest() {
         Ads ads = Ads.builder()
@@ -46,12 +49,14 @@ public class AdsServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("광고 사진 삭제 기능 테스트(실패-해당 광고가 없을 경우)")
     void deleteAdsWhenNotExistAdsTest() {
         assertThrows(NotFoundAdsException.class, () -> adsService.deleteAds("id"));
     }
 
     @Test
+    @Transactional
     @DisplayName("광고 사진 삭제 기능 테스트(성공)")
     void deleteAdsTest() {
         Ads ads = Ads.builder()
