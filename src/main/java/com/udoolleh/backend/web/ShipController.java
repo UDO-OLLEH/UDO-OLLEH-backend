@@ -1,5 +1,8 @@
 package com.udoolleh.backend.web;
 
+import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
+import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.provider.service.ShipService;
 import com.udoolleh.backend.web.dto.CommonResponse;
 import com.udoolleh.backend.web.dto.RequestHarborTimetable;
@@ -7,7 +10,10 @@ import com.udoolleh.backend.web.dto.RequestShipFare;
 import com.udoolleh.backend.web.dto.ResponseHarbor;
 import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
 import com.udoolleh.backend.web.dto.ResponseShipFare;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +25,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ShipController {
     private final ShipService shipService;
+    private final AdminAuthenticationService adminAuthenticationService;
+    private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @PostMapping("/harbor")
-    public ResponseEntity<CommonResponse> registerHarbor(@RequestBody Map<String, String> harborName) {
+    public ResponseEntity<CommonResponse> registerHarbor(HttpServletRequest request, @RequestBody Map<String, String> harborName) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
+
         shipService.registerHarbor(harborName.get("harborName"));
 
         return ResponseEntity.ok().body(CommonResponse.builder()
