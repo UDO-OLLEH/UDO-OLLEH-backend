@@ -1,13 +1,17 @@
 package com.udoolleh.backend.web.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
 import java.util.UUID;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommonResponse {
 
     @Builder.Default // Builder default 지정

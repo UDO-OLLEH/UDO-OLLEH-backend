@@ -1,9 +1,14 @@
 package com.udoolleh.backend.web;
 
+import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
+import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.provider.service.TravelPlaceService;
 import com.udoolleh.backend.web.dto.CommonResponse;
 import com.udoolleh.backend.web.dto.RequestPlace;
 import com.udoolleh.backend.web.dto.ResponsePlace;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaceController {
     private final TravelPlaceService travelPlaceService;
+    private final JwtAuthTokenProvider jwtAuthTokenProvider;
+    private final AdminAuthenticationService adminAuthenticationService;
 
     @GetMapping("/place")
     public ResponseEntity<CommonResponse> getPlaceList() {
@@ -36,7 +43,12 @@ public class PlaceController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<CommonResponse> registerPlace(@RequestPart MultipartFile file, @RequestPart RequestPlace.RegisterPlaceDto requestDto) {
+    public ResponseEntity<CommonResponse> registerPlace(HttpServletRequest request, @RequestPart MultipartFile file, @RequestPart RequestPlace.RegisterPlaceDto requestDto) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
+
         travelPlaceService.registerPlace(file, requestDto);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("추천 관광지 등록 성공")
@@ -44,7 +56,12 @@ public class PlaceController {
     }
 
     @PutMapping("/place/{id}")
-    public ResponseEntity<CommonResponse> updatePlace(@RequestPart MultipartFile file, @Valid @PathVariable Long id, @RequestPart RequestPlace.UpdatePlaceDto requestDto) {
+    public ResponseEntity<CommonResponse> updatePlace(HttpServletRequest request, @RequestPart MultipartFile file, @Valid @PathVariable Long id, @RequestPart RequestPlace.UpdatePlaceDto requestDto) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
+
         travelPlaceService.updatePlace(file, id, requestDto);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("추천 관광지 수정 성공")
@@ -52,7 +69,12 @@ public class PlaceController {
     }
 
     @DeleteMapping("/place/{id}")
-    public ResponseEntity<CommonResponse> deletePlace(@PathVariable Long id) {
+    public ResponseEntity<CommonResponse> deletePlace(HttpServletRequest request, @PathVariable Long id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
+
         travelPlaceService.deletePlace(id);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("추천 관광지 삭제 성공")
