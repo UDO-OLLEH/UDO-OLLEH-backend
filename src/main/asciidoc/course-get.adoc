@@ -1,0 +1,13 @@
+[[course-get]]
+== 여행지 코스 전체 목록 조회 API
+
+==== Http Request
+include::{snippets}/course-get/http-request.adoc[]
+include::{snippets}/course-get/httpie-request.adoc[]
+==== Http Response
+include::{snippets}/course-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/course-get/response-body.adoc[]
+include::{snippets}/course-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/course-get/curl-request.adoc[]
