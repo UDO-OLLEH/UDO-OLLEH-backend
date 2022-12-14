@@ -9,6 +9,6 @@ public class WebClientConfig {
 
     @Bean(name = "udoOllehMicroserviceWebClient")
     public WebClient udoOllehMicroserviceWebClient() {
-        return WebClient.create("http://localhost:8082");
+        return WebClient.create("http://ec2-54-241-190-224.us-west-1.compute.amazonaws.com");
     }
 }
