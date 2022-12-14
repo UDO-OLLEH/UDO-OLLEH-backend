@@ -27,8 +27,6 @@ public class AdminAuthenticationService implements AdminAuthenticationServiceInt
                 })
                 .block();
 
-        System.out.println("webclient끝");
-
         return true;
     }
 }
