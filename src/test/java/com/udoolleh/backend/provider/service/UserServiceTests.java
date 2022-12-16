@@ -130,12 +130,14 @@ public class UserServiceTests {
 
         //when
         ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(()->null);
+
+        System.out.println("access"+  loginResponse.getAccessToken());
         ResponseUser.Token tokenResponse = userService.refreshToken(loginResponse.getRefreshToken()).orElseGet(()->null);
         //then
         assertNotNull(tokenResponse.getRefreshToken());
         assertNotNull(tokenResponse.getAccessToken());
         System.out.println(tokenResponse.getAccessToken());
-        System.out.println(tokenResponse.getRefreshToken());
+//        System.out.println(tokenResponse.getRefreshToken());
     }
 
     @Test

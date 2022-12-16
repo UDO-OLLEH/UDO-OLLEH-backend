@@ -12,3 +12,5 @@
 우도올레 프로젝트의 API 명세서입니다.
 
 include::restaurant-get.adoc[]
+include::course-get.adoc[]
+include::ad-get.adoc[]
