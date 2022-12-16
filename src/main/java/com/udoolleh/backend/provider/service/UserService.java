@@ -120,7 +120,7 @@ public class UserService implements UserServiceInterface {
             return Optional.empty();
         }
 
-        String id = String.valueOf(jwtAuthToken.getData().get("id"));
+        String id = String.valueOf(jwtAuthToken.getData().getSubject());
         String accessToken = createAccessToken(id); // 액세스토큰 재발급
 
         ResponseUser.Token newToken = ResponseUser.Token.builder()
@@ -133,7 +133,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public String createAccessToken(String id) {
-        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant()); // 토큰은 2분만 유지되도록 설정, 2분 후 refresh token
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant()); // 토큰은 2분만 유지되도록 설정, 2분 후 refresh token
         JwtAuthToken accessToken = jwtAuthTokenProvider.createAuthToken(id, Role.USER.getCode(), expiredDate);
         return accessToken.getToken();
     }
