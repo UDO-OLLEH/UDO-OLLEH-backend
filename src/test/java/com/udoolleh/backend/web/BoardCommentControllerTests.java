@@ -33,8 +33,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import org.springframework.restdocs.payload.JsonFieldType;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -91,6 +91,7 @@ public class BoardCommentControllerTests {
                 .nickname("nick")
                 .password(SHA256Util.getEncrypt("1234", salt))
                 .salt(salt)
+                .profile("profile_url")
                 .build();
         user = userRepository.save(user);
 
@@ -111,7 +112,7 @@ public class BoardCommentControllerTests {
 
     @Test
     @Transactional
-    void registerBoardTest() throws Exception {
+    void registerBoardCommentTest() throws Exception {
         RequestBoardComment.RegisterBoardCommentDto dto = RequestBoardComment.RegisterBoardCommentDto
                 .builder()
                 .boardId(board.getId())
@@ -148,7 +149,7 @@ public class BoardCommentControllerTests {
 
     @Test
     @Transactional
-    void updateBoardTest() throws Exception {
+    void updateBoardCommentTest() throws Exception {
         BoardComment comment = BoardComment.builder()
                 .board(board)
                 .user(user)
@@ -186,6 +187,44 @@ public class BoardCommentControllerTests {
                                 fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
                                 fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+    }
+
+    @Test
+    @Transactional
+    void getBoardCommentTest() throws Exception {
+        BoardComment comment = BoardComment.builder()
+                .board(board)
+                .user(user)
+                .context("내용")
+                .build();
+        comment = boardCommentRepository.save(comment);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/board/{id}/comment", board.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("boardComment-get",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(headerWithName("x-auth-token").description("액세스 토큰")),
+                        pathParameters(parameterWithName("id").description("게시판 아이디")),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list.[].id").type(JsonFieldType.STRING).description("댓글 아이디"),
+                                fieldWithPath("list.[].context").type(JsonFieldType.STRING).description("댓글 내용"),
+                                fieldWithPath("list.[].nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                fieldWithPath("list.[].profile").type(JsonFieldType.STRING).description("유저 프로필"),
+                                fieldWithPath("list.[].createAt").type(JsonFieldType.STRING).description("댓글 작성 시간")
                         )
                 ));
     }

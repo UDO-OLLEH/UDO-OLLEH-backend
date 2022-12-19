@@ -20,3 +20,7 @@ include::review-post.adoc[]
 include::review-update-post.adoc[]
 include::review-get.adoc[]
 include::review-delete.adoc[]
+
+include::boardCommnet-post.adoc[]
+include::boardCommnet-put.adoc[]
+include::boardCommnet-get.adoc[]

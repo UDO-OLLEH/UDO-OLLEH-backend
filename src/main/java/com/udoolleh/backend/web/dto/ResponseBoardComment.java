@@ -13,7 +13,7 @@ public class ResponseBoardComment {
         private String id;
         private String context;
         private String nickname;
-        private String photo;
+        private String profile;
         private LocalDateTime createAt;
     }
 

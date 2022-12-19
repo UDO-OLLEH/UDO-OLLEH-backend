@@ -47,11 +47,12 @@ public class User {
 
 
     @Builder
-    public User(String email, String password, String nickname, String salt) {
+    public User(String email, String password, String nickname, String salt, String profile) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.salt = salt;
+        this.profile = profile;
     }
 
     public void changeRefreshToken(String refreshToken) {

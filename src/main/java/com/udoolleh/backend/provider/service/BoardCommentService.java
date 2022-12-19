@@ -58,7 +58,7 @@ public class BoardCommentService implements BoardCommentServiceInterface {
                     .id(boardComment.getId())
                     .createAt(boardComment.getCreateAt())
                     .nickname(boardComment.getUser().getNickname())
-                    .photo(boardComment.getUser().getProfile())
+                    .profile(boardComment.getUser().getProfile())
                     .context(boardComment.getContext())
                     .build();
             responseDto.add(item);

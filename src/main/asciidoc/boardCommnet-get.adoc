@@ -1,0 +1,15 @@
+[[boardComment-get]]
+== 게시판 댓글 전체 조회 API
+
+==== Http Request
+include::{snippets}/boardComment-get/http-request.adoc[]
+==== Path Parameters
+include::{snippets}/boardComment-get/path-parameters.adoc[]
+==== Request Headers
+include::{snippets}/boardComment-get/request-headers.adoc[]
+==== Http Response
+include::{snippets}/boardComment-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/boardComment-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/boardComment-get/curl-request.adoc[]
