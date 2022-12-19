@@ -1,0 +1,15 @@
+[[boardComment-delete]]
+== 게시판 댓글 삭제 API
+
+==== Http Request
+include::{snippets}/boardComment-delete/http-request.adoc[]
+==== Path Parameters
+include::{snippets}/boardComment-delete/path-parameters.adoc[]
+==== Request Headers
+include::{snippets}/boardComment-delete/request-headers.adoc[]
+==== Http Response
+include::{snippets}/boardComment-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/boardComment-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/boardComment-delete/curl-request.adoc[]

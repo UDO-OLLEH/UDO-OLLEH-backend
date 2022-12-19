@@ -228,4 +228,38 @@ public class BoardCommentControllerTests {
                         )
                 ));
     }
+
+    @Test
+    @Transactional
+    void deleteBoardCommentTest() throws Exception {
+        BoardComment comment = BoardComment.builder()
+                .board(board)
+                .user(user)
+                .context("내용")
+                .build();
+        comment = boardCommentRepository.save(comment);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/board/comment/{id}", comment.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("boardComment-delete",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(headerWithName("x-auth-token").description("액세스 토큰")),
+                        pathParameters(parameterWithName("id").description("댓글 아이디")),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+    }
 }
