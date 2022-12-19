@@ -1,0 +1,13 @@
+[[userLogin-post]]
+== 유저 로그인 API
+유저 로그인
+
+==== Http Request
+include::{snippets}/userLogin-post/http-request.adoc[]
+==== Http Response
+include::{snippets}/userLogin-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/userLogin-post/response-fields.adoc[]
+==== Request Body
+include::{snippets}/userLogin-post/request-body.adoc[]
+include::{snippets}/userLogin-post/request-fields.adoc[]

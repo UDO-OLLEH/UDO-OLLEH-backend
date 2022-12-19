@@ -88,32 +88,14 @@ public class RestaurantService implements RestaurantServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseRestaurant.RestaurantDto> getRestaurant(Pageable pageable){
+    public Page<ResponseRestaurant.RestaurantDto> getRestaurant(Pageable pageable){
         List<ResponseRestaurant.RestaurantDto> restaurantLists = new ArrayList<>();
         Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
 
         if(restaurants == null){
             throw new NotFoundRestaurantException();
         }
-        for(Restaurant item : restaurants){
-            List<Photo> photoList = photoRepository.findByRestaurant(item);
-            List<String> imageUrlList = new ArrayList<>();
-            for(Photo photo : photoList) {
-                imageUrlList.add(photo.getUrl());
-            }
-            ResponseRestaurant.RestaurantDto restaurantDto = ResponseRestaurant.RestaurantDto.builder()
-                    .id(item.getId())
-                    .address(item.getAddress())
-                    .totalGrade(item.getTotalGrade())
-                    .name(item.getName())
-                    .category(item.getCategory())
-                    .imagesUrl(imageUrlList)
-                    .xCoordinate(item.getXCoordinate())
-                    .yCoordinate(item.getYCoordinate())
-                    .build();
-            restaurantLists.add(restaurantDto);
-        }
-        return restaurantLists;
+        return restaurants.map(ResponseRestaurant.RestaurantDto::of);
     }
 
 }

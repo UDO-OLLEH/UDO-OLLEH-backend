@@ -63,7 +63,7 @@ public class UserServiceTests {
                 .password("1234")
                 .build();
         //then
-        assertThrows(UserNicknameDuplicatedException.class, ()-> userService.register(dto1));
+        assertThrows(UserNicknameDuplicatedException.class, () -> userService.register(dto1));
     }
 
     @Transactional
@@ -83,7 +83,7 @@ public class UserServiceTests {
                 .build();
 
         //when
-        ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(()->null);
+        ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(() -> null);
         System.out.println(loginResponse.getAccessToken());
         System.out.println(loginResponse.getRefreshToken());
 
@@ -129,20 +129,18 @@ public class UserServiceTests {
                 .build();
 
         //when
-        ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(()->null);
-
-        System.out.println("access"+  loginResponse.getAccessToken());
-        ResponseUser.Token tokenResponse = userService.refreshToken(loginResponse.getRefreshToken()).orElseGet(()->null);
+        ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(() -> null);
+        ResponseUser.Token tokenResponse = userService.refreshToken(loginResponse.getRefreshToken()).orElseGet(() -> null);
         //then
         assertNotNull(tokenResponse.getRefreshToken());
         assertNotNull(tokenResponse.getAccessToken());
         System.out.println(tokenResponse.getAccessToken());
-//        System.out.println(tokenResponse.getRefreshToken());
+        System.out.println(tokenResponse.getRefreshToken());
     }
 
     @Test
     @DisplayName("회원정보 수정 테스트(성공)")
-    void ChangeUserInfoTest(){
+    void ChangeUserInfoTest() {
         User user = User.builder()
                 .email("email")
                 .password("password")
@@ -154,13 +152,27 @@ public class UserServiceTests {
                 .password("changedpassword")
                 .nickname("changednick")
                 .build();
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test2.png",
-                "image/png", "test data".getBytes());
-        userService.updateUser("email",mockMultipartFile,updateDto);
+
+        userService.updateUser("email", updateDto);
         User updateUser = userRepository.findByEmail("email");
         assertEquals(updateDto.getNickname(), updateUser.getNickname());
-        assertNotNull(updateUser.getProfile());
-        }
+    }
 
+    @Test
+    @DisplayName("유저 프로필 사진 업로드 테스트(성공)")
+    void uploadUserImageTest() {
+        User user = User.builder()
+                .email("email")
+                .password("password")
+                .nickname("nick")
+                .build();
+        userRepository.save(user);
+        //회원정보 변경
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test2.png",
+                "image/png", "test data".getBytes());
+        userService.uploadUserImage("email", mockMultipartFile);
+        User updateUser = userRepository.findByEmail("email");
+        assertFalse(updateUser.getProfile().isEmpty());
+    }
 
 }

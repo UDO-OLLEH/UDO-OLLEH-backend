@@ -66,10 +66,12 @@ public class User {
     public void addReview(Review review) {
         this.reviewList.add(review);
     }
-    public void changeUserInfo(String password, String nickname, String salt, String profile){
+    public void changeUserInfo(String password, String nickname, String salt){
         this.password = password;
         this.nickname = nickname;
         this.salt = salt;
+    }
+    public void addProfile(String profile) {
         this.profile = profile;
     }
 

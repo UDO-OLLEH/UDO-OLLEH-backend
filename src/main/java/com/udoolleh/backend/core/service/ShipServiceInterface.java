@@ -12,8 +12,8 @@ public interface ShipServiceInterface {
     void registerHarborTimetable(String harborName, String destination, String period, String operatingTime);
     void registerShipFare(RequestShipFare.RegisterShipFareDto registerShipFareDto);
     List<ResponseHarbor.HarborDto> getAllHarbors();
-    ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(String harborName, String destination);
-    ResponseShipFare.HarborShipFare getShipFare(Long harborId);
+    ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(Long id, String destination);
+    ResponseShipFare.HarborShipFareDto getShipFare(Long harborId);
     void deleteHarbor(Long harborId);
     void deleteHarborTimetable(Long harborTimetableId);
     void deleteShipFare(Long shipFareId);

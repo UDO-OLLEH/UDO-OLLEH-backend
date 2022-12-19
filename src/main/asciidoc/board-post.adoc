@@ -1,0 +1,17 @@
+[[review-post]]
+== 리뷰 등록 API
+
+==== Http Request
+include::{snippets}/board-post/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-post/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/board-post/request-parts.adoc[]
+requestDto
+include::{snippets}/board-post/request-part-requestDto-fields.adoc[]
+==== Http Response
+include::{snippets}/board-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-post/curl-request.adoc[]

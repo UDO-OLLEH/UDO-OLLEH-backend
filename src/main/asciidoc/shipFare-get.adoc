@@ -1,0 +1,13 @@
+[[harborTimetable-get]]
+== 항구 시간표 조회 API
+
+==== Http Request
+include::{snippets}/shipFare-get/http-request.adoc[]
+==== Http Response
+include::{snippets}/shipFare-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/shipFare-get/response-fields.adoc[]
+==== Request Path Parameters
+include::{snippets}/shipFare-get/path-parameters.adoc[]
+==== Request curl
+include::{snippets}/shipFare-get/curl-request.adoc[]

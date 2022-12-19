@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -135,11 +136,11 @@ public class RestaurantController {
     @GetMapping("/restaurant")
     public ResponseEntity<CommonResponse> getRestaurant(@PageableDefault (size=10, sort="totalGrade", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<ResponseRestaurant.RestaurantDto> restaurantList = restaurantService.getRestaurant(pageable);
+        Page<ResponseRestaurant.RestaurantDto> restaurants = restaurantService.getRestaurant(pageable);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("맛집 전체 조회 성공")
-                .list(restaurantList)
+                .list(restaurants)
                 .build());
     }
 

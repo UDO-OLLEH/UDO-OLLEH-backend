@@ -1,0 +1,12 @@
+[[userLogout-post]]
+== 유저 로그아웃 API
+유저 로그아웃
+
+==== Http Request
+include::{snippets}/userLogout-post/http-request.adoc[]
+==== Request Header
+include::{snippets}/userLogout-post/request-headers.adoc[]
+==== Http Response
+include::{snippets}/userLogout-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/userLogout-post/response-fields.adoc[]

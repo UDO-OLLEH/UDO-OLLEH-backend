@@ -8,14 +8,14 @@ public class ResponseShipFare {
 
     @Builder
     @Getter
-    public static class HarborShipFare {
+    public static class HarborShipFareDto {
         private String harborName;
-        private List<ShipFare> shipFares;
+        private List<ShipFareDto> shipFareDtos;
     }
 
     @Builder
     @Getter
-    public static class ShipFare {
+    public static class ShipFareDto {
         private Long id;
         private String ageGroup;
         private Integer roundTrip;

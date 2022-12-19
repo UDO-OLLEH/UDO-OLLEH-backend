@@ -148,7 +148,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public void updateUser(String email, MultipartFile file, RequestUser.UpdateUserDto requestDto){
+    public void updateUser(String email, RequestUser.UpdateUserDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){
             throw new CustomJwtRuntimeException();
@@ -157,23 +157,34 @@ public class UserService implements UserServiceInterface {
         if(user1 != null){//닉네임 중복시
             throw new UserNicknameDuplicatedException();
         }
-        if(!Optional.ofNullable(user.getProfile()).isEmpty()){//프로필 사진이 이미 s3에 등록 됐을 경우 삭제 후 업로드
-            s3Service.deleteFile(user.getProfile());
-        }
-        //프로필 사진 s3에 등록
-        String url="";
-        try {
-            url = s3Service.upload(file, "user");
-        }catch (IOException e){
-            System.out.println("s3 등록 실패");
-        }
 
         //salt생성
         String salt = SHA256Util.generateSalt();
         //비밀번호 암호화
         String encryptedPassword = SHA256Util.getEncrypt(requestDto.getPassword(),salt);
         //유저 정보 수정
-        user.changeUserInfo(encryptedPassword,requestDto.getNickname(),salt,url);
+        user.changeUserInfo(encryptedPassword,requestDto.getNickname(),salt);
 
+    }
+
+    @Override
+    @Transactional
+    public void uploadUserImage(String email, MultipartFile image) {
+        User user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new CustomJwtRuntimeException();
+        }
+
+        if(user.getProfile() != null){//프로필 사진이 이미 s3에 등록 됐을 경우 삭제 후 업로드
+            s3Service.deleteFile(user.getProfile());
+        }
+
+        String url="";
+        try {
+            url = s3Service.upload(image, "user");
+        }catch (IOException e){
+            System.out.println("s3 등록 실패");
+        }
+        user.addProfile(url);
     }
 }

@@ -1,0 +1,12 @@
+[[restaurantMenu-get]]
+== 식당 메뉴 목록 조회 API
+식당의 메뉴를 전체 조회한다.
+
+==== Http Request
+include::{snippets}/restaurantMenu-get/http-request.adoc[]
+==== Http Response
+include::{snippets}/restaurantMenu-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/restaurantMenu-get/response-fields.adoc[]
+==== Request Path Parameters
+include::{snippets}/restaurantMenu-get/path-parameters.adoc[]

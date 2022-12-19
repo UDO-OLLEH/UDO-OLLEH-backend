@@ -1,0 +1,12 @@
+[[user-post]]
+== 유저 등록 API
+회원가입시 유저를 등록한다.
+
+==== Http Request
+include::{snippets}/user-post/http-request.adoc[]
+==== Http Response
+include::{snippets}/user-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/user-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/user-post/curl-request.adoc[]
