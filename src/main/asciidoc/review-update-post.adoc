@@ -1,0 +1,17 @@
+[[review-update-post]]
+== 리뷰 수정 API
+
+==== Http Request
+include::{snippets}/review-update-post/http-request.adoc[]
+include::{snippets}/review-update-post/httpie-request.adoc[]
+==== Path Parameters
+include::{snippets}/review-update-post/path-parameters.adoc[]
+==== Request Parts
+include::{snippets}/review-update-post/request-parts.adoc[]
+==== Http Response
+include::{snippets}/review-update-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/review-update-post/response-body.adoc[]
+include::{snippets}/review-update-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/review-update-post/curl-request.adoc[]

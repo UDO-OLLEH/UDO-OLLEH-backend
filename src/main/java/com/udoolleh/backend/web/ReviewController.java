@@ -42,7 +42,7 @@ public class ReviewController {
                 .build());
     }
 
-    @PutMapping("/restaurant/review/{id}")
+    @PostMapping("/restaurant/review/{id}")
     public ResponseEntity<CommonResponse> updateReview(HttpServletRequest request,
                                                 @PathVariable String id,
                                                 @RequestPart MultipartFile file,

@@ -137,6 +137,48 @@ public class ReviewControllerTests {
     }
 
     @Test
+    @Transactional
+    void updateReviewTest() throws Exception{
+        Review review = Review.builder()
+                .context("context")
+                .grade(3.0)
+                .user(user)
+                .restaurant(restaurant)
+                .build();
+        review = reviewRepository.save(review);
+
+        MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
+                "image/png", "test data".getBytes());
+        MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
+                "application/json", "{\"context\": \"내용\",\"grade\": \"3.0\"}".getBytes());
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .multipart("/restaurant/review/{id}", review.getId())
+                .file(mockMultipartfile)
+                .file(requestDto)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("review-update-post",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-43-200-118-169.ap-northeast-2.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(parameterWithName("id").description("리뷰 아이디")),
+                        requestParts(partWithName("file").description("사진 파일"),
+                                partWithName("requestDto").description("리뷰 내용")),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+    }
+
+    @Test
     void getReviewTest() throws Exception {
         //given
         Review review = Review.builder()
