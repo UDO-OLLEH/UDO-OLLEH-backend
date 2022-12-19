@@ -166,9 +166,9 @@ public class ShipServiceTests {
         setUpHarbor.addShipFare(shipFare);
 
         //when
-        ResponseShipFare.HarborShipFare resultHarborShipFare = shipService.getShipFare(setUpHarborId);
+        ResponseShipFare.HarborShipFareDto resultHarborShipFare = shipService.getShipFare(setUpHarborId);
         //then
-        assertThat(resultHarborShipFare.getShipFares().size()).isEqualTo(2);
+        assertThat(resultHarborShipFare.getShipFareDtos().size()).isEqualTo(2);
         assertThat(resultHarborShipFare.getHarborName()).isEqualTo("성산항");
     }
 
@@ -216,12 +216,12 @@ public class ShipServiceTests {
                 .operatingTime(operatingTime)
                 .build();
         ResponseHarborTimetable.HarborTimetableDto harborTimetableDto = ResponseHarborTimetable.HarborTimetableDto.builder()
-                .timetableDto(List.of(timetableDto))
+                .timetableDtos(List.of(timetableDto))
                 .destination(destination)
                 .build();
 
         //when
-        ResponseHarborTimetable.HarborTimetableDto result = shipService.getHarborTimetable("성산항", destination);
+        ResponseHarborTimetable.HarborTimetableDto result = shipService.getHarborTimetable(harbor.getId(), destination);
 
         //then
         assertThat(result).isEqualTo(harborTimetableDto);
@@ -231,8 +231,8 @@ public class ShipServiceTests {
     @Transactional
     @Test
     void getEmptyHarborOrEmptyTimetableTest() {
-        assertThrows(NotFoundHarborException.class, () -> shipService.getHarborTimetable("등록되지 않은 항구", "존재하지않은 목적지"));   //항구가 등록되어 있지 않을 경우
-        assertThrows(NotFoundHarborTimetableException.class, () -> shipService.getHarborTimetable("성산항", "존재하지 않는 목적지"));    //시간이 존재하지 않는 경우
+        assertThrows(NotFoundHarborException.class, () -> shipService.getHarborTimetable(12345L, "존재하지않은 목적지"));   //항구가 등록되어 있지 않을 경우
+        assertThrows(NotFoundHarborTimetableException.class, () -> shipService.getHarborTimetable(setUpHarborId, "존재하지 않는 목적지"));    //시간이 존재하지 않는 경우
     }
 
     @DisplayName("항구 삭제 테스트")

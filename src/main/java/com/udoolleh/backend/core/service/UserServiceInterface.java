@@ -13,5 +13,6 @@ public interface UserServiceInterface {
     String createAccessToken(String id);
     String createRefreshToken(String id);
     void logout(String email);
-    void updateUser(String email, MultipartFile file, RequestUser.UpdateUserDto updateDto);
+    void updateUser(String email, RequestUser.UpdateUserDto requestDto);
+    void uploadUserImage(String email, MultipartFile image);
 }

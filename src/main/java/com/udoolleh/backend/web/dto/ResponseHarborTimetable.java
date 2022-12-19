@@ -9,7 +9,7 @@ public class ResponseHarborTimetable {
     @Data
     public static class HarborTimetableDto {
         private String destination;
-        private List<ResponseHarborTimetable.TimetableDto> timetableDto;
+        private List<ResponseHarborTimetable.TimetableDto> timetableDtos;
     }
 
     @Builder

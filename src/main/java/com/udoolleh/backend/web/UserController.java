@@ -59,7 +59,7 @@ public class UserController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-
+        userService.logout(email);
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("로그아웃 성공")
                 .build());
@@ -70,13 +70,12 @@ public class UserController {
         ResponseUser.Token token = userService.refreshToken(payload.get("refreshToken")).orElseThrow(() -> new CustomJwtRuntimeException());
 
         return ResponseEntity.ok().body(CommonResponse.builder()
-                .message("refreshToken 갱신 성공")
+                .message("accessToken 갱신 성공")
                 .list(token)
                 .build());
     }
     @PutMapping("/user")
-    public ResponseEntity<CommonResponse> updateUser(HttpServletRequest request, @RequestPart(value = "file", required = false) MultipartFile file,
-                                                     @Valid @RequestPart(value = "requestDto") RequestUser.UpdateUserDto updateDto){
+    public ResponseEntity<CommonResponse> updateUser(HttpServletRequest request, @RequestBody RequestUser.UpdateUserDto updateDto){
         //유저 확인
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
@@ -84,10 +83,24 @@ public class UserController {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
             email = jwtAuthToken.getData().getSubject();
         }
-        userService.updateUser(email, file, updateDto);
+        userService.updateUser(email, updateDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("유저 정보 수정 성공")
+                .build());
+    }
+
+    @PostMapping("/user/image")
+    public ResponseEntity<CommonResponse> uploadUserImage(HttpServletRequest request, @RequestPart(value = "file", required = true) MultipartFile file) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if(token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        userService.uploadUserImage(email, file);
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("유저 프로필 이미지 업로드 성공")
                 .build());
     }
 }

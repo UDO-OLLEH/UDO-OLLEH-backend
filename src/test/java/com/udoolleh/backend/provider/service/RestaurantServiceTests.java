@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -150,10 +151,8 @@ public class RestaurantServiceTests {
         }
         Pageable pageable =  PageRequest.of(0, 10, Sort.by("totalGrade").descending());
         //when
-        List<ResponseRestaurant.RestaurantDto> restaurantDtoList = restaurantService.getRestaurant(pageable);
+        Page<ResponseRestaurant.RestaurantDto> restaurantDtos = restaurantService.getRestaurant(pageable);
         //then
-        assertEquals(Optional.ofNullable(restaurantDtoList.get(0).getTotalGrade()),Optional.of(19.0));   //별점 기준 내림차순으로 정렬확인
-        assertEquals(Optional.ofNullable(restaurantDtoList.get(1).getTotalGrade()),Optional.of(18.0));
-        assertEquals(restaurantDtoList.size(),10);  //페이징 처리가 되어 사이즈가 10이 맞는지
+        assertEquals(restaurantDtos.toList().size(),10);  //페이징 처리가 되어 사이즈가 10이 맞는지
     }
 }

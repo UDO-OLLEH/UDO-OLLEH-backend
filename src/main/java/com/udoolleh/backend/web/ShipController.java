@@ -43,7 +43,11 @@ public class ShipController {
     }
 
     @PostMapping("/harbor/timetable")
-    public ResponseEntity<CommonResponse> registerWharfTimetable(@Valid @RequestBody RequestHarborTimetable.RegisterHarborTimetableDto requestDto) {
+    public ResponseEntity<CommonResponse> registerWharfTimetable(HttpServletRequest request, @Valid @RequestBody RequestHarborTimetable.RegisterHarborTimetableDto requestDto) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
         shipService.registerHarborTimetable(requestDto.getHarborName(), requestDto.getDestination(), requestDto.getPeriod(), requestDto.getOperatingTime());
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -52,7 +56,11 @@ public class ShipController {
     }
 
     @PostMapping("/harbor/ship-fare")
-    public ResponseEntity<CommonResponse> registerShipFare(@Valid @RequestBody RequestShipFare.RegisterShipFareDto registerShipFareDto) {
+    public ResponseEntity<CommonResponse> registerShipFare(HttpServletRequest request, @Valid @RequestBody RequestShipFare.RegisterShipFareDto registerShipFareDto) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
         shipService.registerShipFare(registerShipFareDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -70,9 +78,9 @@ public class ShipController {
                 .build());
     }
 
-    @GetMapping("/harbor/{name}/timetable/{destination}")
-    public ResponseEntity<CommonResponse> getHarborTimetable(@PathVariable("name") String name, @PathVariable("destination") String destination) {
-        ResponseHarborTimetable.HarborTimetableDto list = shipService.getHarborTimetable(name, destination);
+    @GetMapping("/harbor/{id}/timetable/{destination}")
+    public ResponseEntity<CommonResponse> getHarborTimetable(@PathVariable("id") Long id, @PathVariable("destination") String destination) {
+        ResponseHarborTimetable.HarborTimetableDto list = shipService.getHarborTimetable(id, destination);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("배 시간 조회 성공")
@@ -82,7 +90,7 @@ public class ShipController {
 
     @GetMapping("/harbor/{id}/ship-fare")
     public ResponseEntity<CommonResponse> getShipFare(@PathVariable("id") Long id) {
-        ResponseShipFare.HarborShipFare responseHarborShipFare = shipService.getShipFare(id);
+        ResponseShipFare.HarborShipFareDto responseHarborShipFare = shipService.getShipFare(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("배 시간 조회 성공")
@@ -91,7 +99,11 @@ public class ShipController {
     }
 
     @DeleteMapping("/harbor/ship-fare/{id}")
-    public ResponseEntity<CommonResponse> deleteShipFare(@PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponse> deleteShipFare(HttpServletRequest request, @PathVariable("id") Long id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
         shipService.deleteShipFare(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -100,7 +112,11 @@ public class ShipController {
     }
 
     @DeleteMapping("/harbor/{id}")
-    public ResponseEntity<CommonResponse> deleteHarbor(@PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponse> deleteHarbor(HttpServletRequest request, @PathVariable("id") Long id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
         shipService.deleteHarbor(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -109,7 +125,11 @@ public class ShipController {
     }
 
     @DeleteMapping("/harbor/timetable/{id}")
-    public ResponseEntity<CommonResponse> deleteWharf(@PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponse> deleteWharf(HttpServletRequest request, @PathVariable("id") Long id) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
         shipService.deleteHarborTimetable(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()

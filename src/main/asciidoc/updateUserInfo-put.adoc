@@ -1,0 +1,15 @@
+[[updateUserInfo-put]]
+== 유저 정보 수정 API
+유저 정보를 수정한다.
+
+==== Http Request
+include::{snippets}/updateUserInfo-put/http-request.adoc[]
+==== Request Headers
+include::{snippets}/updateUserInfo-put/request-headers.adoc[]
+==== Http Response
+include::{snippets}/updateUserInfo-put/http-response.adoc[]
+==== Response Body
+include::{snippets}/updateUserInfo-put/response-fields.adoc[]
+==== Request Body
+include::{snippets}/updateUserInfo-put/request-body.adoc[]
+include::{snippets}/updateUserInfo-put/request-fields.adoc[]

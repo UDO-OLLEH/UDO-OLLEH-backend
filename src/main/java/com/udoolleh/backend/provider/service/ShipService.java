@@ -112,8 +112,8 @@ public class ShipService implements ShipServiceInterface {
     //id를 함께 조회할 수 있도록 해야함
     @Transactional(readOnly = true)
     @Override
-    public ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(String harborName, String destination) {
-        Harbor harbor = harborRepository.findByHarborName(harborName);
+    public ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(Long id, String destination) {
+        Harbor harbor = harborRepository.findById(id).orElseThrow(() -> new NotFoundHarborException());
         if (harbor == null) {
             throw new NotFoundHarborException();
         }
@@ -133,15 +133,15 @@ public class ShipService implements ShipServiceInterface {
         }
 
         ResponseHarborTimetable.HarborTimetableDto harborTimetableDto = ResponseHarborTimetable.HarborTimetableDto.builder()
-                .timetableDto(timetableDtos)
-                .destination(harborTimetables.get(0).getDestination())
+                .timetableDtos(timetableDtos)
+                .destination(destination)
                 .build();
         return harborTimetableDto;
     }
 
     @Transactional
     @Override
-    public ResponseShipFare.HarborShipFare getShipFare(Long harborId) {
+    public ResponseShipFare.HarborShipFareDto getShipFare(Long harborId) {
         Harbor harbor = harborRepository.findById(harborId).orElseThrow(() -> new NotFoundHarborException());
 
         List<ShipFare> shipFares = shipFareRepository.findByHarborId(harborId);
@@ -150,9 +150,9 @@ public class ShipService implements ShipServiceInterface {
             throw new NotFoundShipFareException();
         }
 
-        List<ResponseShipFare.ShipFare> responseShipFare = new ArrayList<>();
+        List<ResponseShipFare.ShipFareDto> responseShipFare = new ArrayList<>();
         for(ShipFare shipFare : shipFares) {
-            responseShipFare.add(ResponseShipFare.ShipFare.builder()
+            responseShipFare.add(ResponseShipFare.ShipFareDto.builder()
                     .id(shipFare.getId())
                     .ageGroup(shipFare.getAgeGroup())
                     .roundTrip(shipFare.getRoundTrip())
@@ -161,9 +161,9 @@ public class ShipService implements ShipServiceInterface {
                     .build());
         }
 
-        ResponseShipFare.HarborShipFare responseHarborShipFare = ResponseShipFare.HarborShipFare.builder()
+        ResponseShipFare.HarborShipFareDto responseHarborShipFare = ResponseShipFare.HarborShipFareDto.builder()
                 .harborName(harbor.getHarborName())
-                .shipFares(responseShipFare)
+                .shipFareDtos(responseShipFare)
                 .build();
 
         return responseHarborShipFare;

@@ -1,0 +1,13 @@
+[[updateAccessToken-post]]
+== 액세스토큰 갱신 API
+액세스 토큰을 리프레시 토큰으로 갱신한다.
+
+==== Http Request
+include::{snippets}/updateAccessToken-post/http-request.adoc[]
+==== Http Response
+include::{snippets}/updateAccessToken-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/updateAccessToken-post/response-fields.adoc[]
+==== Request Body
+include::{snippets}/updateAccessToken-post/request-body.adoc[]
+include::{snippets}/updateAccessToken-post/request-fields.adoc[]

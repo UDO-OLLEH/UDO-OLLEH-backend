@@ -1,0 +1,11 @@
+[[harbor-get]]
+== 항구 조회 API
+
+==== Http Request
+include::{snippets}/harbor-get/http-request.adoc[]
+==== Http Response
+include::{snippets}/harbor-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/harbor-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/harbor-get/http-request.adoc[]
