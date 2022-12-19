@@ -1,0 +1,13 @@
+[[place-get]]
+== 장소 조회 API
+
+==== Http Request
+include::{snippets}/place-get/http-request.adoc[]
+include::{snippets}/place-get/httpie-request.adoc[]
+==== Http Response
+include::{snippets}/place-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/place-get/response-body.adoc[]
+include::{snippets}/place-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/place-get/curl-request.adoc[]

@@ -36,8 +36,9 @@ public class TravelPlace {
     private List<Gps> gpsList = new ArrayList<>();
 
     @Builder
-    public TravelPlace(String placeName, String intro, String context) {
+    public TravelPlace(String placeName, String intro, String photo, String context) {
         this.placeName = placeName;
+        this.photo = photo;
         this.intro = intro;
         this.context = context;
     }
