@@ -2,6 +2,7 @@ package com.udoolleh.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoolleh.backend.entity.Board;
+import com.udoolleh.backend.entity.BoardComment;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.LoginFailedException;
 import com.udoolleh.backend.provider.service.UserService;
@@ -135,7 +136,7 @@ public class BoardCommentControllerTests {
                         requestFields(
                                 fieldWithPath("boardId").type(JsonFieldType.STRING).description("게시판 아이디"),
                                 fieldWithPath("context").type(JsonFieldType.STRING).description("댓글 내용")
-                                ),
+                        ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
                                 fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
@@ -145,5 +146,47 @@ public class BoardCommentControllerTests {
                 ));
     }
 
+    @Test
+    @Transactional
+    void updateBoardTest() throws Exception {
+        BoardComment comment = BoardComment.builder()
+                .board(board)
+                .user(user)
+                .context("내용")
+                .build();
+        comment = boardCommentRepository.save(comment);
 
+        RequestBoardComment.UpdateBoardCommentDto dto = RequestBoardComment.UpdateBoardCommentDto
+                .builder()
+                .commentId(comment.getId())
+                .context("수정한 내용")
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .put("/board/comment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("boardComment-put",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(headerWithName("x-auth-token").description("액세스 토큰")),
+                        requestFields(
+                                fieldWithPath("commentId").type(JsonFieldType.STRING).description("댓글 아이디"),
+                                fieldWithPath("context").type(JsonFieldType.STRING).description("댓글 수정할 내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+    }
 }

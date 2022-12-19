@@ -3,7 +3,6 @@
 
 ==== Http Request
 include::{snippets}/review-post/http-request.adoc[]
-include::{snippets}/review-post/httpie-request.adoc[]
 ==== Request Headers
 include::{snippets}/review-post/request-headers.adoc[]
 ==== Request Parts
@@ -13,7 +12,6 @@ include::{snippets}/review-post/request-part-requestDto-fields.adoc[]
 ==== Http Response
 include::{snippets}/review-post/http-response.adoc[]
 ==== Response Body
-include::{snippets}/review-post/response-body.adoc[]
 include::{snippets}/review-post/response-fields.adoc[]
 ==== Request curl
 include::{snippets}/review-post/curl-request.adoc[]

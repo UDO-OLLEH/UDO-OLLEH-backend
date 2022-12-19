@@ -3,13 +3,11 @@
 
 ==== Http Request
 include::{snippets}/place-detail-get/http-request.adoc[]
-include::{snippets}/place-detail-get/httpie-request.adoc[]
 ==== Path Parameters
 include::{snippets}/place-detail-get/path-parameters.adoc[]
 ==== Http Response
 include::{snippets}/place-detail-get/http-response.adoc[]
 ==== Response Body
-include::{snippets}/place-detail-get/response-body.adoc[]
 include::{snippets}/place-detail-get/response-fields.adoc[]
 ==== Request curl
 include::{snippets}/place-detail-get/curl-request.adoc[]

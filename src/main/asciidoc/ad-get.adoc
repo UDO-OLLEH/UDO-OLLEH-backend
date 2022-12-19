@@ -3,11 +3,9 @@
 
 ==== Http Request
 include::{snippets}/ad-get/http-request.adoc[]
-include::{snippets}/ad-get/httpie-request.adoc[]
 ==== Http Response
 include::{snippets}/ad-get/http-response.adoc[]
 ==== Response Body
-include::{snippets}/ad-get/response-body.adoc[]
 include::{snippets}/ad-get/response-fields.adoc[]
 ==== Request curl
 include::{snippets}/ad-get/curl-request.adoc[]

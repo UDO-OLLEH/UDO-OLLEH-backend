@@ -1,0 +1,16 @@
+[[boardComment-put]]
+== 게시판 댓글 수정 API
+
+==== Http Request
+include::{snippets}/boardComment-put/http-request.adoc[]
+==== Request Headers
+include::{snippets}/boardComment-put/request-headers.adoc[]
+==== Request Body
+include::{snippets}/boardComment-put/request-body.adoc[]
+include::{snippets}/boardComment-put/request-fields.adoc[]
+==== Http Response
+include::{snippets}/boardComment-put/http-response.adoc[]
+==== Response Body
+include::{snippets}/boardComment-put/response-fields.adoc[]
+==== Request curl
+include::{snippets}/boardComment-put/curl-request.adoc[]
