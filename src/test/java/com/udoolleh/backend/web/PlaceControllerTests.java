@@ -26,6 +26,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import org.springframework.restdocs.payload.JsonFieldType;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -109,4 +111,57 @@ public class PlaceControllerTests {
                 )
         ;
     }
+
+    @Test
+    void getCourseDetailTest() throws Exception {
+        //given
+        TravelPlace travelPlace = TravelPlace.builder()
+                .placeName("장소")
+                .photo("photo_url")
+                .intro("인트로")
+                .context("내용")
+                .build();
+        travelPlace = travelPlaceRepository.save(travelPlace);
+        Gps gps = Gps.builder()
+                .travelPlace(travelPlace)
+                .longitude(12.111)
+                .latitude(12.112)
+                .build();
+        gps = gpsRepository.save(gps);
+        travelPlace.addGps(gps);
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/place/{id}", travelPlace.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("place-detail-get", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(parameterWithName("id").description("추천 관광지 아이디")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list.id").type(JsonFieldType.NUMBER).description("추천 관광지 아이디"),
+                                        fieldWithPath("list.placeName").type(JsonFieldType.STRING).description("추천 관광지 이름"),
+                                        fieldWithPath("list.intro").type(JsonFieldType.STRING).description("인트로"),
+                                        fieldWithPath("list.context").type(JsonFieldType.STRING).description("내용"),
+                                        fieldWithPath("list.photo").type(JsonFieldType.STRING).description("사진"),
+                                        fieldWithPath("list.gps.[].latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                        fieldWithPath("list.gps.[].longitude").type(JsonFieldType.NUMBER).description("경도")
+                                )
+                        )
+                )
+        ;
+    }
+
+
+
 }

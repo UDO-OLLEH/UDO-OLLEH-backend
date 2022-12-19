@@ -57,12 +57,16 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
     public ResponsePlace.PlaceDto getPlaceDetail(Long id) {
         TravelPlace travelPlace = travelPlaceRepository.findById(id).orElseThrow(() -> new NotFoundTravelPlaceException());
 
+        List<ResponsePlace.GpsDto> gpsDto = new ArrayList<>();
+        travelPlace.getGpsList().stream().forEach(gps -> gpsDto.add(ResponsePlace.GpsDto.of(gps)));
+
         return ResponsePlace.PlaceDto.builder()
                 .id(travelPlace.getId())
                 .placeName(travelPlace.getPlaceName())
                 .intro(travelPlace.getIntro())
                 .context(travelPlace.getContext())
                 .photo(travelPlace.getPhoto())
+                .gps(gpsDto)
                 .build();
     }
 
