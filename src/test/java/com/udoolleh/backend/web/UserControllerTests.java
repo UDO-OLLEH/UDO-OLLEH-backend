@@ -292,7 +292,7 @@ public class UserControllerTests {
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestHeaders(
-                                        headerWithName("x-auth-token").description("엑세스 토큰")),
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
                                 requestFields(
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("변경하고자 하는 닉네임"),
                                         fieldWithPath("password").type(JsonFieldType.STRING).description("변경하고자 하는 패스워드")),
@@ -344,7 +344,7 @@ public class UserControllerTests {
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestHeaders(
-                                        headerWithName("x-auth-token").description("엑세스 토큰")),
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
                                 requestParts(
                                         partWithName("file").description("사용자 프로필 사진")),
                                 responseFields( // response 필드 정보 입력

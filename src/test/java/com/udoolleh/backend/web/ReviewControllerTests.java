@@ -100,7 +100,7 @@ public class ReviewControllerTests {
         accessToken = token.getAccessToken();
 
         restaurant = Restaurant.builder()
-                .name("식당")
+                .name("restaurant")
                 .build();
         restaurant = restaurantRepository.save(restaurant);
     }
@@ -111,7 +111,7 @@ public class ReviewControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"restaurantName\": \"식당\",\"context\": \"내용\",\"grade\": 3.0}".getBytes());
+                "application/json", "{\"restaurantName\": \"restaurant\",\"context\": \"context\",\"grade\": 3.0}".getBytes());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/restaurant/review")
@@ -158,7 +158,7 @@ public class ReviewControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"context\": \"내용\",\"grade\": 3.0}".getBytes());
+                "application/json", "{\"context\": \"context\",\"grade\": 3.0}".getBytes());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/restaurant/review/{id}", review.getId())
@@ -197,7 +197,7 @@ public class ReviewControllerTests {
         //given
         Review review = Review.builder()
                 .restaurant(restaurant)
-                .context("내용")
+                .context("hello")
                 .user(user)
                 .photo("photo_url")
                 .build();
@@ -205,7 +205,7 @@ public class ReviewControllerTests {
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/restaurant/{name}/review", "식당")
+                .get("/restaurant/{name}/review", "restaurant")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())

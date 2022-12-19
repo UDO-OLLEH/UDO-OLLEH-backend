@@ -110,7 +110,7 @@ public class BoardControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"title\": \"게시판 제목\",\"hashtag\": \"해시태그\",\"context\": \"내용\"}".getBytes());
+                "application/json", "{\"title\": \"board title\",\"hashtag\": \"hashtag\",\"context\": \"context\"}".getBytes());
 
 
         mockMvc.perform(RestDocumentationRequestBuilders

@@ -1,5 +1,5 @@
 [[review-post]]
-== 리뷰 등록 API
+== 게시판 등록 API
 
 ==== Http Request
 include::{snippets}/board-post/http-request.adoc[]

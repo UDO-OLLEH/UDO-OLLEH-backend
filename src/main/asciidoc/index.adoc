@@ -3,7 +3,7 @@
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 4
+:toclevels: 1
 :sectnums:
 :sectlinks:
 :sectanchors:
@@ -11,15 +11,31 @@
 == Spring REST Docs
 우도올레 프로젝트의 API 명세서입니다.
 
+include::user-post.adoc[]
+include::userLogin-post.adoc[]
+include::userLogout-post.adoc[]
+include::updateUserInfo-put.adoc[]
+include::uploadUserImage-post.adoc[]
+include::updateAccessToken-post.adoc[]
+
+include::harbor-get.adoc[]
+include::harborTimetable-get.adoc[]
+include::shipFare-get.adoc[]
+
 include::restaurant-get.adoc[]
+include::restaurantMenu-get.adoc[]
 include::course-get.adoc[]
 include::ad-get.adoc[]
 
+include::place-detail-get.adoc[]
+include::place-get.adoc[]
 
 include::review-post.adoc[]
 include::review-update-post.adoc[]
 include::review-get.adoc[]
 include::review-delete.adoc[]
+
+include::board-post.adoc[]
 
 include::boardCommnet-post.adoc[]
 include::boardCommnet-put.adoc[]

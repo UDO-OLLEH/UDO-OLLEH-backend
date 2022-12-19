@@ -116,7 +116,7 @@ public class BoardCommentControllerTests {
         RequestBoardComment.RegisterBoardCommentDto dto = RequestBoardComment.RegisterBoardCommentDto
                 .builder()
                 .boardId(board.getId())
-                .context("댓글 내용")
+                .context("context")
                 .build();
 
         mockMvc.perform(RestDocumentationRequestBuilders
@@ -153,14 +153,14 @@ public class BoardCommentControllerTests {
         BoardComment comment = BoardComment.builder()
                 .board(board)
                 .user(user)
-                .context("내용")
+                .context("context")
                 .build();
         comment = boardCommentRepository.save(comment);
 
         RequestBoardComment.UpdateBoardCommentDto dto = RequestBoardComment.UpdateBoardCommentDto
                 .builder()
                 .commentId(comment.getId())
-                .context("수정한 내용")
+                .context("newContextf")
                 .build();
 
         mockMvc.perform(RestDocumentationRequestBuilders
