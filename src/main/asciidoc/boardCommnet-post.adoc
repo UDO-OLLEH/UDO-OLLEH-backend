@@ -1,0 +1,18 @@
+[[boardComment-post]]
+== 게시판 댓글 등록 API
+
+==== Http Request
+include::{snippets}/boardComment-post/http-request.adoc[]
+include::{snippets}/boardComment-post/httpie-request.adoc[]
+==== Request Headers
+include::{snippets}/boardComment-post/request-headers.adoc[]
+==== Request Body
+include::{snippets}/boardComment-post/request-body.adoc[]
+include::{snippets}/boardComment-post/request-fields.adoc[]
+==== Http Response
+include::{snippets}/boardComment-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/boardComment-post/response-body.adoc[]
+include::{snippets}/boardComment-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/boardComment-post/curl-request.adoc[]

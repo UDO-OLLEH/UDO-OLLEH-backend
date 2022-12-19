@@ -14,3 +14,9 @@
 include::restaurant-get.adoc[]
 include::course-get.adoc[]
 include::ad-get.adoc[]
+
+
+include::review-post.adoc[]
+include::review-update-post.adoc[]
+include::review-get.adoc[]
+include::review-delete.adoc[]
