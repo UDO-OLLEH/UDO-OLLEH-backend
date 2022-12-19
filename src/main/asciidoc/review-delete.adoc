@@ -6,6 +6,8 @@ include::{snippets}/review-delete/http-request.adoc[]
 include::{snippets}/review-delete/httpie-request.adoc[]
 ==== Path Parameters
 include::{snippets}/review-delete/path-parameters.adoc[]
+==== Request Headers
+include::{snippets}/review-delete/request-headers.adoc[]
 ==== Http Response
 include::{snippets}/review-delete/http-response.adoc[]
 ==== Response Body

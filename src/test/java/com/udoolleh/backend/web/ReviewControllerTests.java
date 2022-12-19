@@ -24,13 +24,14 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import org.springframework.restdocs.payload.JsonFieldType;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import org.springframework.test.context.ActiveProfiles;
@@ -110,7 +111,7 @@ public class ReviewControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"restaurantName\": \"식당\",\"context\": \"내용\",\"grade\": \"3.0\"}".getBytes());
+                "application/json", "{\"restaurantName\": \"식당\",\"context\": \"내용\",\"grade\": 3.0}".getBytes());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/restaurant/review")
@@ -126,8 +127,14 @@ public class ReviewControllerTests {
                                 .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
                                 .removePort(), prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(headerWithName("x-auth-token").description("액세스 토큰")),
                         requestParts(partWithName("file").description("사진 파일"),
-                                partWithName("requestDto").description("리뷰 내용")),
+                                partWithName("requestDto").description("리뷰 정보")),
+                        requestPartFields("requestDto",
+                                fieldWithPath("restaurantName").type(JsonFieldType.STRING).description("맛집 이름"),
+                                fieldWithPath("context").type(JsonFieldType.STRING).description("내용"),
+                                fieldWithPath("grade").type(JsonFieldType.NUMBER).description("별점")
+                                ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
                                 fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
@@ -151,7 +158,7 @@ public class ReviewControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"context\": \"내용\",\"grade\": \"3.0\"}".getBytes());
+                "application/json", "{\"context\": \"내용\",\"grade\": 3.0}".getBytes());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/restaurant/review/{id}", review.getId())
@@ -168,8 +175,13 @@ public class ReviewControllerTests {
                                 .removePort(), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(parameterWithName("id").description("리뷰 아이디")),
+                        requestHeaders(headerWithName("x-auth-token").description("액세스 토큰")),
                         requestParts(partWithName("file").description("사진 파일"),
                                 partWithName("requestDto").description("리뷰 내용")),
+                        requestPartFields("requestDto",
+                                fieldWithPath("context").type(JsonFieldType.STRING).description("내용"),
+                                fieldWithPath("grade").type(JsonFieldType.NUMBER).description("별점")
+                        ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
                                 fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
@@ -243,6 +255,7 @@ public class ReviewControllerTests {
                                 .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
                                 .removePort(), prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(headerWithName("x-auth-token").description("액세스 토큰")),
                         pathParameters(parameterWithName("id").description("리뷰 아이디")),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),

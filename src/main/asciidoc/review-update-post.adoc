@@ -6,8 +6,12 @@ include::{snippets}/review-update-post/http-request.adoc[]
 include::{snippets}/review-update-post/httpie-request.adoc[]
 ==== Path Parameters
 include::{snippets}/review-update-post/path-parameters.adoc[]
+==== Request Headers
+include::{snippets}/review-update-post/request-headers.adoc[]
 ==== Request Parts
 include::{snippets}/review-update-post/request-parts.adoc[]
+requestDto
+include::{snippets}/review-update-post/request-part-requestDto-fields.adoc[]
 ==== Http Response
 include::{snippets}/review-update-post/http-response.adoc[]
 ==== Response Body
