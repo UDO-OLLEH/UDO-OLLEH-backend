@@ -1,0 +1,15 @@
+[[review-delete]]
+== 리뷰 삭제 API
+
+==== Http Request
+include::{snippets}/review-delete/http-request.adoc[]
+include::{snippets}/review-delete/httpie-request.adoc[]
+==== Path Parameters
+include::{snippets}/review-delete/path-parameters.adoc[]
+==== Http Response
+include::{snippets}/review-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/review-delete/response-body.adoc[]
+include::{snippets}/review-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/review-delete/curl-request.adoc[]

@@ -35,6 +35,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -105,7 +106,7 @@ public class ReviewControllerTests {
 
     @Test
     @Transactional
-    void registerReviewTest() throws Exception{
+    void registerReviewTest() throws Exception {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
@@ -122,7 +123,7 @@ public class ReviewControllerTests {
                 .andDo(document("review-post",
                         preprocessRequest(modifyUris()
                                 .scheme("http")
-                                .host("ec2-43-200-118-169.ap-northeast-2.compute.amazonaws.com")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
                                 .removePort(), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParts(partWithName("file").description("사진 파일"),
@@ -138,7 +139,7 @@ public class ReviewControllerTests {
 
     @Test
     @Transactional
-    void updateReviewTest() throws Exception{
+    void updateReviewTest() throws Exception {
         Review review = Review.builder()
                 .context("context")
                 .grade(3.0)
@@ -163,7 +164,7 @@ public class ReviewControllerTests {
                 .andDo(document("review-update-post",
                         preprocessRequest(modifyUris()
                                 .scheme("http")
-                                .host("ec2-43-200-118-169.ap-northeast-2.compute.amazonaws.com")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
                                 .removePort(), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(parameterWithName("id").description("리뷰 아이디")),
@@ -179,6 +180,7 @@ public class ReviewControllerTests {
     }
 
     @Test
+    @Transactional
     void getReviewTest() throws Exception {
         //given
         Review review = Review.builder()
@@ -217,5 +219,37 @@ public class ReviewControllerTests {
                         )
                 )
         ;
+    }
+
+    @Test
+    @Transactional
+    void deleteReviewTest() throws Exception {
+        Review review = Review.builder()
+                .restaurant(restaurant)
+                .context("내용")
+                .user(user)
+                .photo("photo_url")
+                .build();
+        review = reviewRepository.save(review);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/restaurant/review/{id}", review.getId())
+                .header("x-auth-token", accessToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("review-delete",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(parameterWithName("id").description("리뷰 아이디")),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
     }
 }
