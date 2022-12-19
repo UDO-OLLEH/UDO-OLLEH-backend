@@ -1,5 +1,8 @@
 package com.udoolleh.backend.web;
 
+import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
+import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.web.dto.ResponseAds;
 import com.udoolleh.backend.provider.service.AdsService;
 import com.udoolleh.backend.web.dto.CommonResponse;
@@ -13,16 +16,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class AdsController {
 
     private final AdsService adsService;
+    private final JwtAuthTokenProvider jwtAuthTokenProvider;
+    private final AdminAuthenticationService adminAuthenticationService;
 
     @PostMapping("/ad")
     public ResponseEntity<CommonResponse> registerAds(@RequestParam("file") MultipartFile file) {
+//        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+//        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+//            throw new CustomJwtRuntimeException();
+//        }
         adsService.registerAds(file);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -40,7 +51,12 @@ public class AdsController {
     }
 
     @DeleteMapping("/ad/{id}")
-    public ResponseEntity<CommonResponse> deleteAd(@PathVariable String id){
+    public ResponseEntity<CommonResponse> deleteAd(HttpServletRequest request, @PathVariable String id){
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
+
         adsService.deleteAds(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
