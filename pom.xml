@@ -128,18 +128,6 @@
 			<artifactId>spring-restdocs-mockmvc</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-resources-plugin</artifactId>
-			<version>3.2.0</version>
-		</dependency>
-		<!-- 빌드를 할때 컴파일에 포함할 테스트 설정-->
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-plugin</artifactId>
-			<version>3.0.0-M5</version>
-		</dependency>
-
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
