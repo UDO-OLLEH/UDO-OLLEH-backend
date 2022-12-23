@@ -15,4 +15,5 @@ public interface UserServiceInterface {
     void logout(String email);
     void updateUser(String email, RequestUser.UpdateUserDto requestDto);
     void uploadUserImage(String email, MultipartFile image);
+    ResponseUser.UserDto getUserInfo(String email);
 }

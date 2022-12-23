@@ -130,6 +130,23 @@ public class UserService implements UserServiceInterface {
         return Optional.ofNullable(newToken);
     }
 
+    @Transactional
+    @Override
+    public ResponseUser.UserDto getUserInfo(String email) {
+        User user = userRepository.findByEmail(email);
+
+        if(user == null){
+            throw new CustomJwtRuntimeException();
+        }
+
+        ResponseUser.UserDto userDto = ResponseUser.UserDto.builder()
+                .nickname(user.getNickname())
+                .profileImage(user.getProfile())
+                .build();
+
+        return userDto;
+    }
+
 
     @Override
     public String createAccessToken(String id) {

@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -67,8 +68,12 @@ public class UserControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtAuthTokenProvider jwtAuthTokenProvider;
 
     private ResponseUser.Token token;
 
@@ -310,6 +315,44 @@ public class UserControllerTests {
                                         fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
                                         fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("유저 정보 조회 - 상태코드 : 200")
+    @Transactional
+    @Test
+    void getUserInfoTest() throws Exception{
+        ResponseUser.UserDto userDto = ResponseUser.UserDto.builder()
+                .profileImage("https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fko%2Fimages%2Fsearch%2Furl%2F&psig=AOvVaw2Kc0QFHfJJxEZtD_UxzWMD&ust=1671882640838000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLCV9ajWj_wCFQAAAAAdAAAAABAE")
+                .nickname("우도 사랑")
+                .build();
+
+        given(userService.getUserInfo(any())).willReturn(userDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/user")
+                .header("x-auth-token", token.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("user-get", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list.nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                        fieldWithPath("list.profileImage").type(JsonFieldType.STRING).description("프로필 이미지 url")
                                 )
                         )
                 )

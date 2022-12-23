@@ -11,4 +11,11 @@ public class ResponseUser {
         private String accessToken;
         private String refreshToken;
     }
+
+    @Builder
+    @Getter
+    public static class UserDto {
+        private String nickname;
+        private String profileImage;
+    }
 }

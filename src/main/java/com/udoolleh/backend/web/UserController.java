@@ -90,6 +90,23 @@ public class UserController {
                 .build());
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<CommonResponse> getUserInfo(HttpServletRequest request) {
+        //유저 확인
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        String email = null;
+        if (token.isPresent()) {
+            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
+            email = jwtAuthToken.getData().getSubject();
+        }
+        ResponseUser.UserDto userDto = userService.getUserInfo(email);
+
+        return ResponseEntity.ok().body(CommonResponse.builder()
+                .message("유저 정보 조회 성공")
+                .list(userDto)
+                .build());
+    }
+
     @PostMapping("/user/image")
     public ResponseEntity<CommonResponse> uploadUserImage(HttpServletRequest request, @RequestPart(value = "file", required = true) MultipartFile file) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
