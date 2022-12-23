@@ -67,14 +67,10 @@ public class UserControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
-
     @MockBean
     private UserService userService;
 
-    private ResponseUser.Token token = ResponseUser.Token.builder()
-            .accessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8")
-            .refreshToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTcwMzMxMDE0NH0.hR7O2VmeX2NAfgGcxdQxBy554m8ze3Va1p5D_VUh68g")
-            .build();
+    private ResponseUser.Token token;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -82,6 +78,11 @@ public class UserControllerTests {
                 .apply(documentationConfiguration(restDocumentationContextProvider))
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
+                .build();
+
+        token = ResponseUser.Token.builder()
+                .accessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8")
+                .refreshToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTcwMzMxMDE0NH0.hR7O2VmeX2NAfgGcxdQxBy554m8ze3Va1p5D_VUh68g")
                 .build();
     }
 
