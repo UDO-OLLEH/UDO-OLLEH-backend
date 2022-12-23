@@ -2,6 +2,7 @@ package com.udoolleh.backend.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.UserService;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.utils.SHA256Util;
@@ -9,6 +10,9 @@ import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.coyote.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -30,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -56,16 +63,18 @@ public class UserControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
     private UserService userService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private ResponseUser.Token token = ResponseUser.Token.builder()
+            .accessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8")
+            .refreshToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTcwMzMxMDE0NH0.hR7O2VmeX2NAfgGcxdQxBy554m8ze3Va1p5D_VUh68g")
+            .build();
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -85,6 +94,7 @@ public class UserControllerTests {
                 .nickname("nickname")
                 .password("password")
                 .build();
+        doNothing().when(userService).register(dto);
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/user")
@@ -101,9 +111,9 @@ public class UserControllerTests {
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(
-                                        fieldWithPath("email").type(JsonFieldType.STRING).description("email"),
-                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("nickname"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("password")
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드")
                                         ),
                                 responseFields( // response 필드 정보 입력
                                         fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
@@ -119,18 +129,12 @@ public class UserControllerTests {
     @Transactional
     @Test
     void loginUserTest() throws Exception{
-        User user = User.builder()
-                .email("test")
-                .salt("salt")
-                .nickname("testNickname")
-                .password(SHA256Util.getEncrypt("password","salt"))
-                .build();
-        userRepository.save(user);
-
         RequestUser.LoginDto loginDto = RequestUser.LoginDto.builder()
                 .email("test")
                 .password("password")
                 .build();
+
+        given(userService.login(loginDto)).willReturn(Optional.ofNullable(token));
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/login")
@@ -163,26 +167,13 @@ public class UserControllerTests {
     }
 
     @DisplayName("로그아웃 성공 테스트 - 상태코드 : 200")
-    @Transactional
     @Test
     void logoutUserTest() throws Exception{
-        User user = User.builder()
-                .email("test")
-                .salt("salt")
-                .nickname("testNickname")
-                .password(SHA256Util.getEncrypt("password","salt"))
-                .build();
-        userRepository.save(user);
-
-        RequestUser.LoginDto loginDto = RequestUser.LoginDto.builder()
-                .email("test")
-                .password("password")
-                .build();
-        ResponseUser.Token token = userService.login(loginDto).orElse(null);
+        doNothing().when(userService).logout("test");
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/logout")
-                .header("x-auth-token", token.getRefreshToken())
+                .header("x-auth-token", token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -195,7 +186,7 @@ public class UserControllerTests {
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestHeaders(
-                                        headerWithName("x-auth-token").description("리프레시 토큰")),
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
                                 responseFields( // response 필드 정보 입력
                                         fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
                                         fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
@@ -211,22 +202,14 @@ public class UserControllerTests {
     @Transactional
     @Test
     void refreshTokenTest() throws Exception {
-        User user = User.builder()
-                .email("test")
-                .salt("salt")
-                .nickname("testNickname")
-                .password(SHA256Util.getEncrypt("password","salt"))
+        ResponseUser.Token newToken = ResponseUser.Token.builder()
+                .accessToken("New Access Token")
+                .refreshToken(token.getRefreshToken())
                 .build();
-        userRepository.save(user);
+        given(userService.refreshToken(token.getRefreshToken()))
+                .willReturn(Optional.ofNullable(newToken));
 
-        RequestUser.LoginDto loginDto = RequestUser.LoginDto.builder()
-                .email("test")
-                .password("password")
-                .build();
-        ResponseUser.Token token = userService.login(loginDto).orElse(null);
-        Map<String, String> refreshToken = new HashMap<>();
-        refreshToken.put("refreshToken", token.getRefreshToken());
-
+        Map<String, String> refreshToken = Map.of("refreshToken", token.getRefreshToken());
         mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/refreshToken")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -258,27 +241,14 @@ public class UserControllerTests {
     @Transactional
     @Test
     void updateUserInfoTest() throws Exception {
-        User user = User.builder()
-                .email("test")
-                .salt("salt")
-                .nickname("testNickname")
-                .password(SHA256Util.getEncrypt("password","salt"))
-                .build();
-        userRepository.save(user);
-
-        RequestUser.LoginDto loginDto = RequestUser.LoginDto.builder()
-                .email("test")
-                .password("password")
-                .build();
-        ResponseUser.Token token = userService.login(loginDto).orElse(null);
-
         RequestUser.UpdateUserDto updateUserDto = RequestUser.UpdateUserDto.builder()
                 .nickname("newNickname")
                 .password("password")
                 .build();
+        doNothing().when(userService).updateUser("test", updateUserDto);
         mockMvc.perform(RestDocumentationRequestBuilders
                 .put("/user")
-                .header("x-auth-token", token.getRefreshToken())
+                .header("x-auth-token", token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateUserDto)))
@@ -311,27 +281,14 @@ public class UserControllerTests {
     @Transactional
     @Test
     void uploadUserImageTest() throws Exception {
-        User user = User.builder()
-                .email("test")
-                .salt("salt")
-                .nickname("testNickname")
-                .password(SHA256Util.getEncrypt("password","salt"))
-                .build();
-        userRepository.save(user);
-
-        RequestUser.LoginDto loginDto = RequestUser.LoginDto.builder()
-                .email("test")
-                .password("password")
-                .build();
-        ResponseUser.Token token = userService.login(loginDto).orElse(null);
-
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
+        doNothing().when(userService).uploadUserImage("test", mockMultipartFile);
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/user/image")
                 .file(mockMultipartFile)
-                .header("x-auth-token", token.getRefreshToken())
+                .header("x-auth-token", token.getAccessToken())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
