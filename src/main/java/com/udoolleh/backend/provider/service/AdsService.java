@@ -1,11 +1,12 @@
 package com.udoolleh.backend.provider.service;
 
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.web.dto.ResponseAds;
 import com.udoolleh.backend.core.service.AdsServiceInterface;
 import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.exception.errors.NotFoundAdsException;
-import com.udoolleh.backend.exception.errors.RegisterFileToS3FailedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class AdsService implements AdsServiceInterface {
                 url = s3Service.upload(file, "ads");
             } catch (IOException e) {
                 System.out.println("s3 등록 실패");
-                throw new RegisterFileToS3FailedException();
+                throw new CustomException(ErrorCode.REGISTER_FILE_TO_S3_FAILED);
             }
         }
         Ads ads = Ads.builder()
@@ -55,7 +56,7 @@ public class AdsService implements AdsServiceInterface {
     @Override
     @Transactional
     public void deleteAds(String id){
-        Ads ads = adsRepository.findById(id).orElseThrow(()-> new NotFoundAdsException());
+        Ads ads = adsRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ADS));
 
         s3Service.deleteFile(ads.getPhoto());
         adsRepository.delete(ads);

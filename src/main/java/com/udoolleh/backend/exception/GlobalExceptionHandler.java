@@ -18,11 +18,14 @@ public class GlobalExceptionHandler {
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
-                .status(errorCode.getStatus().value())
+                .status(errorCode.getStatus().name())
                 .build();
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
-
+    @ExceptionHandler(CustomException.class)
+    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e){
+        return ErrorResponse.toResponseEntity(e.getErrorCode());
+    }
     /**
      * Bean Validation에 실패했을 때, 에러메시지를 내보내기 위한 Exception Handler
      */
