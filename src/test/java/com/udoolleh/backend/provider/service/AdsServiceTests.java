@@ -4,7 +4,6 @@ import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.exception.CustomException;
 import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.AdsRepository;
-import com.udoolleh.backend.exception.errors.NotFoundAdsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,7 +6,6 @@ import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.web.dto.ResponseAds;
 import com.udoolleh.backend.core.service.AdsServiceInterface;
 import com.udoolleh.backend.entity.Ads;
-import com.udoolleh.backend.exception.errors.NotFoundAdsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
