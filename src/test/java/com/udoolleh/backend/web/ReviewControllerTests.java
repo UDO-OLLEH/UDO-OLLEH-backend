@@ -224,6 +224,7 @@ public class ReviewControllerTests {
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
                                         fieldWithPath("list.[].reviewId").type(JsonFieldType.STRING).description("리뷰 아이디"),
                                         fieldWithPath("list.[].nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                        fieldWithPath("list.[].email").type(JsonFieldType.STRING).description("유저 이메일"),
                                         fieldWithPath("list.[].context").type(JsonFieldType.STRING).description("내용"),
                                         fieldWithPath("list.[].photo").type(JsonFieldType.STRING).description("사진"),
                                         fieldWithPath("list.[].grade").type(JsonFieldType.NUMBER).description("평점")

@@ -55,6 +55,7 @@ public class BoardCommentService implements BoardCommentServiceInterface {
 
         for(BoardComment boardComment : boardComments){
             ResponseBoardComment.BoardCommentDto item = ResponseBoardComment.BoardCommentDto.builder()
+                    .email(boardComment.getUser().getEmail())
                     .id(boardComment.getId())
                     .createAt(boardComment.getCreateAt())
                     .nickname(boardComment.getUser().getNickname())

@@ -152,6 +152,7 @@ public class ReviewService implements ReviewServiceInterface {
 
         for(Review item : reviewList){
             ResponseReview.ReviewDto response = ResponseReview.ReviewDto.builder()
+                    .email(item.getUser().getEmail())
                     .reviewId(item.getId())
                     .nickname(item.getUser().getNickname())
                     .context(item.getContext())

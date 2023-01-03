@@ -1,0 +1,14 @@
+[[user-get]]
+== 유저 정보 조회 API
+유저 프로필 사진과 닉네임을 조회한다.
+
+==== Http Request
+include::{snippets}/user-get/http-request.adoc[]
+==== Request Header
+include::{snippets}/user-get/request-headers.adoc[]
+==== Http Response
+include::{snippets}/user-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/user-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/user-get/curl-request.adoc[]
