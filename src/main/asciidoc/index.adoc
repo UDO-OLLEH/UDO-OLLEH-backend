@@ -16,6 +16,7 @@ include::userLogin-post.adoc[]
 include::userLogout-post.adoc[]
 include::updateUserInfo-put.adoc[]
 include::uploadUserImage-post.adoc[]
+include::user-get.adoc[]
 include::updateAccessToken-post.adoc[]
 
 include::harbor-get.adoc[]

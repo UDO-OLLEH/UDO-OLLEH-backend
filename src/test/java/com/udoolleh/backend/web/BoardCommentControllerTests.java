@@ -223,6 +223,7 @@ public class BoardCommentControllerTests {
                                 fieldWithPath("list.[].id").type(JsonFieldType.STRING).description("댓글 아이디"),
                                 fieldWithPath("list.[].context").type(JsonFieldType.STRING).description("댓글 내용"),
                                 fieldWithPath("list.[].nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                fieldWithPath("list.[].email").type(JsonFieldType.STRING).description("유저 이메일"),
                                 fieldWithPath("list.[].profile").type(JsonFieldType.STRING).description("유저 프로필"),
                                 fieldWithPath("list.[].createAt").type(JsonFieldType.STRING).description("댓글 작성 시간")
                         )

@@ -9,6 +9,8 @@ import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestReview;
+import com.udoolleh.backend.web.dto.ResponseReview;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -307,4 +309,36 @@ public class ReviewServiceTests {
         //리뷰 삭제
         assertThrows(NotFoundReviewException.class, ()-> reviewService.deleteReview("test", "존재하지 않은 리뷰 아이디"));
     }
+
+    @Test
+    @Transactional
+    @DisplayName("리뷰 조회 테스트")
+    void getReviewTest() {
+        User user = User.builder()
+                .email("test")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("음식점")
+                .totalGrade(0.0)
+                .build();
+        restaurant = restaurantRepository.save(restaurant);
+
+        RequestReview.RegisterReviewDto requestDto = RequestReview.RegisterReviewDto.builder()
+                .restaurantName(restaurant.getName())
+                .context("리뷰 내용")
+                .grade(3.5)
+                .build();
+        reviewService.registerReview(null, "test", requestDto);
+
+        List<ResponseReview.ReviewDto> reviewDtos = reviewService.getReview("음식점");
+
+        assertEquals(1, reviewDtos.size());
+        assertEquals("test", reviewDtos.get(0).getEmail());
+        assertEquals("리뷰 내용", reviewDtos.get(0).getContext());
     }
+
+
+}

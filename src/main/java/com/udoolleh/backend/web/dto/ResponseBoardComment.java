@@ -10,6 +10,7 @@ public class ResponseBoardComment {
     @Builder
     @Getter
     public static class BoardCommentDto {
+        private String email;
         private String id;
         private String context;
         private String nickname;

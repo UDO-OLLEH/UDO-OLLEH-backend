@@ -7,6 +7,7 @@ public class ResponseReview {
     @Builder
     @Getter
     public static class ReviewDto{
+        private String email;
         private String reviewId;
         private String nickname;
         private String context;
