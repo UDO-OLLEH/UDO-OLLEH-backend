@@ -56,6 +56,7 @@ public class ResponseBoard {
         private String id;
         private String title;
         private String context;
+        private String email;
         private Date createAt;
 
         public static LikeBoardDto of(Board board) {
@@ -63,6 +64,7 @@ public class ResponseBoard {
                     .id(board.getId())
                     .title(board.getTitle())
                     .context(board.getContext())
+                    .email(board.getUser().getEmail())
                     .createAt(board.getCreateAt())
                     .build();
         }
