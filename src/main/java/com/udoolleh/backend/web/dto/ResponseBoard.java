@@ -14,6 +14,7 @@ public class ResponseBoard {
     public static class BoardDto {
 
         private String id;
+        private String email;
         private String title;
         private String context;
         private String photo;
@@ -28,6 +29,7 @@ public class ResponseBoard {
     @Getter
     public static class BoardListDto {
         private String id;
+        private String email;
         private String title;
         private String context;
         private Date createAt;
@@ -37,6 +39,7 @@ public class ResponseBoard {
         public static BoardListDto of(Board board) {
             return BoardListDto.builder()
                     .id(board.getId())
+                    .email(board.getUser().getEmail())
                     .title(board.getTitle())
                     .context(board.getContext())
                     .createAt(board.getCreateAt())

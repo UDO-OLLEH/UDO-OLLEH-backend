@@ -4,6 +4,8 @@ import com.udoolleh.backend.core.service.BoardServiceInterface;
 import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
 import com.udoolleh.backend.exception.errors.LikesDuplicatedException;
 import com.udoolleh.backend.exception.errors.NotFoundBoardException;
@@ -49,7 +51,7 @@ public class BoardService implements BoardServiceInterface {
     public Page<ResponseBoard.BoardListDto> getBoardList(String userEmail, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         Page<Board> board = boardRepository.findAll(pageable);
@@ -61,13 +63,14 @@ public class BoardService implements BoardServiceInterface {
     public ResponseBoard.BoardDto getBoardDetail(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Optional<Board> optionalBoard = boardRepository.findById(id);
-        Board board = optionalBoard.orElseThrow(() -> new NotFoundBoardException());
+        Board board = optionalBoard.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOARD));
 
         return ResponseBoard.BoardDto.builder()
                 .id(board.getId())
+                .email(board.getUser().getEmail())
                 .title(board.getTitle())
                 .context(board.getContext())
                 .photo(board.getPhoto())
@@ -87,7 +90,7 @@ public class BoardService implements BoardServiceInterface {
         }
         Board board = boardRepository.findById(id).get();
         if (board == null) {
-            throw new NotFoundBoardException();
+            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
 
         long countVisit = board.getCountVisit() + 1;
@@ -102,7 +105,7 @@ public class BoardService implements BoardServiceInterface {
         User user = userRepository.findByEmail(userEmail);
 
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         Board board = Board.builder()
@@ -131,11 +134,11 @@ public class BoardService implements BoardServiceInterface {
     public void updateBoard(MultipartFile file, String userEmail, String id, RequestBoard.UpdateBoardDto modifyDto) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Board board = boardRepository.findByUserAndId(user, id);
         if (board == null) {
-            throw new NotFoundBoardException();
+            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
         if (Optional.ofNullable(board.getPhoto()).isPresent()) {
             s3Service.deleteFile(board.getPhoto());
@@ -158,11 +161,11 @@ public class BoardService implements BoardServiceInterface {
     public void deleteBoard(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Board board = boardRepository.findByUserAndId(user, id);
         if (board == null) {
-            throw new NotFoundBoardException();
+            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
 
         if (Optional.ofNullable(board.getPhoto()).isPresent()) {
@@ -178,14 +181,14 @@ public class BoardService implements BoardServiceInterface {
     public void updateLikes(String userEmail, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Board board = boardRepository.findById(id).get();
         if (board == null) {
-            throw new NotFoundBoardException();
+            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
         likesRepository.findByUserAndBoard(user, board).ifPresent(duplicate -> {
-            throw new LikesDuplicatedException();
+            throw new CustomException(ErrorCode.LIKES_DUPLICATED);
         });
 
         long countLikes = board.getCountLikes() + 1;
@@ -203,38 +206,38 @@ public class BoardService implements BoardServiceInterface {
     public void deleteLikes(String userEmail, String likesId, String id) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Board board = boardRepository.findById(id).get();
         if (board == null) {
-            throw new NotFoundBoardException();
+            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
         likesRepository.findByUserAndBoard(user, board).orElseThrow(
-                () -> new NotFoundLikesException());
+                () -> new CustomException(ErrorCode.NOT_FOUND_LIKES));
 
         long countLikes = board.getCountLikes() - 1;
         board.updateLikes(countLikes);
         likesRepository.deleteById(likesId);
-       }
+    }
 
     @Override
     @Transactional
-    public Page<ResponseBoard.BoardListDto> getMyBoard(String email, Pageable pageable){
+    public Page<ResponseBoard.BoardListDto> getMyBoard(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new CustomJwtRuntimeException();
+        if (user == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Page<Board> boardList = boardRepository.findByUser(user, pageable);
 
         return boardList.map(ResponseBoard.BoardListDto::of);
     }
-    
+
     @Override
     @Transactional
-    public Page<ResponseBoard.LikeBoardDto> getLikeBoard(String email, Pageable pageable){
+    public Page<ResponseBoard.LikeBoardDto> getLikeBoard(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         Page<Board> response = boardRepository.findLikeBoard(user, pageable);
