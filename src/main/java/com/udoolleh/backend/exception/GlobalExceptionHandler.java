@@ -148,11 +148,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.TRAVEL_COURSE_DUPLICATED);
     }
 
-    @ExceptionHandler(NotFoundTravelCourseException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundTravelCourseException(NotFoundTravelCourseException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_TRAVEL_COURSE);
-    }
-
     @ExceptionHandler(NotFoundBoardCommentException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundBoardCommentException(NotFoundBoardCommentException e) {
         return handleException(e, ErrorCode.NOT_FOUND_BOARD_COMMENT);
