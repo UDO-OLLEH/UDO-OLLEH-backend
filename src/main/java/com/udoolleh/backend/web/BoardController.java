@@ -84,7 +84,7 @@ public class BoardController {
                 .build());
     }
 
-    @PutMapping("/board/{id}")
+    @PostMapping("/board/{id}")
     public ResponseEntity<CommonResponse> updateBoard(HttpServletRequest request, @RequestPart MultipartFile file, @PathVariable String id,
                                                       @Valid @RequestPart RequestBoard.UpdateBoardDto updateBoardDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
