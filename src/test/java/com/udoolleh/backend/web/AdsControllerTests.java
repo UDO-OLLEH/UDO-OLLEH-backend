@@ -3,8 +3,12 @@ package com.udoolleh.backend.web;
 import com.udoolleh.backend.core.type.PlaceType;
 import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.entity.Restaurant;
+import com.udoolleh.backend.provider.service.AdsService;
 import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
+import com.udoolleh.backend.web.dto.ResponseAds;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,10 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -42,10 +50,10 @@ public class AdsControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private AdsRepository adsRepository;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    private AdsService adsService;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -57,10 +65,10 @@ public class AdsControllerTests {
     }
 
     @Test
-    @Transactional
     void registerAdTest() throws Exception{
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
+        doNothing().when(adsService).registerAds(mockMultipartfile);
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/ad")
@@ -85,15 +93,13 @@ public class AdsControllerTests {
     }
 
     @Test
-    @Transactional
     void getAdsTest() throws Exception {
-        //given
-        Ads ads = Ads.builder()
-                .photo("url")
+        ResponseAds.AdsDto responseAds = ResponseAds.AdsDto.builder()
+                .id("64867f63-e88a-43e6-e57f-6d1323d70c0f")
+                .photo("https://udo-photo-bucket.s3.ap-northeast-2.amazonaws.com/restaurant/a6cd7f6a-86f2-4771-a46a-125040da3327%ED%95%B4%EB%85%80%EC%B4%8C%ED%95%B4%EC%82%B0%EB%AC%BC2.png")
                 .build();
-        adsRepository.save(ads);
+        given(adsService.getAds()).willReturn(List.of(responseAds));
 
-        //when
         mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/ad")
                 .contentType(MediaType.APPLICATION_JSON)
