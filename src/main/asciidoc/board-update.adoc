@@ -1,0 +1,17 @@
+[[board-update]]
+== 게시판 수정 API
+
+==== Http Request
+include::{snippets}/board-update/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-update/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/board-update/request-parts.adoc[]
+requestDto
+include::{snippets}/board-update/request-part-updateBoardDto-fields.adoc[]
+==== Http Response
+include::{snippets}/board-update/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-update/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-update/curl-request.adoc[]

@@ -37,6 +37,7 @@ include::review-get.adoc[]
 include::review-delete.adoc[]
 
 include::board-post.adoc[]
+include::board-update.adoc[]
 
 include::boardCommnet-post.adoc[]
 include::boardCommnet-put.adoc[]

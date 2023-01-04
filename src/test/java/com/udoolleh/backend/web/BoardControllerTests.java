@@ -1,5 +1,6 @@
 package com.udoolleh.backend.web;
 
+import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.errors.LoginFailedException;
@@ -73,7 +74,6 @@ public class BoardControllerTests {
     private BoardService boardService;
 
     private User user;
-
     private String accessToken;
 
     @Autowired
@@ -114,11 +114,11 @@ public class BoardControllerTests {
 
 
         mockMvc.perform(RestDocumentationRequestBuilders
-                .multipart("/board")
-                .file(mockMultipartfile)
-                .file(requestDto)
-                .header("x-auth-token", accessToken)
-                .accept(MediaType.APPLICATION_JSON))
+                        .multipart("/board")
+                        .file(mockMultipartfile)
+                        .file(requestDto)
+                        .header("x-auth-token", accessToken)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo( // rest docs 문서 작성 시작
@@ -150,5 +150,58 @@ public class BoardControllerTests {
         ;
     }
 
+    @DisplayName("게시판 수정 성공 테스트 - 상태코드 : 200")
+    @Transactional
+    @Test
+    void updateBoardTest() throws Exception {
+        Board board = Board.builder()
+                .title("test")
+                .context("test")
+                .hashtag("test")
+                .user(user)
+                .build();
+        board = boardRepository.save(board);
 
+        MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test3.png",
+                "image/png", "test data".getBytes());
+        MockMultipartFile updateBoardDto = new MockMultipartFile("updateBoardDto", "",
+                "application/json", "{\"title\": \"board title\",\"hashtag\": \"hashtag\",\"context\": \"context\"}".getBytes());
+
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                        .multipart("/board/{id}", board.getId())
+                        .file(mockMultipartfile)
+                        .file(updateBoardDto)
+                        .header("x-auth-token", accessToken)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("board-update",
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+
+                                requestParts(partWithName("file").description("수정할 사진 파일"),
+                                        partWithName("updateBoardDto").description("title, hashtag, context")),
+                                requestPartFields(
+                                        "updateBoardDto",
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("게시판 제목"),
+                                        fieldWithPath("hashtag").type(JsonFieldType.STRING).description("해시태그"),
+                                        fieldWithPath("context").type(JsonFieldType.STRING).description("게시판 내용")
+                                ),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
 }
