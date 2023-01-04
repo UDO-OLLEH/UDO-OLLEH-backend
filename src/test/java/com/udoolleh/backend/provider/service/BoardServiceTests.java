@@ -83,7 +83,7 @@ public class BoardServiceTests {
                 .context("잘 자")
                 .build();
 
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test1.png",
                 "image/png", "test data".getBytes());
 
         boardService.registerBoard(mockMultipartFile, "k", dto);
@@ -145,7 +145,7 @@ public class BoardServiceTests {
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
-        assertTrue(board.getTitle().equals("수정한 제목"));
+        assertEquals("수정한 제목", board.getTitle());
         System.out.println(board.getTitle());
         System.out.println(user.getEmail());
 
@@ -174,14 +174,14 @@ public class BoardServiceTests {
                 .context("게시글 수정 내용")
                 .build();
 
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.png",
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test1.png",
                 "image/png", "test data".getBytes());
 
         boardService.updateBoard(mockMultipartFile, "k", board.getId(), mDto);
 
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
-        assertTrue(board.getTitle().equals("수정한 제목"));
+        assertEquals("수정한 제목", board.getTitle());
         assertNotNull(board.getPhoto());
         System.out.println(board.getTitle());
         System.out.println(user.getEmail());
