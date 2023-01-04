@@ -5,10 +5,14 @@ import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.entity.CourseDetail;
 import com.udoolleh.backend.entity.Gps;
 import com.udoolleh.backend.entity.TravelCourse;
+import com.udoolleh.backend.provider.service.CourseService;
 import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.repository.CourseDetailRepository;
 import com.udoolleh.backend.repository.GpsRepository;
 import com.udoolleh.backend.repository.TravelCourseRepository;
+import com.udoolleh.backend.web.dto.ResponseCourse;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -44,16 +51,10 @@ public class CourseControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private TravelCourseRepository travelCourseRepository;
-
-    @Autowired
-    private CourseDetailRepository courseDetailRepository;
-
-    @Autowired
-    private GpsRepository gpsRepository;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    private CourseService courseService;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -64,31 +65,35 @@ public class CourseControllerTests {
                 .build();
     }
 
+
     @Test
     void getCourseTest() throws Exception {
         //given
-        TravelCourse travelCourse = TravelCourse.builder()
-                .courseName("여행지 코스")
-                .course("출발지-도착지")
+        ResponseCourse.CourseDetailDto courseDetailTitleDto = ResponseCourse.CourseDetailDto.builder()
+                .context("하우목동항")
+                .type(CourseDetailType.TITLE)
                 .build();
-        travelCourseRepository.save(travelCourse);
-
-        Gps gps = Gps.builder()
-                .travelCourse(travelCourse)
-                .longitude(12.111)
-                .latitude(12.112)
+        ResponseCourse.CourseDetailDto courseDetailPhotoDto = ResponseCourse.CourseDetailDto.builder()
+                .context("https://udo-photo-bucket.s3.ap-northeast-2.amazonaws.com/restaurant/a6cd7f6a-86f2-4771-a46a-125040da3327%ED%95%B4%EB%85%80%EC%B4%8C%ED%95%B4%EC%82%B0%EB%AC%BC2.png")
+                .type(CourseDetailType.PHOTO)
                 .build();
-        gps = gpsRepository.save(gps);
-
-        CourseDetail detail = CourseDetail.builder()
-                .travelCourse(travelCourse)
+        ResponseCourse.CourseDetailDto courseDetailTextDto = ResponseCourse.CourseDetailDto.builder()
+                .context("배를타고 처음 도착하면 하우목동항에 내리게 됩니다.")
                 .type(CourseDetailType.TEXT)
-                .context("내용")
                 .build();
-        detail = courseDetailRepository.save(detail);
+        ResponseCourse.GpsDto gpsDto = ResponseCourse.GpsDto.builder()
+                .latitude(33.5153)
+                .longitude(126.9681)
+                .build();
 
-        travelCourse.addDetail(detail);
-        travelCourse.addGps(gps);
+        ResponseCourse.CourseDto courseDto = ResponseCourse.CourseDto.builder()
+                .course("하우목동항-전기차 대여-비양도 캠핑장")
+                .courseName("캠핑장 코스")
+                .detail(List.of(courseDetailPhotoDto, courseDetailTextDto, courseDetailTitleDto))
+                .gps(List.of(gpsDto, gpsDto, gpsDto))
+                .id(2L)
+                .build();
+        given(courseService.getCourseList()).willReturn(List.of(courseDto));
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders
