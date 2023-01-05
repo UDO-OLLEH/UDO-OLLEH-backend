@@ -1,0 +1,17 @@
+[[restaurant-menu-post]]
+== 식당 메뉴 등록 API
+
+==== Http Request
+include::{snippets}/restaurant-menu-post/http-request.adoc[]
+==== Request Headers
+include::{snippets}/restaurant-menu-post/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/restaurant-menu-post/request-parts.adoc[]
+requestDto
+include::{snippets}/restaurant-menu-post/request-part-requestDto-fields.adoc[]
+==== Http Response
+include::{snippets}/restaurant-menu-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/restaurant-menu-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/restaurant-menu-post/curl-request.adoc[]

@@ -1,0 +1,15 @@
+[[restaurant-images-delete]]
+== 식당 사진들 삭제 API
+
+==== Http Request
+include::{snippets}/restaurant-images-delete/http-request.adoc[]
+==== Request Headers
+include::{snippets}/restaurant-images-delete/request-headers.adoc[]
+==== Http Response
+include::{snippets}/restaurant-images-delete/http-response.adoc[]
+==== Path Parameter
+include::{snippets}/restaurant-images-delete/path-parameters.adoc[]
+==== Response Body
+include::{snippets}/restaurant-images-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/restaurant-images-delete/curl-request.adoc[]
