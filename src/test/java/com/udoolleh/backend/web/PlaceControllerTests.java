@@ -5,17 +5,21 @@ import com.udoolleh.backend.entity.CourseDetail;
 import com.udoolleh.backend.entity.Gps;
 import com.udoolleh.backend.entity.TravelCourse;
 import com.udoolleh.backend.entity.TravelPlace;
+import com.udoolleh.backend.provider.service.TravelPlaceService;
 import com.udoolleh.backend.repository.CourseDetailRepository;
 import com.udoolleh.backend.repository.GpsRepository;
 import com.udoolleh.backend.repository.TravelCourseRepository;
 import com.udoolleh.backend.repository.TravelPlaceRepository;
+import com.udoolleh.backend.web.dto.ResponsePlace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.BDDMockito.given;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -36,6 +40,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.List;
+
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
@@ -54,6 +60,9 @@ public class PlaceControllerTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @MockBean
+    private TravelPlaceService travelPlaceService;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -66,20 +75,19 @@ public class PlaceControllerTests {
     @Test
     void getCourseTest() throws Exception {
         //given
-        TravelPlace travelPlace = TravelPlace.builder()
-                .placeName("장소")
-                .photo("photo_url")
-                .intro("인트로")
-                .context("내용")
+        ResponsePlace.PlaceDto dto = ResponsePlace.PlaceDto.builder()
+                .id(10L)
+                .placeName("우도밭담")
+                .photo("https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fko%2Fimages%2Fsearch%2Furl%2F&psig=AOvVaw2Kc0QFHfJJxEZtD_UxzWMD&ust=1671882640838000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLCV9ajWj_wCFQAAAAAdAAAAABAE")
+                .intro("정겨운 농사와 어루어진 현무암의 밭담")
+                .context("밭담은 현무암으로 구성되어 있다.")
+                .gps(List.of(ResponsePlace.GpsDto.builder()
+                        .latitude(12.123123)
+                        .longitude(31.23231)
+                        .build()))
                 .build();
-        travelPlace = travelPlaceRepository.save(travelPlace);
-        Gps gps = Gps.builder()
-                .travelPlace(travelPlace)
-                .longitude(12.111)
-                .latitude(12.112)
-                .build();
-        gps = gpsRepository.save(gps);
-        travelPlace.addGps(gps);
+
+        given(travelPlaceService.getPlaceList()).willReturn(List.of(dto));
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders
@@ -115,24 +123,23 @@ public class PlaceControllerTests {
     @Test
     void getCourseDetailTest() throws Exception {
         //given
-        TravelPlace travelPlace = TravelPlace.builder()
-                .placeName("장소")
-                .photo("photo_url")
-                .intro("인트로")
-                .context("내용")
+        ResponsePlace.PlaceDto dto = ResponsePlace.PlaceDto.builder()
+                .id(10L)
+                .placeName("우도밭담")
+                .photo("https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fko%2Fimages%2Fsearch%2Furl%2F&psig=AOvVaw2Kc0QFHfJJxEZtD_UxzWMD&ust=1671882640838000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLCV9ajWj_wCFQAAAAAdAAAAABAE")
+                .intro("정겨운 농사와 어루어진 현무암의 밭담")
+                .context("밭담은 현무암으로 구성되어 있다.")
+                .gps(List.of(ResponsePlace.GpsDto.builder()
+                        .latitude(12.123123)
+                        .longitude(31.23231)
+                        .build()))
                 .build();
-        travelPlace = travelPlaceRepository.save(travelPlace);
-        Gps gps = Gps.builder()
-                .travelPlace(travelPlace)
-                .longitude(12.111)
-                .latitude(12.112)
-                .build();
-        gps = gpsRepository.save(gps);
-        travelPlace.addGps(gps);
+
+        given(travelPlaceService.getPlaceDetail(10L)).willReturn(dto);
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/place/{id}", travelPlace.getId())
+                .get("/place/{id}", 10)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
