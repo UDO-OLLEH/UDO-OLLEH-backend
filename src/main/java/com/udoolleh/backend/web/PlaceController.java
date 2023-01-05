@@ -55,7 +55,7 @@ public class PlaceController {
                 .build());
     }
 
-    @PutMapping("/place/{id}")
+    @PostMapping("/place/{id}")
     public ResponseEntity<CommonResponse> updatePlace(HttpServletRequest request, @RequestPart MultipartFile file, @Valid @PathVariable Long id, @RequestPart RequestPlace.UpdatePlaceDto requestDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
