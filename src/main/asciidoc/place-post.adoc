@@ -1,0 +1,17 @@
+[[place-post]]
+== 관광지 등록 API
+
+==== Http Request
+include::{snippets}/place-post/http-request.adoc[]
+==== Request Header
+include::{snippets}/place-post/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/place-post/request-parts.adoc[]
+requestDto
+include::{snippets}/place-post/request-part-requestDto-fields.adoc[]
+==== Http Response
+include::{snippets}/place-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/place-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/place-post/curl-request.adoc[]

@@ -1,0 +1,17 @@
+[[place-update-post]]
+== 관광지 수정 API
+
+==== Http Request
+include::{snippets}/place-update-post/http-request.adoc[]
+==== Request Header
+include::{snippets}/place-update-post/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/place-update-post/request-parts.adoc[]
+requestDto
+include::{snippets}/place-update-post/request-part-requestDto-fields.adoc[]
+==== Http Response
+include::{snippets}/place-update-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/place-update-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/place-update-post/curl-request.adoc[]
