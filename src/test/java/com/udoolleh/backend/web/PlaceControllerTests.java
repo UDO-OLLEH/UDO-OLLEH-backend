@@ -232,5 +232,91 @@ public class PlaceControllerTests {
                 ));
     }
 
+    @Test
+    void updatePlaceTest() throws Exception {
+        MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
+                "image/png", "test data".getBytes());
 
+        MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
+                "application/json", "{\"placeName\": \"우도밭담\",\"intro\": \"정겨운 농사와 어루어진 현무암의 밭담\",\"context\": \"밭담은 현무암으로 구성되어 있다.\",\"gps\" : [{\"latitude\" : 34.1232131,\"longitude\" : 127.1231231}]}".getBytes());
+
+        String adminAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        given(jwtAuthTokenProvider.resolveToken(any())).willReturn(Optional.of(adminAccessToken));
+        given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
+        doNothing().when(travelPlaceService).updatePlace(mockMultipartfile,10L, new RequestPlace.UpdatePlaceDto().builder()
+                .placeName("우도 밭담")
+                .intro("정겨운 농사와 어루어진 현무암의 밭담")
+                .context("밭담은 현무암으로 구성되어 있다.")
+                .gps(List.of(RequestPlace.GpsDto.builder().latitude(12.121).longitude(31.332).build()))
+                .build());
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .multipart("/place/{id}", 10L)
+                .file(mockMultipartfile)
+                .file(requestDto)
+                .header("x-auth-token", adminAccessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("place-update-post",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-43-200-118-169.ap-northeast-2.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("x-auth-token").description("어드민 액세스 토큰")
+                        ),
+                        pathParameters(parameterWithName("id").description("관광지 아이디")),
+                        requestParts(partWithName("file").description("사진 파일"),
+                                partWithName("requestDto").description("관광지 정보")),
+                        requestPartFields("requestDto",
+                                fieldWithPath("placeName").type(JsonFieldType.STRING).description("관광지 이름"),
+                                fieldWithPath("intro").type(JsonFieldType.STRING).description("소제목"),
+                                fieldWithPath("context").type(JsonFieldType.STRING).description("설명"),
+                                fieldWithPath("gps.[].latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                fieldWithPath("gps.[].longitude").type(JsonFieldType.NUMBER).description("경도")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+    }
+
+    @Test
+    void deletePlaceTest() throws Exception {
+        String adminAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        given(jwtAuthTokenProvider.resolveToken(any())).willReturn(Optional.of(adminAccessToken));
+        given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
+        doNothing().when(travelPlaceService).deletePlace(10L);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/place/{id}", 10L)
+                .header("x-auth-token", adminAccessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo(document("place-delete",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-43-200-118-169.ap-northeast-2.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("x-auth-token").description("어드민 액세스 토큰")
+                        ),
+                        pathParameters(parameterWithName("id").description("관광지 아이디")),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+    }
 }
