@@ -1,0 +1,17 @@
+[[restaurant-images-post]]
+== 식당 사진들 등록 API
+
+==== Http Request
+include::{snippets}/restaurant-images-post/http-request.adoc[]
+==== Request Headers
+include::{snippets}/restaurant-images-post/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/restaurant-images-post/request-parts.adoc[]
+restaurantName
+include::{snippets}/restaurant-images-post/request-part-restaurantName-fields.adoc[]
+==== Http Response
+include::{snippets}/restaurant-images-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/restaurant-images-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/restaurant-images-post/curl-request.adoc[]

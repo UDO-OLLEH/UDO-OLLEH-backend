@@ -93,9 +93,6 @@ public class RestaurantControllerTests {
     private RestaurantService restaurantService;
 
     @MockBean
-    private RestaurantRepository restaurantRepository;
-
-    @MockBean
     private AdminAuthenticationService adminAuthenticationService;
 
     @BeforeEach

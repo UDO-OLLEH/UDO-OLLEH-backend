@@ -1,0 +1,16 @@
+[[restaurant-post]]
+== 이미지를 제외한 식당 등록 API
+
+==== Http Request
+include::{snippets}/restaurant-post/http-request.adoc[]
+==== Request Headers
+include::{snippets}/restaurant-post/request-headers.adoc[]
+==== Http Response
+include::{snippets}/restaurant-post/http-response.adoc[]
+==== Request Body
+include::{snippets}/restaurant-post/request-body.adoc[]
+include::{snippets}/restaurant-post/request-fields.adoc[]
+==== Response Body
+include::{snippets}/restaurant-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/restaurant-post/curl-request.adoc[]

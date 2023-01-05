@@ -1,0 +1,15 @@
+[[restaurant-menu-delete]]
+== 식당 메뉴들 삭제 API
+
+==== Http Request
+include::{snippets}/restaurant-menu-delete/http-request.adoc[]
+==== Request Headers
+include::{snippets}/restaurant-menu-delete/request-headers.adoc[]
+==== Http Response
+include::{snippets}/restaurant-menu-delete/http-response.adoc[]
+==== Path Parameter
+include::{snippets}/restaurant-menu-delete/path-parameters.adoc[]
+==== Response Body
+include::{snippets}/restaurant-menu-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/restaurant-menu-delete/curl-request.adoc[]
