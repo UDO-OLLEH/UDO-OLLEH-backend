@@ -1,0 +1,15 @@
+[[ad-post]]
+== 광고 등록 API
+
+==== Http Request
+include::{snippets}/ad-post/http-request.adoc[]
+==== Request Headers
+include::{snippets}/ad-post/request-headers.adoc[]
+==== Request Parts
+include::{snippets}/ad-post/request-parts.adoc[]
+==== Http Response
+include::{snippets}/ad-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/ad-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/ad-post/curl-request.adoc[]

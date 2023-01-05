@@ -9,8 +9,10 @@ import com.udoolleh.backend.provider.service.AdsService;
 import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.ResponseAds;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,7 +80,7 @@ public class AdsControllerTests {
     }
 
     @Test
-    void registerAdTest() throws Exception{
+    void registerAdTest() throws Exception {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
 
@@ -145,5 +147,37 @@ public class AdsControllerTests {
                         )
                 )
         ;
+    }
+
+    @Test
+    void deleteAdTest() throws Exception {
+        String adminAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        given(jwtAuthTokenProvider.resolveToken(any())).willReturn(Optional.of(adminAccessToken));
+        given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
+
+        doNothing().when(adsService).deleteAds(any());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/ad/{id}", "1929399383")
+                .header("x-auth-token", adminAccessToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(document("ad-delete",
+                        preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                .removePort(), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("x-auth-token").description("어드민 액세스 토큰")
+                        ),
+                        pathParameters(parameterWithName("id").description("광고 아이디")),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
+                                fieldWithPath("dateTime").type(JsonFieldType.STRING).description("response 응답 시간"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메세지"),
+                                fieldWithPath("list").type(JsonFieldType.NULL).description("응답 데이터")
+                        )
+                ));
+
     }
 }
