@@ -1,0 +1,12 @@
+[[course-post]]
+== 여행지 코스 등록 API
+
+==== Http Request
+include::{snippets}/course-delete/http-request.adoc[]
+include::{snippets}/course-delete/request-body.adoc[]
+==== Http Response
+include::{snippets}/course-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/course-delete/response-fields.adoc[]
+==== Request PathParameter
+include::{snippets}/course-delete/path-parameters.adoc[]
