@@ -76,7 +76,7 @@ public class RestaurantController {
                 .build());
     }
 
-    @DeleteMapping("/restaurant/{id}/menu/{name}")
+    @DeleteMapping("/restaurant/{id}/menu/{name}")  //수정 필요 name -> id
     public ResponseEntity<CommonResponse> deleteMenu(HttpServletRequest request, @PathVariable String id, @PathVariable String name){
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
@@ -120,13 +120,13 @@ public class RestaurantController {
     }
 
     @PostMapping("/restaurant")
-    public ResponseEntity<CommonResponse> registerRestaurant(HttpServletRequest request, @Valid @RequestBody RequestRestaurant.RegisterRestaurantDto registerDto){
-        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
-        }
+        public ResponseEntity<CommonResponse> registerRestaurant(HttpServletRequest request, @Valid @RequestBody RequestRestaurant.RegisterRestaurantDto registerDto){
+            Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+            if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+                throw new CustomJwtRuntimeException();
+            }
 
-        restaurantService.registerRestaurant(registerDto);
+            restaurantService.registerRestaurant(registerDto);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("이미지를 제외한 맛집 등록 성공")
