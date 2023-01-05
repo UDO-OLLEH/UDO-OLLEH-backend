@@ -29,11 +29,11 @@ public class AdsController {
     private final AdminAuthenticationService adminAuthenticationService;
 
     @PostMapping("/ad")
-    public ResponseEntity<CommonResponse> registerAds(@RequestParam("file") MultipartFile file) {
-//        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-//        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-//            throw new CustomJwtRuntimeException();
-//        }
+    public ResponseEntity<CommonResponse> registerAds(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+            throw new CustomJwtRuntimeException();
+        }
         adsService.registerAds(file);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
@@ -51,9 +51,9 @@ public class AdsController {
     }
 
     @DeleteMapping("/ad/{id}")
-    public ResponseEntity<CommonResponse> deleteAd(HttpServletRequest request, @PathVariable String id){
+    public ResponseEntity<CommonResponse> deleteAd(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
             throw new CustomJwtRuntimeException();
         }
 

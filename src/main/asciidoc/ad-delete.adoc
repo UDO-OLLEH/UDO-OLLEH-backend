@@ -1,0 +1,15 @@
+[[ad-delete]]
+== 광고 삭제 API
+
+==== Http Request
+include::{snippets}/ad-delete/http-request.adoc[]
+==== Path Parameters
+include::{snippets}/ad-delete/path-parameters.adoc[]
+==== Request Headers
+include::{snippets}/ad-delete/request-headers.adoc[]
+==== Http Response
+include::{snippets}/ad-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/ad-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/ad-delete/curl-request.adoc[]
