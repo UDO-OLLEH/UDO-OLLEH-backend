@@ -3,6 +3,8 @@ package com.udoolleh.backend.web;
 import com.udoolleh.backend.core.type.PlaceType;
 import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.entity.Restaurant;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
+import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.provider.service.AdsService;
 import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
@@ -12,11 +14,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -24,6 +29,8 @@ import org.springframework.restdocs.RestDocumentationExtension;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -55,6 +62,12 @@ public class AdsControllerTests {
     @MockBean
     private AdsService adsService;
 
+    @MockBean
+    private AdminAuthenticationService adminAuthenticationService;
+
+    @MockBean
+    private JwtAuthTokenProvider jwtAuthTokenProvider;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -68,11 +81,17 @@ public class AdsControllerTests {
     void registerAdTest() throws Exception{
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
+
+        String adminAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        given(jwtAuthTokenProvider.resolveToken(any())).willReturn(Optional.of(adminAccessToken));
+        given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
         doNothing().when(adsService).registerAds(mockMultipartfile);
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/ad")
                 .file(mockMultipartfile)
+                .header("x-auth-token", adminAccessToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print())
@@ -82,6 +101,9 @@ public class AdsControllerTests {
                                 .host("ec2-43-200-118-169.ap-northeast-2.compute.amazonaws.com")
                                 .removePort(), prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("x-auth-token").description("어드민 액세스 토큰")
+                        ),
                         requestParts(partWithName("file").description("사진 파일")),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.STRING).description("api response 고유 아이디 값"),
