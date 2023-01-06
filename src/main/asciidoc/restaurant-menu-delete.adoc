@@ -1,5 +1,5 @@
 [[restaurant-menu-delete]]
-== 식당 메뉴들 삭제 API
+== 식당 메뉴들 삭제 API(어드민)
 
 ==== Http Request
 include::{snippets}/restaurant-menu-delete/http-request.adoc[]

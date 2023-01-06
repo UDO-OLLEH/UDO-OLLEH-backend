@@ -1,8 +1,9 @@
 [[course-post]]
-== 여행지 코스 등록 API
+== 여행지 코스 등록 API(어드민)
 
 ==== Http Request
 include::{snippets}/course-post/http-request.adoc[]
+include::{snippets}/course-post/request-headers.adoc[]
 include::{snippets}/course-post/request-fields.adoc[]
 ==== Http Response
 include::{snippets}/course-post/http-response.adoc[]

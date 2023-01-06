@@ -184,7 +184,7 @@ public class PlaceControllerTests {
                 "image/png", "test data".getBytes());
 
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"placeName\": \"우도밭담\",\"intro\": \"정겨운 농사와 어루어진 현무암의 밭담\",\"context\": \"밭담은 현무암으로 구성되어 있다.\",\"gps\" : [{\"latitude\" : 34.1232131,\"longitude\" : 127.1231231}]}".getBytes());
+                "application/json", "{\"placeName\": \"rodem garden\",\"intro\": \"Friendly Batdam\",\"context\": \"Batdam is basalt\",\"gps\" : [{\"latitude\" : 34.1232131,\"longitude\" : 127.1231231}]}".getBytes());
 
         String adminAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
 
@@ -238,7 +238,7 @@ public class PlaceControllerTests {
                 "image/png", "test data".getBytes());
 
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"placeName\": \"우도밭담\",\"intro\": \"정겨운 농사와 어루어진 현무암의 밭담\",\"context\": \"밭담은 현무암으로 구성되어 있다.\",\"gps\" : [{\"latitude\" : 34.1232131,\"longitude\" : 127.1231231}]}".getBytes());
+                "application/json", "{\"placeName\": \"Batdam\",\"intro\": \"Friendly Batdam\",\"context\": \"Batdam is basalt\",\"gps\" : [{\"latitude\" : 34.1232131,\"longitude\" : 127.1231231}]}".getBytes());
 
         String adminAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
 

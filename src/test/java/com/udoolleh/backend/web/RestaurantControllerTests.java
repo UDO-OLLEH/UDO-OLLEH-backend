@@ -254,7 +254,7 @@ public class RestaurantControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
-                "application/json", "{\"restaurantName\": \"해녀촌해산물\",\"name\": \"고등어\", \"price\": 10000, \"description\": \"노릇노릇 고등어 구이\"}".getBytes());
+                "application/json", "{\"restaurantName\": \"rodem garden\",\"name\": \"mackerel\", \"price\": 10000, \"description\": \"Grilled Mackerel\"}".getBytes());
 
         doNothing().when(menuService).registerMenu(any(), any());
         given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
@@ -299,7 +299,7 @@ public class RestaurantControllerTests {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("images", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile restaurantName = new MockMultipartFile("restaurantName", "",
-                "application/json", "{\"restaurantName\": \"해녀촌해산물\"}".getBytes());
+                "application/json", "{\"restaurantName\": \"rodem garden\"}".getBytes());
 
         doNothing().when(restaurantService).registerRestaurantImage(any(),any());
         given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
@@ -340,10 +340,10 @@ public class RestaurantControllerTests {
         String adminAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
         RequestRestaurant.RegisterRestaurantDto restaurantDto = RequestRestaurant.RegisterRestaurantDto.builder()
-                .address("제주특별자치도 제주시 우도면 우도해안길 86")
+                .address("Haenyeo Village Seafood address")
                 .placeType(PlaceType.RESTAURANT)
-                .category("음식점 > 한식 > 해물,생선")
-                .name("해녀촌해산물")
+                .category("restaurant > korean food > seafood")
+                .name("Haenyeo Village Seafood")
                 .build();
 
         doNothing().when(restaurantService).registerRestaurant(any());

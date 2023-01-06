@@ -1,5 +1,5 @@
 [[place-delete]]
-== 관광지 삭제 API
+== 관광지 삭제 API(어드민)
 
 ==== Http Request
 include::{snippets}/place-delete/http-request.adoc[]

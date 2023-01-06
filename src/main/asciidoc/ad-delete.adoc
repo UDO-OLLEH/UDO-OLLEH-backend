@@ -1,5 +1,5 @@
 [[ad-delete]]
-== 광고 삭제 API
+== 광고 삭제 API(어드민)
 
 ==== Http Request
 include::{snippets}/ad-delete/http-request.adoc[]

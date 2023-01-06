@@ -1,5 +1,5 @@
 [[ad-post]]
-== 광고 등록 API
+== 광고 등록 API(어드민)
 
 ==== Http Request
 include::{snippets}/ad-post/http-request.adoc[]

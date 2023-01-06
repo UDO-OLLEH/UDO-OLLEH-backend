@@ -1,9 +1,9 @@
-[[course-post]]
-== 여행지 코스 등록 API
+[[course-delete]]
+== 여행지 코스 삭제 API(어드민)
 
 ==== Http Request
 include::{snippets}/course-delete/http-request.adoc[]
-include::{snippets}/course-delete/request-body.adoc[]
+include::{snippets}/course-delete/request-headers.adoc[]
 ==== Http Response
 include::{snippets}/course-delete/http-response.adoc[]
 ==== Response Body

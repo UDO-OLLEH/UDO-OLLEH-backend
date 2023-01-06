@@ -1,5 +1,5 @@
 [[place-update-post]]
-== 관광지 수정 API
+== 관광지 수정 API(어드민)
 
 ==== Http Request
 include::{snippets}/place-update-post/http-request.adoc[]
