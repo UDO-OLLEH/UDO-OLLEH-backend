@@ -1,5 +1,5 @@
 [[restaurant-images-post]]
-== 식당 사진들 등록 API
+== 식당 사진들 등록 API(어드민)
 
 ==== Http Request
 include::{snippets}/restaurant-images-post/http-request.adoc[]

@@ -1,5 +1,5 @@
 [[restaurant-images-delete]]
-== 식당 사진들 삭제 API
+== 식당 사진들 삭제 API(어드민)
 
 ==== Http Request
 include::{snippets}/restaurant-images-delete/http-request.adoc[]

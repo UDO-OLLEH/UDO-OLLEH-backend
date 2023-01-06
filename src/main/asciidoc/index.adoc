@@ -25,11 +25,26 @@ include::shipFare-get.adoc[]
 
 include::restaurant-get.adoc[]
 include::restaurantMenu-get.adoc[]
-include::course-get.adoc[]
-include::ad-get.adoc[]
+include::restaurant-post.adoc[]
+include::restaurant-images-post.adoc[]
+include::restaurant-images-delete.adoc[]
+include::restaurant-menu-post.adoc[]
+include::restaurant-menu-delete.adoc[]
 
+include::course-get.adoc[]
+include::course-post.adoc[]
+include::course-delete.adoc[]
+
+include::ad-get.adoc[]
+include::ad-post.adoc[]
+include::ad-delete.adoc[]
+
+include::place-post.adoc[]
+include::place-delete.adoc[]
 include::place-detail-get.adoc[]
 include::place-get.adoc[]
+include::place-update-post.adoc[]
+
 
 include::review-post.adoc[]
 include::review-update-post.adoc[]

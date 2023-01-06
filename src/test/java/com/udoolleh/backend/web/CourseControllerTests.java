@@ -95,7 +95,7 @@ public class CourseControllerTests {
         doNothing().when(courseService).registerCourse(any());
 
         RequestCourse.DetailDto detailTitleDto = RequestCourse.DetailDto.builder()
-                .context("하우목동항")
+                .context("항구")
                 .type(CourseDetailType.TITLE)
                 .build();
         RequestCourse.DetailDto detailPhotoDto = RequestCourse.DetailDto.builder()
@@ -103,7 +103,7 @@ public class CourseControllerTests {
                 .type(CourseDetailType.PHOTO)
                 .build();
         RequestCourse.DetailDto detailTextDto = RequestCourse.DetailDto.builder()
-                .context("배를타고 처음 도착하면 하우목동항에 내리게 됩니다.")
+                .context("항구에서 보이는 바다이다.")
                 .type(CourseDetailType.TEXT)
                 .build();
         RequestCourse.GpsDto gpsDto = RequestCourse.GpsDto.builder()
@@ -111,8 +111,8 @@ public class CourseControllerTests {
                 .longitude(126.9681)
                 .build();
         RequestCourse.RegisterCourseDto registerCourseDto = RequestCourse.RegisterCourseDto.builder()
-                .course("하우목동항-전기차 대여-비양도 캠핑장")
-                .courseName("캠핑장 코스")
+                .course("항구-차량대여-캠핑장")
+                .courseName("캠핑장")
                 .detail(List.of(detailPhotoDto,detailTitleDto,detailTextDto))
                 .gps(List.of(gpsDto))
                 .build();
@@ -120,8 +120,8 @@ public class CourseControllerTests {
         //when
         mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/course")
+                .content(objectMapper.writeValueAsBytes(registerCourseDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerCourseDto))
                 .header("x-auth-token", adminAccessToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
