@@ -93,11 +93,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.NOT_FOUND_USER);
     }
 
-    @ExceptionHandler(NotFoundBoardException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundBoardException(NotFoundBoardException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_BOARD);
-    }
-
     @ExceptionHandler(MenuDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleMenuDuplicatedException(MenuDuplicatedException e) {
         return handleException(e, ErrorCode.MENU_DUPLICATED);
@@ -116,11 +111,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundPhotoException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundPhotoException(NotFoundPhotoException e) {
         return handleException(e, ErrorCode.NOT_FOUND_PHOTO);
-    }
-
-    @ExceptionHandler(NotFoundLikesException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundLikesException(NotFoundLikesException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_LIKES);
     }
 
     @ExceptionHandler(NotFoundReviewException.class)

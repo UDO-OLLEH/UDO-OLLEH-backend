@@ -3,22 +3,18 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.BoardComment;
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.NotFoundBoardException;
 import com.udoolleh.backend.repository.BoardCommentRepository;
 import com.udoolleh.backend.repository.BoardRepository;
-import com.udoolleh.backend.repository.LikeRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoardComment;
 import com.udoolleh.backend.web.dto.ResponseBoardComment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
