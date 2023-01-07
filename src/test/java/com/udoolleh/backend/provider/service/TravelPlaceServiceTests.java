@@ -77,7 +77,6 @@ public class TravelPlaceServiceTests {
 
         assertNotNull(travelPlace);
         assertThat(registerDto.getPlaceName(), equalTo(travelPlace.getPlaceName()));
-        System.out.println(travelPlace);
     }
 }
 

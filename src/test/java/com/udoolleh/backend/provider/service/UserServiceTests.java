@@ -39,8 +39,6 @@ public class UserServiceTests {
         //then
         User user = userRepository.findByEmail(dto.getEmail());
         assertEquals(dto.getEmail(), user.getEmail());
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
     }
 
     @Test
@@ -84,9 +82,6 @@ public class UserServiceTests {
 
         //when
         ResponseUser.Token loginResponse = userService.login(loginRequest).orElseGet(() -> null);
-        System.out.println(loginResponse.getAccessToken());
-        System.out.println(loginResponse.getRefreshToken());
-
         //then
         assertNotNull(loginResponse.getAccessToken());
         assertNotNull(loginResponse.getRefreshToken());
@@ -134,8 +129,6 @@ public class UserServiceTests {
         //then
         assertNotNull(tokenResponse.getRefreshToken());
         assertNotNull(tokenResponse.getAccessToken());
-        System.out.println(tokenResponse.getAccessToken());
-        System.out.println(tokenResponse.getRefreshToken());
     }
 
     @Test
