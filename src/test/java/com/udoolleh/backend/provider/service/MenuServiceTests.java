@@ -2,12 +2,14 @@ package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.Menu;
 import com.udoolleh.backend.entity.Restaurant;
-import com.udoolleh.backend.exception.errors.NotFoundMenuException;
-import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.RequestMenu;
 import com.udoolleh.backend.web.dto.ResponseMenu;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,7 @@ public class MenuServiceTests {
 
         menuService.registerMenu(null, requestDto);
 
-        restaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow(()-> new NotFoundRestaurantException());
+        restaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
         assertNotNull(restaurant.getMenuList());
         assertNull(menuRepository.findByRestaurantAndName(restaurant, "메뉴 이름").getPhoto());
     }
@@ -75,7 +77,7 @@ public class MenuServiceTests {
 
         menuService.registerMenu(mockMultipartFile, requestDto);
 
-        restaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow(()-> new NotFoundRestaurantException());
+        restaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
         assertNotNull(restaurant.getMenuList());
         assertNotNull(menuRepository.findByRestaurantAndName(restaurant, "메뉴 이름").getPhoto());
     }
@@ -165,6 +167,8 @@ public class MenuServiceTests {
         restaurant.addMenu(menu);
 
         //메뉴 삭제
-        assertThrows(NotFoundMenuException.class, ()-> menuService.deleteMenu(restaurant1.getId(), "잘못된 메뉴 이름"));
+        assertThatThrownBy(()-> menuService.deleteMenu(restaurant1.getId(), "잘못된 메뉴 이름"))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.NOT_FOUND_MENU.getMessage());
     }
 }

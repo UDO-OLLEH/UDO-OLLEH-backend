@@ -3,6 +3,8 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.BoardComment;
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.BoardCommentRepository;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
@@ -59,7 +61,7 @@ public class BoardCommentServiceTests {
         boardCommentService.registerBoardComment("test", registerDto);
 
         //then
-        board = boardRepository.findById(board.getId()).orElseThrow(() -> new NotFoundBoardException());
+        board = boardRepository.findById(board.getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOARD));
 
         assertEquals(1, board.getBoardComments().size());
         assertNotNull(boardCommentRepository.findByContext("댓글 내용"));

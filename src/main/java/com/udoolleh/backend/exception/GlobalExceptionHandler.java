@@ -93,16 +93,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.NOT_FOUND_USER);
     }
 
-    @ExceptionHandler(MenuDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleMenuDuplicatedException(MenuDuplicatedException e) {
-        return handleException(e, ErrorCode.MENU_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundMenuException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundMenuException(NotFoundMenuException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_MENU);
-    }
-
     @ExceptionHandler(RestaurantDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleRestaurantDuplicatedException(RestaurantDuplicatedException e) {
         return handleException(e, ErrorCode.RESTAURANT_DUPLICATED);
@@ -123,19 +113,9 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.REVIEW_DUPLICATED);
     }
 
-    @ExceptionHandler(LikesDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleLikesDuplicatedException(LikesDuplicatedException e) {
-        return handleException(e, ErrorCode.LIKES_DUPLICATED);
-    }
-
     @ExceptionHandler(UserNicknameDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleUserNicknameDuplicatedException(UserNicknameDuplicatedException e) {
         return handleException(e, ErrorCode.USER_NICKNAME_DUPLICATED);
-    }
-
-    @ExceptionHandler(TravelCourseDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleTravelCourseDuplicatedException(TravelCourseDuplicatedException e) {
-        return handleException(e, ErrorCode.TRAVEL_COURSE_DUPLICATED);
     }
 
     @ExceptionHandler(NotFoundTravelPlaceException.class)
