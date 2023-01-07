@@ -62,10 +62,6 @@ public class BoardServiceTests {
 
         Page<ResponseBoard.BoardListDto> list = boardService.getBoardList(user.getEmail(), pageable);
         assertNotNull(list);
-        for (ResponseBoard.BoardListDto listBoard : list) {
-            System.out.println(listBoard.getTitle() + listBoard.getContext() + listBoard.getCreateAt());
-        }
-
     }
 
     @Test
@@ -146,9 +142,6 @@ public class BoardServiceTests {
         board = boardRepository.findByTitleAndContext(mDto.getTitle(), mDto.getContext());
 
         assertTrue(board.getTitle().equals("수정한 제목"));
-        System.out.println(board.getTitle());
-        System.out.println(user.getEmail());
-
     }
 
     @Test
@@ -183,9 +176,6 @@ public class BoardServiceTests {
 
         assertTrue(board.getTitle().equals("수정한 제목"));
         assertNotNull(board.getPhoto());
-        System.out.println(board.getTitle());
-        System.out.println(user.getEmail());
-
     }
 
     @Test

@@ -96,7 +96,6 @@ public class LikesServiceTests {
         int findCount = likesRepository.countByBoard(boardEntity);
 
         assertThat(findCount, equalTo(likesCount));
-        System.out.println(findCount);
     }
 
     private int getLikesCount() {
