@@ -22,10 +22,12 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(response, errorCode.getStatus());
     }
+
     @ExceptionHandler(CustomException.class)
-    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e){
+    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
+
     /**
      * Bean Validation에 실패했을 때, 에러메시지를 내보내기 위한 Exception Handler
      */
@@ -98,16 +100,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.NOT_FOUND_PHOTO);
     }
 
-    @ExceptionHandler(NotFoundReviewException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundReviewException(NotFoundReviewException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_REVIEW);
-    }
-
-    @ExceptionHandler(ReviewDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleReviewDuplicatedException(ReviewDuplicatedException e) {
-        return handleException(e, ErrorCode.REVIEW_DUPLICATED);
-    }
-
     @ExceptionHandler(UserNicknameDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> handleUserNicknameDuplicatedException(UserNicknameDuplicatedException e) {
         return handleException(e, ErrorCode.USER_NICKNAME_DUPLICATED);
@@ -127,10 +119,12 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleShipFareDuplicatedException(ShipFareDuplicatedException e) {
         return handleException(e, ErrorCode.SHIP_FARE_DUPLICATED);
     }
+
     @ExceptionHandler(NotFoundShipFareException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(NotFoundShipFareException e) {
         return handleException(e, ErrorCode.NOT_FOUND_SHIP_FARE);
     }
+
     @ExceptionHandler(RegisterFileToS3FailedException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(RegisterFileToS3FailedException e) {
         return handleException(e, ErrorCode.REGISTER_FILE_TO_S3_FAILED);

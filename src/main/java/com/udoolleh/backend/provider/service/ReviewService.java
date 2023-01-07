@@ -4,6 +4,8 @@ import com.udoolleh.backend.core.service.ReviewServiceInterface;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.exception.errors.*;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
@@ -34,16 +36,16 @@ public class ReviewService implements ReviewServiceInterface {
     public void registerReview(MultipartFile file,  String email, RequestReview.RegisterReviewDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Restaurant restaurant = restaurantRepository.findByName(requestDto.getRestaurantName());
         if(restaurant == null){
-            throw new NotFoundReviewException();
+            throw new CustomException(ErrorCode.NOT_FOUND_RESTAURANT);
         }
 
         Review review = reviewRepository.findByUserAndRestaurant(user, restaurant);
         if(review != null){ //이미 리뷰가 있다면
-            throw new ReviewDuplicatedException();
+            throw new CustomException(ErrorCode.REVIEW_DUPLICATED);
         }
 
         //리뷰 등록
@@ -80,11 +82,11 @@ public class ReviewService implements ReviewServiceInterface {
     public void updateReview(MultipartFile file, String email, String reviewId, RequestReview.UpdateReviewDto requestDto){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Review review = reviewRepository.findByUserAndId(user, reviewId);
         if(review == null){
-            throw new NotFoundReviewException();
+            throw new CustomException(ErrorCode.NOT_FOUND_REVIEW);
         }
         if(Optional.ofNullable(review.getPhoto()).isPresent()){ //기존에 사진이 있으면
             s3Service.deleteFile(review.getPhoto());
@@ -118,11 +120,11 @@ public class ReviewService implements ReviewServiceInterface {
     public void deleteReview(String email, String reviewId){
         User user = userRepository.findByEmail(email);
         if(user == null){ //해당 유저가 없으면
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Review review = reviewRepository.findByUserAndId(user, reviewId);
         if(review == null){
-            throw new NotFoundReviewException();
+            throw new CustomException(ErrorCode.NOT_FOUND_REVIEW);
         }
         //리뷰 삭제
         if(Optional.ofNullable(review.getPhoto()).isPresent()){ //s3에 있는 사진 삭제
@@ -145,7 +147,7 @@ public class ReviewService implements ReviewServiceInterface {
     public List<ResponseReview.ReviewDto> getReview(String restaurantName){
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
         if(restaurant == null){
-            throw new NotFoundReviewException();
+            throw new CustomException(ErrorCode.NOT_FOUND_RESTAURANT);
         }
         List<Review> reviewList =  reviewRepository.findByRestaurant(restaurant);
         List<ResponseReview.ReviewDto> list = new ArrayList<>();
