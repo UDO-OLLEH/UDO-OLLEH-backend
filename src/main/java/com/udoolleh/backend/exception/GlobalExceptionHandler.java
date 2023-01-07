@@ -93,11 +93,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.NOT_FOUND_USER);
     }
 
-    @ExceptionHandler(RestaurantDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleRestaurantDuplicatedException(RestaurantDuplicatedException e) {
-        return handleException(e, ErrorCode.RESTAURANT_DUPLICATED);
-    }
-
     @ExceptionHandler(NotFoundPhotoException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundPhotoException(NotFoundPhotoException e) {
         return handleException(e, ErrorCode.NOT_FOUND_PHOTO);

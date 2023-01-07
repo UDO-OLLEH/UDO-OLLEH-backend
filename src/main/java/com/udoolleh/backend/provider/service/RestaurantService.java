@@ -1,12 +1,10 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.RestaurantServiceInterface;
-import com.udoolleh.backend.core.type.PlaceType;
 import com.udoolleh.backend.entity.Photo;
 import com.udoolleh.backend.entity.Restaurant;
-import com.udoolleh.backend.exception.errors.NotFoundPhotoException;
-import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
-import com.udoolleh.backend.exception.errors.RestaurantDuplicatedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.PhotoRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.RequestRestaurant;
@@ -20,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,7 +34,7 @@ public class RestaurantService implements RestaurantServiceInterface {
     public void registerRestaurantImage(List<MultipartFile> multipartFiles, String restaurantName) {
         Restaurant restaurant = restaurantRepository.findByName(restaurantName);
         if (restaurant == null) {
-            throw new NotFoundRestaurantException();
+            throw new CustomException(ErrorCode.NOT_FOUND_RESTAURANT);
         }
         String imageUrl = "";
         try {
@@ -61,7 +57,7 @@ public class RestaurantService implements RestaurantServiceInterface {
     public void registerRestaurant(RequestRestaurant.RegisterRestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantRepository.findByName(restaurantDto.getName());
         if (restaurant != null) {
-            throw new RestaurantDuplicatedException();
+            throw new CustomException(ErrorCode.RESTAURANT_DUPLICATED);
         }
         restaurant = Restaurant.builder()
                 .name(restaurantDto.getName())
@@ -77,7 +73,7 @@ public class RestaurantService implements RestaurantServiceInterface {
     @Override
     @Transactional
     public void deleteRestaurantImage(String id){
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(()-> new NotFoundRestaurantException());
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
         List<Photo> photoList = photoRepository.findByRestaurant(restaurant);
         for(Photo photo : photoList){
             s3Service.deleteFile(photo.getUrl().substring(s3BucketUrl.length()+1));
@@ -89,12 +85,8 @@ public class RestaurantService implements RestaurantServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public Page<ResponseRestaurant.RestaurantDto> getRestaurant(Pageable pageable){
-        List<ResponseRestaurant.RestaurantDto> restaurantLists = new ArrayList<>();
         Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
 
-        if(restaurants == null){
-            throw new NotFoundRestaurantException();
-        }
         return restaurants.map(ResponseRestaurant.RestaurantDto::of);
     }
 
