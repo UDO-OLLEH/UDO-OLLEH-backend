@@ -1,21 +1,17 @@
 package com.udoolleh.backend.provider.service;
 
-import com.amazonaws.Response;
 import com.udoolleh.backend.core.service.BoardCommentServiceInterface;
 import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.BoardComment;
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
-import com.udoolleh.backend.exception.errors.NotFoundBoardCommentException;
-import com.udoolleh.backend.exception.errors.NotFoundBoardException;
-import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.BoardCommentRepository;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestBoardComment;
 import com.udoolleh.backend.web.dto.ResponseBoardComment;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +29,8 @@ public class BoardCommentService implements BoardCommentServiceInterface {
     @Override
     @Transactional
     public void registerBoardComment(String email, RequestBoardComment.RegisterBoardCommentDto registerDto){
-        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomJwtRuntimeException());
-        Board board = boardRepository.findById(registerDto.getBoardId()).orElseThrow(() -> new NotFoundRestaurantException());
+        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED));
+        Board board = boardRepository.findById(registerDto.getBoardId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOARD));
 
         BoardComment boardComment = BoardComment.builder()
                 .context(registerDto.getContext())
@@ -47,8 +43,8 @@ public class BoardCommentService implements BoardCommentServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public List<ResponseBoardComment.BoardCommentDto> getBoardComment(String email, String boardId){
-        Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomJwtRuntimeException());
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundBoardException());
+        Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOARD));
 
         List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
         List<ResponseBoardComment.BoardCommentDto> responseDto = new ArrayList<>();
@@ -75,10 +71,10 @@ public class BoardCommentService implements BoardCommentServiceInterface {
     @Override
     @Transactional
     public void modifyBoardComment(String email, RequestBoardComment.UpdateBoardCommentDto modifyDto) {
-        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomJwtRuntimeException());
-        BoardComment boardComment = boardCommentRepository.findById(modifyDto.getCommentId()).orElseThrow(()->new NotFoundBoardCommentException());
-        if(!email.equals(boardComment.getUser().getEmail())){
-            throw new CustomJwtRuntimeException();  //같은 사용자가 아니면 예외 던짐
+        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomException(ErrorCode.AUTHENTICATION_FAILED));
+        BoardComment boardComment = boardCommentRepository.findById(modifyDto.getCommentId()).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_BOARD_COMMENT));
+        if(! user.getEmail().equals(boardComment.getUser().getEmail())){
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);  //같은 사용자가 아니면 예외 던짐
         }
         boardComment.updateContext(modifyDto.getContext());
     }
@@ -86,12 +82,12 @@ public class BoardCommentService implements BoardCommentServiceInterface {
     @Override
     @Transactional
     public void deleteBoardComment(String email, String id) {
-        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomJwtRuntimeException());
-        BoardComment boardComment = boardCommentRepository.findById(id).orElseThrow(()->new NotFoundBoardCommentException());
-        if(!email.equals(boardComment.getUser().getEmail())){
-            throw new CustomJwtRuntimeException();  //같은 사용자가 아니면 예외 던짐
+        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()->new CustomException(ErrorCode.AUTHENTICATION_FAILED));
+        BoardComment boardComment = boardCommentRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_BOARD_COMMENT));
+        if(!user.getEmail().equals(boardComment.getUser().getEmail())){
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);  //같은 사용자가 아니면 예외 던짐
         }
-        Board board = boardRepository.findById(boardComment.getBoard().getId()).orElseThrow(() -> new NotFoundBoardException());
+        Board board = boardRepository.findById(boardComment.getBoard().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOARD));
         board.getBoardComments().remove(boardComment);
     }
 }

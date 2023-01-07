@@ -3,9 +3,8 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.core.service.MenuServiceInterface;
 import com.udoolleh.backend.entity.Menu;
 import com.udoolleh.backend.entity.Restaurant;
-import com.udoolleh.backend.exception.errors.MenuDuplicatedException;
-import com.udoolleh.backend.exception.errors.NotFoundMenuException;
-import com.udoolleh.backend.exception.errors.NotFoundRestaurantException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.MenuRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.web.dto.RequestMenu;
@@ -32,12 +31,12 @@ public class MenuService implements MenuServiceInterface {
     public void registerMenu(MultipartFile file, RequestMenu.RegisterMenuDto requestDto){
         Restaurant restaurant = restaurantRepository.findByName(requestDto.getRestaurantName());
         if(restaurant == null){
-            throw new NotFoundRestaurantException();
+            throw new CustomException(ErrorCode.NOT_FOUND_RESTAURANT);
         }
         Menu menu = menuRepository.findByRestaurantAndName(restaurant, requestDto.getName());
 
         if(menu != null){
-            throw new MenuDuplicatedException();
+            throw new CustomException(ErrorCode.MENU_DUPLICATED);
         }
 
             menu = Menu.builder()
@@ -66,10 +65,8 @@ public class MenuService implements MenuServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public List<ResponseMenu.MenuDto> getMenu(String restaurantId){
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new NotFoundRestaurantException());
-        if(restaurant == null){
-            throw new NotFoundRestaurantException();
-        }
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
+
         List<ResponseMenu.MenuDto> list = new ArrayList<>();
         List<Menu> menuList = restaurant.getMenuList();
 
@@ -88,10 +85,10 @@ public class MenuService implements MenuServiceInterface {
     @Override
     @Transactional
     public void deleteMenu(String restaurantId, String menuName) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new NotFoundRestaurantException());
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
         Menu menu = menuRepository.findByRestaurantAndName(restaurant, menuName);
         if (menu == null) { //메뉴가 없다면
-            throw new NotFoundMenuException();
+            throw new CustomException(ErrorCode.NOT_FOUND_MENU);
         }
         if(Optional.ofNullable(menu.getPhoto()).isPresent()){ //사진 파일이 존재한다면
             s3Service.deleteFile(menu.getPhoto());

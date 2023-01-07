@@ -6,11 +6,6 @@ import com.udoolleh.backend.entity.Likes;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.CustomException;
 import com.udoolleh.backend.exception.ErrorCode;
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
-import com.udoolleh.backend.exception.errors.LikesDuplicatedException;
-import com.udoolleh.backend.exception.errors.NotFoundBoardException;
-import com.udoolleh.backend.exception.errors.NotFoundUserException;
-import com.udoolleh.backend.exception.errors.NotFoundLikesException;
 
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.LikesRepository;
@@ -20,18 +15,13 @@ import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.ResponseBoard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -86,7 +76,7 @@ public class BoardService implements BoardServiceInterface {
 
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         Board board = boardRepository.findById(id).get();
         if (board == null) {
