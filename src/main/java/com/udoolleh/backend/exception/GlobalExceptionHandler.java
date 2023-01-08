@@ -1,7 +1,6 @@
 package com.udoolleh.backend.exception;
 
 
-import com.udoolleh.backend.exception.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -49,86 +48,12 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.METHOD_NOT_ALLOWED);
     }
 
-    @ExceptionHandler(RegisterFailedException.class)
-    protected ResponseEntity<ErrorResponse> handleRegisterFailedException(RegisterFailedException e) {
-        return handleException(e, ErrorCode.REGISTER_FAILED);
-    }
-
-    @ExceptionHandler(LoginFailedException.class)
-    protected ResponseEntity<ErrorResponse> handleLoginFailedException(LoginFailedException e) {
-        return handleException(e, ErrorCode.LOGIN_FAILED);
-    }
-
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         //Content-Type 이 잘못된 경우
         return handleException(e, ErrorCode.UNSUPPORTED_MEDIA_TYPE);
     }
 
-    @ExceptionHandler(CustomJwtRuntimeException.class)
-    protected ResponseEntity<ErrorResponse> handleJwtException(CustomJwtRuntimeException e) {
-        return handleException(e, ErrorCode.INVALID_JWT_TOKEN);
-    }
-
-    @ExceptionHandler(HarborNameDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleHarborNameDuplicatedException(HarborNameDuplicatedException e) {
-        return handleException(e, ErrorCode.HARBOR_NAME_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundHarborException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundHarborException(NotFoundHarborException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_HARBOR);
-    }
-
-    @ExceptionHandler(HarborPeriodDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleHarborPeriodDuplicatedException(HarborPeriodDuplicatedException e) {
-        return handleException(e, ErrorCode.HARBOR_PERIOD_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundHarborTimetableException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundHarborTimetableException(NotFoundHarborTimetableException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_HARBOR_TIMETABLE);
-    }
-
-    @ExceptionHandler(NotFoundUserException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_USER);
-    }
-
-    @ExceptionHandler(NotFoundPhotoException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundPhotoException(NotFoundPhotoException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_PHOTO);
-    }
-
-    @ExceptionHandler(UserNicknameDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleUserNicknameDuplicatedException(UserNicknameDuplicatedException e) {
-        return handleException(e, ErrorCode.USER_NICKNAME_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundTravelPlaceException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundTravelPlaceException(NotFoundTravelPlaceException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_TRAVEL_PLACE);
-    }
-
-    @ExceptionHandler(TravelPlaceDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleTravelPlaceDuplicatedException(TravelPlaceDuplicatedException e) {
-        return handleException(e, ErrorCode.TRAVEL_PLACE_DUPLICATED);
-    }
-
-    @ExceptionHandler(ShipFareDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleShipFareDuplicatedException(ShipFareDuplicatedException e) {
-        return handleException(e, ErrorCode.SHIP_FARE_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundShipFareException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(NotFoundShipFareException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_SHIP_FARE);
-    }
-
-    @ExceptionHandler(RegisterFileToS3FailedException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(RegisterFileToS3FailedException e) {
-        return handleException(e, ErrorCode.REGISTER_FILE_TO_S3_FAILED);
-    }
 }
 
 

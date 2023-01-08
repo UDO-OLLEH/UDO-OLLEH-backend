@@ -1,8 +1,6 @@
 package com.udoolleh.backend.web;
 
 
-import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.LoginFailedException;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.BoardService;
@@ -10,20 +8,17 @@ import com.udoolleh.backend.web.dto.CommonResponse;
 import com.udoolleh.backend.web.dto.RequestBoard;
 
 import com.udoolleh.backend.web.dto.ResponseBoard;
-import com.udoolleh.backend.web.dto.ResponseUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 

@@ -1,14 +1,11 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.LoginFailedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.service.BoardService;
-import com.udoolleh.backend.provider.service.MenuService;
 import com.udoolleh.backend.provider.service.UserService;
 import com.udoolleh.backend.repository.BoardRepository;
-import com.udoolleh.backend.repository.MenuRepository;
-import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.utils.SHA256Util;
 import com.udoolleh.backend.web.dto.RequestUser;
@@ -99,7 +96,7 @@ public class BoardControllerTests {
         ResponseUser.Token token = userService.login(RequestUser.LoginDto.builder()
                 .email("email")
                 .password("1234")
-                .build()).orElseThrow(() -> new LoginFailedException());
+                .build()).orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
         accessToken = token.getAccessToken();
     }
 

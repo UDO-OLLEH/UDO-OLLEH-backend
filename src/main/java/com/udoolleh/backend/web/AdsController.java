@@ -1,6 +1,7 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.web.dto.ResponseAds;
@@ -31,8 +32,8 @@ public class AdsController {
     @PostMapping("/ad")
     public ResponseEntity<CommonResponse> registerAds(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         adsService.registerAds(file);
 
@@ -53,8 +54,8 @@ public class AdsController {
     @DeleteMapping("/ad/{id}")
     public ResponseEntity<CommonResponse> deleteAd(HttpServletRequest request, @PathVariable String id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         adsService.deleteAds(id);

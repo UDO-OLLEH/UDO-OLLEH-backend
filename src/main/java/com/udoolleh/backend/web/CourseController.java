@@ -1,6 +1,7 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.provider.service.CourseService;
@@ -10,7 +11,6 @@ import com.udoolleh.backend.web.dto.ResponseCourse;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +27,8 @@ public class CourseController {
     @PostMapping("/course")
     public ResponseEntity<CommonResponse> registerCourse(HttpServletRequest request, @Valid @RequestBody RequestCourse.RegisterCourseDto requestDto){
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         courseService.registerCourse(requestDto);
@@ -50,10 +50,9 @@ public class CourseController {
     @DeleteMapping("/course/{id}")
     public ResponseEntity<CommonResponse> deleteCourse(HttpServletRequest request, @PathVariable Long id){
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
-
         courseService.deleteCourse(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()

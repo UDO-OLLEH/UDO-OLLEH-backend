@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoolleh.backend.entity.Board;
 import com.udoolleh.backend.entity.BoardComment;
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.LoginFailedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.service.UserService;
 import com.udoolleh.backend.repository.BoardCommentRepository;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.utils.SHA256Util;
-import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.RequestBoardComment;
 import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
@@ -22,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -98,7 +97,7 @@ public class BoardCommentControllerTests {
         ResponseUser.Token token = userService.login(RequestUser.LoginDto.builder()
                 .email("email")
                 .password("1234")
-                .build()).orElseThrow(() -> new LoginFailedException());
+                .build()).orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
         accessToken = token.getAccessToken();
 
         board = Board.builder()

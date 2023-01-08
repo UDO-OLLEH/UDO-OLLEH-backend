@@ -1,6 +1,7 @@
 package com.udoolleh.backend.interceptor;
 
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,10 @@ public class AuthInterceptor implements HandlerInterceptor {
             if (jwtAuthToken.validate()) {
                 return true;
             } else {
-                throw new CustomJwtRuntimeException();
+                throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
             }
         } else {
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
     }

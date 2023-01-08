@@ -1,12 +1,11 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.entity.Ads;
 import com.udoolleh.backend.entity.Restaurant;
 import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.LoginFailedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.service.UserService;
-import com.udoolleh.backend.repository.AdsRepository;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
 import com.udoolleh.backend.repository.UserRepository;
@@ -36,15 +35,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import java.util.Map;
 
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles("test")
@@ -96,7 +92,7 @@ public class ReviewControllerTests {
         ResponseUser.Token token = userService.login(RequestUser.LoginDto.builder()
                 .email("email")
                 .password("1234")
-                .build()).orElseThrow(() -> new LoginFailedException());
+                .build()).orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
         accessToken = token.getAccessToken();
 
         restaurant = Restaurant.builder()
