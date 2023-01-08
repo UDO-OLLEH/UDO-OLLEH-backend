@@ -3,8 +3,8 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.core.service.TravelPlaceServiceInterface;
 import com.udoolleh.backend.entity.Gps;
 import com.udoolleh.backend.entity.TravelPlace;
-import com.udoolleh.backend.exception.errors.NotFoundTravelPlaceException;
-import com.udoolleh.backend.exception.errors.TravelPlaceDuplicatedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.GpsRepository;
 import com.udoolleh.backend.repository.TravelPlaceRepository;
 import com.udoolleh.backend.web.dto.RequestPlace;
@@ -55,7 +55,7 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
     @Transactional(readOnly = true)
     @Override
     public ResponsePlace.PlaceDto getPlaceDetail(Long id) {
-        TravelPlace travelPlace = travelPlaceRepository.findById(id).orElseThrow(() -> new NotFoundTravelPlaceException());
+        TravelPlace travelPlace = travelPlaceRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL_PLACE));
 
         List<ResponsePlace.GpsDto> gpsDto = new ArrayList<>();
         travelPlace.getGpsList().stream().forEach(gps -> gpsDto.add(ResponsePlace.GpsDto.of(gps)));
@@ -76,7 +76,7 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
 
         TravelPlace travelPlace = travelPlaceRepository.findByPlaceName(registerDto.getPlaceName());
         if (travelPlace != null) {
-            throw new TravelPlaceDuplicatedException();
+            throw new CustomException(ErrorCode.TRAVEL_PLACE_DUPLICATED);
         }
         travelPlace = TravelPlace.builder()
                 .placeName(registerDto.getPlaceName())
@@ -112,7 +112,7 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
     public void updatePlace(MultipartFile file, Long id, RequestPlace.UpdatePlaceDto updateDto) {
 
         TravelPlace travelPlace = travelPlaceRepository.findById(id).orElseThrow
-                (() -> new NotFoundTravelPlaceException());
+                (() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL_PLACE));
         if (Optional.ofNullable(travelPlace.getPhoto()).isPresent()) {
             s3Service.deleteFile(travelPlace.getPhoto());
         }
@@ -131,7 +131,7 @@ public class TravelPlaceService implements TravelPlaceServiceInterface {
     @Transactional
     @Override
     public void deletePlace(Long id) {
-        TravelPlace travelPlace = travelPlaceRepository.findById(id).orElseThrow(() -> new NotFoundTravelPlaceException());
+        TravelPlace travelPlace = travelPlaceRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL_PLACE));
 
         if (Optional.ofNullable(travelPlace.getPhoto()).isPresent()) {
             s3Service.deleteFile(travelPlace.getPhoto());

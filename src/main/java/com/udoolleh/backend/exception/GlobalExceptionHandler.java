@@ -85,17 +85,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.USER_NICKNAME_DUPLICATED);
     }
 
-    @ExceptionHandler(NotFoundTravelPlaceException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundTravelPlaceException(NotFoundTravelPlaceException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_TRAVEL_PLACE);
-    }
-
-    @ExceptionHandler(TravelPlaceDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleTravelPlaceDuplicatedException(TravelPlaceDuplicatedException e) {
-        return handleException(e, ErrorCode.TRAVEL_PLACE_DUPLICATED);
-    }
-
-
     @ExceptionHandler(RegisterFileToS3FailedException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(RegisterFileToS3FailedException e) {
         return handleException(e, ErrorCode.REGISTER_FILE_TO_S3_FAILED);
