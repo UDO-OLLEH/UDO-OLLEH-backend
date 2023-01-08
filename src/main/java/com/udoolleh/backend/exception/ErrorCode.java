@@ -1,6 +1,5 @@
 package com.udoolleh.backend.exception;
 
-import com.udoolleh.backend.exception.errors.RegisterFileToS3FailedException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -11,7 +10,7 @@ public enum ErrorCode {
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "PATH_003", "UNSUPPORTED MEDIA TYPE"),
 
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH001", " AUTHENTICATION_FAILED."), //중복
-    REGISTER_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_001", " AUTHENTICATION_FAILED."), //중복
+    REGISTER_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_001", " REGISTER_FAILED."), //중복
     LOGIN_FAILED(HttpStatus.NOT_FOUND, "AUTH_002", " LOGIN_FAILED."),
     USER_NICKNAME_DUPLICATED(HttpStatus.FORBIDDEN, "AUTH_003", " USER_NICKNAME_DUPLICATED."),
     INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH004", "INVALID_JWT_TOKEN."),

@@ -136,7 +136,7 @@ public class ShipService implements ShipServiceInterface {
     @Transactional
     @Override
     public ResponseShipFare.HarborShipFareDto getShipFare(Long harborId) {
-        Harbor harbor = harborRepository.findById(harborId).orElseThrow(() -> new NotFoundHarborException());
+        Harbor harbor = harborRepository.findById(harborId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HARBOR));
 
         List<ShipFare> shipFares = shipFareRepository.findByHarborId(harborId);
 
@@ -174,7 +174,7 @@ public class ShipService implements ShipServiceInterface {
     @Transactional
     @Override
     public void deleteHarborTimetable(Long harborTimetableId) {
-        HarborTimetable harborTimetable = harborTimetableRepository.findById(harborTimetableId).orElseThrow(() -> new NotFoundHarborTimetableException());
+        HarborTimetable harborTimetable = harborTimetableRepository.findById(harborTimetableId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HARBOR_TIMETABLE));
 
         harborTimetable.getHarbor().getHarborTimetables().remove(harborTimetable);
         harborTimetableRepository.deleteById(harborTimetableId);

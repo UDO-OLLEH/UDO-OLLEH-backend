@@ -1,10 +1,12 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.entity.User;
-import com.udoolleh.backend.exception.errors.UserNicknameDuplicatedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +63,9 @@ public class UserServiceTests {
                 .password("1234")
                 .build();
         //then
-        assertThrows(UserNicknameDuplicatedException.class, () -> userService.register(dto1));
+        assertThatThrownBy(() -> userService.register(dto1))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.USER_NICKNAME_DUPLICATED.getMessage());
     }
 
     @Transactional
@@ -89,6 +93,7 @@ public class UserServiceTests {
 
     //서버에서는 리프레시 토큰이 제대로 변경 되었는지 확인
     @Test
+    @Transactional
     @DisplayName("로그아웃 테스트")
     void logoutTest() {
         //given
@@ -132,6 +137,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("회원정보 수정 테스트(성공)")
     void ChangeUserInfoTest() {
         User user = User.builder()
@@ -152,6 +158,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("유저 프로필 사진 업로드 테스트(성공)")
     void uploadUserImageTest() {
         User user = User.builder()

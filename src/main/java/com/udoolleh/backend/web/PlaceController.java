@@ -1,6 +1,7 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.provider.service.TravelPlaceService;
@@ -45,8 +46,8 @@ public class PlaceController {
     @PostMapping("/place")
     public ResponseEntity<CommonResponse> registerPlace(HttpServletRequest request, @RequestPart MultipartFile file, @RequestPart RequestPlace.RegisterPlaceDto requestDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         travelPlaceService.registerPlace(file, requestDto);
@@ -58,8 +59,8 @@ public class PlaceController {
     @PostMapping("/place/{id}")
     public ResponseEntity<CommonResponse> updatePlace(HttpServletRequest request, @RequestPart MultipartFile file, @Valid @PathVariable Long id, @RequestPart RequestPlace.UpdatePlaceDto requestDto) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         travelPlaceService.updatePlace(file, id, requestDto);
@@ -71,8 +72,8 @@ public class PlaceController {
     @DeleteMapping("/place/{id}")
     public ResponseEntity<CommonResponse> deletePlace(HttpServletRequest request, @PathVariable Long id) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
-        if(!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomJwtRuntimeException()))) {
-            throw new CustomJwtRuntimeException();
+        if (!adminAuthenticationService.validAdminToken(token.orElseThrow(() -> new CustomException(ErrorCode.AUTHENTICATION_FAILED)))) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         travelPlaceService.deletePlace(id);

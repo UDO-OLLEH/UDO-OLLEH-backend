@@ -1,7 +1,8 @@
 package com.udoolleh.backend.provider.service;
 
 import com.udoolleh.backend.core.service.AdminAuthenticationServiceInterface;
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.web.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,12 @@ public class AdminAuthenticationService implements AdminAuthenticationServiceInt
         //토큰 검증
         CommonResponse result = udoOllehMicroserviceWebClient.get()
                 .uri("/admin/valid/accessToken")
-                .header("x-auth-token",token)
+                .header("x-auth-token", token)
                 .retrieve()
                 .bodyToMono(CommonResponse.class)
                 .doOnError(error -> {
                     System.out.println(error);
-                    throw new CustomJwtRuntimeException();
+                    throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
                 })
                 .block();
 

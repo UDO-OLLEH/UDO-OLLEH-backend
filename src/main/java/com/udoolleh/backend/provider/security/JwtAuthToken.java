@@ -1,7 +1,8 @@
 package com.udoolleh.backend.provider.security;
 
 import com.udoolleh.backend.core.security.auth.AuthToken;
-import com.udoolleh.backend.exception.errors.CustomJwtRuntimeException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,19 +42,19 @@ public class JwtAuthToken implements AuthToken<Claims> {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         }catch(SecurityException e){
             log.info("Invalid JWT signature."); //유효하지 않은 토큰 예외처리
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }catch (MalformedJwtException e) {
             log.info("Invalid JWT token.");
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token.");
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid.");
-            throw new CustomJwtRuntimeException();
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
     }
 

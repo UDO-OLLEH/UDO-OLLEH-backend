@@ -3,6 +3,8 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.core.security.role.Role;
 import com.udoolleh.backend.core.service.UserServiceInterface;
 import com.udoolleh.backend.entity.User;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.exception.errors.*;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
@@ -36,11 +38,11 @@ public class UserService implements UserServiceInterface {
     public void register(RequestUser.RegisterUserDto registerDto) {
         User user = userRepository.findByEmail(registerDto.getEmail());
         if (user != null) {
-            throw new RegisterFailedException();
+            throw new CustomException(ErrorCode.REGISTER_FAILED);
         }
         user = userRepository.findByNickname(registerDto.getNickname());
-        if(user != null){//닉네임 중복시
-            throw new UserNicknameDuplicatedException();
+        if (user != null) {//닉네임 중복시
+            throw new CustomException(ErrorCode.USER_NICKNAME_DUPLICATED);
         }
         String salt = SHA256Util.generateSalt();
 
@@ -64,7 +66,7 @@ public class UserService implements UserServiceInterface {
 
         User user = userRepository.findByEmail(loginDto.getEmail());
         if (user == null) {
-            throw new LoginFailedException();
+            throw new CustomException(ErrorCode.LOGIN_FAILED);
         }
         String salt = user.getSalt();
         String encryptedPassword = SHA256Util.getEncrypt(loginDto.getPassword(), salt);
@@ -81,7 +83,7 @@ public class UserService implements UserServiceInterface {
 
             user.changeRefreshToken(refreshToken);
         } else {
-            throw new LoginFailedException();
+            throw new CustomException(ErrorCode.LOGIN_FAILED);
         }
         return Optional.ofNullable(login);
     }
@@ -90,8 +92,8 @@ public class UserService implements UserServiceInterface {
     @Override
     public void logout(String email) {
         User user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new CustomJwtRuntimeException();
+        if (user == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         user.changeRefreshToken("");
@@ -100,22 +102,22 @@ public class UserService implements UserServiceInterface {
     @Transactional
     @Override
     public Optional<ResponseUser.Token> refreshToken(String token) {
-        if(token == null || token.equals("null")) {
-            throw new CustomJwtRuntimeException();
+        if (token == null || token.equals("null")) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         //db에서 리프레시 토큰으로 어드민을 꺼낸다.
         User user = userRepository.findByRefreshToken(token);
         //없으면 실패
-        if(user == null) {
-            throw new CustomJwtRuntimeException();
+        if (user == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         //디비에 있는 토큰이랑 다르면 실패, 즉 현재는 한 기기에만 로그인 가능, 여러 기기에 하려면 엔티티를 별도로 생성해야할듯
-        if(!user.getRefreshToken().equals(token)) {
-            throw new CustomJwtRuntimeException();
+        if (!user.getRefreshToken().equals(token)) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         //토큰 유효 검증
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
-        if(!jwtAuthToken.validate() || !jwtAuthToken.getData().get("role").equals(Role.USER.getCode())) {
+        if (!jwtAuthToken.validate() || !jwtAuthToken.getData().get("role").equals(Role.USER.getCode())) {
 
             return Optional.empty();
         }
@@ -135,8 +137,8 @@ public class UserService implements UserServiceInterface {
     public ResponseUser.UserDto getUserInfo(String email) {
         User user = userRepository.findByEmail(email);
 
-        if(user == null){
-            throw new CustomJwtRuntimeException();
+        if (user == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
         ResponseUser.UserDto userDto = ResponseUser.UserDto.builder()
@@ -165,22 +167,22 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public void updateUser(String email, RequestUser.UpdateUserDto requestDto){
+    public void updateUser(String email, RequestUser.UpdateUserDto requestDto) {
         User user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new CustomJwtRuntimeException();
+        if (user == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
         User user1 = userRepository.findByNickname(requestDto.getNickname());
-        if(user1 != null){//닉네임 중복시
-            throw new UserNicknameDuplicatedException();
+        if (user1 != null) {//닉네임 중복시
+            throw new CustomException(ErrorCode.USER_NICKNAME_DUPLICATED);
         }
 
         //salt생성
         String salt = SHA256Util.generateSalt();
         //비밀번호 암호화
-        String encryptedPassword = SHA256Util.getEncrypt(requestDto.getPassword(),salt);
+        String encryptedPassword = SHA256Util.getEncrypt(requestDto.getPassword(), salt);
         //유저 정보 수정
-        user.changeUserInfo(encryptedPassword,requestDto.getNickname(),salt);
+        user.changeUserInfo(encryptedPassword, requestDto.getNickname(), salt);
 
     }
 
@@ -188,18 +190,18 @@ public class UserService implements UserServiceInterface {
     @Transactional
     public void uploadUserImage(String email, MultipartFile image) {
         User user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new CustomJwtRuntimeException();
+        if (user == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
         }
 
-        if(user.getProfile() != null){//프로필 사진이 이미 s3에 등록 됐을 경우 삭제 후 업로드
+        if (user.getProfile() != null) {//프로필 사진이 이미 s3에 등록 됐을 경우 삭제 후 업로드
             s3Service.deleteFile(user.getProfile());
         }
 
-        String url="";
+        String url = "";
         try {
             url = s3Service.upload(image, "user");
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println("s3 등록 실패");
         }
         user.addProfile(url);
