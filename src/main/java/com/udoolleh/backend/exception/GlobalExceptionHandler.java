@@ -70,26 +70,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.INVALID_JWT_TOKEN);
     }
 
-    @ExceptionHandler(HarborNameDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleHarborNameDuplicatedException(HarborNameDuplicatedException e) {
-        return handleException(e, ErrorCode.HARBOR_NAME_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundHarborException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundHarborException(NotFoundHarborException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_HARBOR);
-    }
-
-    @ExceptionHandler(HarborPeriodDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleHarborPeriodDuplicatedException(HarborPeriodDuplicatedException e) {
-        return handleException(e, ErrorCode.HARBOR_PERIOD_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundHarborTimetableException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundHarborTimetableException(NotFoundHarborTimetableException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_HARBOR_TIMETABLE);
-    }
-
     @ExceptionHandler(NotFoundUserException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException e) {
         return handleException(e, ErrorCode.NOT_FOUND_USER);
@@ -115,15 +95,6 @@ public class GlobalExceptionHandler {
         return handleException(e, ErrorCode.TRAVEL_PLACE_DUPLICATED);
     }
 
-    @ExceptionHandler(ShipFareDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> handleShipFareDuplicatedException(ShipFareDuplicatedException e) {
-        return handleException(e, ErrorCode.SHIP_FARE_DUPLICATED);
-    }
-
-    @ExceptionHandler(NotFoundShipFareException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(NotFoundShipFareException e) {
-        return handleException(e, ErrorCode.NOT_FOUND_SHIP_FARE);
-    }
 
     @ExceptionHandler(RegisterFileToS3FailedException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundShipFareException(RegisterFileToS3FailedException e) {

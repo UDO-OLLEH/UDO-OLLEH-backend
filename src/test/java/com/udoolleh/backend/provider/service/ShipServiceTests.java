@@ -3,11 +3,8 @@ package com.udoolleh.backend.provider.service;
 import com.udoolleh.backend.entity.Harbor;
 import com.udoolleh.backend.entity.HarborTimetable;
 import com.udoolleh.backend.entity.ShipFare;
-import com.udoolleh.backend.exception.errors.HarborNameDuplicatedException;
-import com.udoolleh.backend.exception.errors.HarborPeriodDuplicatedException;
-import com.udoolleh.backend.exception.errors.NotFoundHarborException;
-import com.udoolleh.backend.exception.errors.NotFoundHarborTimetableException;
-import com.udoolleh.backend.exception.errors.ShipFareDuplicatedException;
+import com.udoolleh.backend.exception.CustomException;
+import com.udoolleh.backend.exception.ErrorCode;
 import com.udoolleh.backend.repository.HarborRepository;
 import com.udoolleh.backend.repository.HarborTimetableRepository;
 import com.udoolleh.backend.repository.ShipFareRepository;
@@ -17,12 +14,13 @@ import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
 import com.udoolleh.backend.web.dto.ResponseShipFare;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -70,7 +68,11 @@ public class ShipServiceTests {
     @Test
     void registerSameHarborTest() {
         shipService.registerHarbor("종달항");
-        assertThrows(HarborNameDuplicatedException.class, () -> shipService.registerHarbor("종달항"));
+
+        assertThatThrownBy(() -> shipService.registerHarbor("종달항"))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.HARBOR_NAME_DUPLICATED.getMessage());
+
     }
 
     @DisplayName("배 시간 등록 테스트")
@@ -94,7 +96,9 @@ public class ShipServiceTests {
     void registerSameHarborTimetableTest() {
         shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30");
 
-        assertThrows(HarborPeriodDuplicatedException.class, () -> shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30"));
+        assertThatThrownBy(() -> shipService.registerHarborTimetable("성산항", "하우목동항", "1,2월", "07:00 ~ 17:30"))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.HARBOR_PERIOD_DUPLICATED.getMessage());
     }
 
     @DisplayName("배 요금 등록 테스트")
@@ -136,7 +140,9 @@ public class ShipServiceTests {
                         .build();
         shipService.registerShipFare(shipFareDto);
 
-        assertThrows(ShipFareDuplicatedException.class, () -> shipService.registerShipFare(sameAgeGroupShipFareDto));
+        assertThatThrownBy(() -> shipService.registerShipFare(sameAgeGroupShipFareDto))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.SHIP_FARE_DUPLICATED.getMessage());
     }
 
     @DisplayName("배 요금 조회 테스트")
@@ -231,8 +237,13 @@ public class ShipServiceTests {
     @Transactional
     @Test
     void getEmptyHarborOrEmptyTimetableTest() {
-        assertThrows(NotFoundHarborException.class, () -> shipService.getHarborTimetable(12345L, "존재하지않은 목적지"));   //항구가 등록되어 있지 않을 경우
-        assertThrows(NotFoundHarborTimetableException.class, () -> shipService.getHarborTimetable(setUpHarborId, "존재하지 않는 목적지"));    //시간이 존재하지 않는 경우
+        assertThatThrownBy(() -> shipService.getHarborTimetable(12345L, "존재하지않은 목적지"))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.NOT_FOUND_HARBOR.getMessage());
+
+        assertThatThrownBy(() -> shipService.getHarborTimetable(setUpHarborId, "존재하지 않는 목적지"))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.NOT_FOUND_HARBOR_TIMETABLE.getMessage());
     }
 
     @DisplayName("항구 삭제 테스트")
