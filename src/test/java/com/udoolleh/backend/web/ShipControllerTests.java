@@ -280,7 +280,7 @@ public class ShipControllerTests {
                 .harborName("sungsan harbor")
                 .destination("Howumokdong harbor")
                 .operatingTime("07:00 ~ 17:00")
-                .period("1 ~ 3월")
+                .period("1 ~ 3(January-March)")
                 .build();
 
         mockMvc.perform(RestDocumentationRequestBuilders
@@ -323,7 +323,7 @@ public class ShipControllerTests {
         doNothing().when(shipService).registerShipFare(any());
 
         RequestShipFare.RegisterShipFareDto registerShipFareDto = RequestShipFare.RegisterShipFareDto.builder()
-                .ageGroup("중고등학생")
+                .ageGroup("middle and high school students")
                 .leaveIsland(5500)
                 .enterIsland(8000)
                 .harborId(2L)

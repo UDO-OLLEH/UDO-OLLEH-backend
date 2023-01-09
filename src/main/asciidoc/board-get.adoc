@@ -10,5 +10,7 @@ include::{snippets}/board-get/request-headers.adoc[]
 include::{snippets}/board-get/http-response.adoc[]
 ==== Response Body
 include::{snippets}/board-get/response-fields.adoc[]
+==== Request Param
+include::{snippets}/board-get/request-parameters.adoc[]
 ==== Request curl
 include::{snippets}/board-get/curl-request.adoc[]

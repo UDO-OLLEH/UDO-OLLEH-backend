@@ -9,4 +9,4 @@ include::{snippets}/course-delete/http-response.adoc[]
 ==== Response Body
 include::{snippets}/course-delete/response-fields.adoc[]
 ==== Request PathParameter
-include::{snippets}/course-adelete/path-parameters.adoc[]
+include::{snippets}/course-delete/path-parameters.adoc[]

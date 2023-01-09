@@ -319,6 +319,8 @@ public class BoardControllerTests {
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/board/list")
+                .param("page", "0")
+                .param("sort", "createAt")
                 .header("x-auth-token", accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -333,6 +335,8 @@ public class BoardControllerTests {
                                 preprocessResponse(prettyPrint()),
                                 requestHeaders(
                                         headerWithName("x-auth-token").description("액세스 토큰")),
+                                requestParameters(parameterWithName("page").description("페이지"),
+                                        parameterWithName("sort").description("정렬 기준(createAt, countLikes, countVisit)")),
                                 responseFields( // response 필드 정보 입력
                                         fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
                                         fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),

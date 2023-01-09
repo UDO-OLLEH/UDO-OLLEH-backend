@@ -95,7 +95,7 @@ public class CourseControllerTests {
         doNothing().when(courseService).registerCourse(any());
 
         RequestCourse.DetailDto detailTitleDto = RequestCourse.DetailDto.builder()
-                .context("항구")
+                .context("harbor")
                 .type(CourseDetailType.TITLE)
                 .build();
         RequestCourse.DetailDto detailPhotoDto = RequestCourse.DetailDto.builder()
@@ -103,7 +103,7 @@ public class CourseControllerTests {
                 .type(CourseDetailType.PHOTO)
                 .build();
         RequestCourse.DetailDto detailTextDto = RequestCourse.DetailDto.builder()
-                .context("항구에서 보이는 바다이다.")
+                .context("sea view from the harbor")
                 .type(CourseDetailType.TEXT)
                 .build();
         RequestCourse.GpsDto gpsDto = RequestCourse.GpsDto.builder()
@@ -111,8 +111,8 @@ public class CourseControllerTests {
                 .longitude(126.9681)
                 .build();
         RequestCourse.RegisterCourseDto registerCourseDto = RequestCourse.RegisterCourseDto.builder()
-                .course("항구-차량대여-캠핑장")
-                .courseName("캠핑장")
+                .course("harbor-car rental-camp")
+                .courseName("camping")
                 .detail(List.of(detailPhotoDto,detailTitleDto,detailTextDto))
                 .gps(List.of(gpsDto))
                 .build();
