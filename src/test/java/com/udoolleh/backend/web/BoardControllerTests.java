@@ -499,4 +499,75 @@ public class BoardControllerTests {
                 )
         ;
     }
+
+    @Test
+    void getLikeBoardsTest() throws Exception {
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        ResponseBoard.LikeBoardDto boardListDto = ResponseBoard.LikeBoardDto.builder()
+                .id("id")
+                .email("email")
+                .title("title")
+                .context("context")
+                .createAt(new Date())
+                .build();
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createAt");
+        List<ResponseBoard.LikeBoardDto> boardListDtos = List.of(boardListDto);
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), boardListDtos.size());
+        final Page<ResponseBoard.LikeBoardDto> boardListDtoPage = new PageImpl<>(boardListDtos.subList(start, end), pageable, boardListDtos.size());
+
+        given(boardService.getLikeBoard(any(), any())).willReturn(boardListDtoPage);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/board/like")
+                .header("x-auth-token", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("board-like-get", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list.content.[].id").type(JsonFieldType.STRING).description("게시판 아이디"),
+                                        fieldWithPath("list.content.[].email").type(JsonFieldType.STRING).description("작성자 아이디"),
+                                        fieldWithPath("list.content.[].title").type(JsonFieldType.STRING).description("게시판 제목"),
+                                        fieldWithPath("list.content.[].context").type(JsonFieldType.STRING).description("게시판 내용"),
+                                        fieldWithPath("list.content.[].createAt").type(JsonFieldType.STRING).description("게시판 작성 일자"),
+
+                                        fieldWithPath("list.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("정렬 비었는지 여부"),
+                                        fieldWithPath("list.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                        fieldWithPath("list.pageable.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                        fieldWithPath("list.pageable.offset").type(JsonFieldType.NUMBER).description("오프셋"),
+                                        fieldWithPath("list.pageable.pageNumber").type(JsonFieldType.NUMBER).description("페이지 번호"),
+                                        fieldWithPath("list.pageable.pageSize").type(JsonFieldType.NUMBER).description("페이지 크기"),
+                                        fieldWithPath("list.pageable.paged").type(JsonFieldType.BOOLEAN).description("페이지 여부"),
+                                        fieldWithPath("list.pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이지 여부"),
+
+                                        fieldWithPath("list.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
+                                        fieldWithPath("list.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 개수"),
+                                        fieldWithPath("list.totalElements").type(JsonFieldType.NUMBER).description("전체 요소 개수"),
+                                        fieldWithPath("list.size").type(JsonFieldType.NUMBER).description("한 페이지 당 보여지는 요소 개수"),
+                                        fieldWithPath("list.number").type(JsonFieldType.NUMBER).description("요소 개수"),
+                                        fieldWithPath("list.sort.empty").type(JsonFieldType.BOOLEAN).description("정렬 비었는지 여부"),
+                                        fieldWithPath("list.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                        fieldWithPath("list.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                        fieldWithPath("list.first").type(JsonFieldType.BOOLEAN).description("첫 페이지 여부"),
+                                        fieldWithPath("list.numberOfElements").type(JsonFieldType.NUMBER).description("요소 개수"),
+                                        fieldWithPath("list.empty").type(JsonFieldType.BOOLEAN).description("리스트가 비어있는지 여부")
+                                )
+                        )
+                )
+        ;
+    }
 }
