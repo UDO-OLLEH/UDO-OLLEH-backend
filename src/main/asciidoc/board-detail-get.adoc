@@ -1,0 +1,15 @@
+[[board-detail-get]]
+== 게시판 상세 조회 API
+
+==== Http Request
+include::{snippets}/board-detail-get/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-detail-get/request-headers.adoc[]
+==== Path-parameters
+include::{snippets}/board-detail-get/path-parameters.adoc[]
+==== Http Response
+include::{snippets}/board-detail-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-detail-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-detail-get/curl-request.adoc[]

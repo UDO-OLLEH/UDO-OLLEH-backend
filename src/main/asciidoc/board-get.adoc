@@ -1,0 +1,14 @@
+[[board-get]]
+== 게시판 전체 목록 조회 API
+
+==== Http Request
+include::{snippets}/board-get/http-request.adoc[]
+include::{snippets}/board-get/httpie-request.adoc[]
+==== Request Header
+include::{snippets}/board-get/request-headers.adoc[]
+==== Http Response
+include::{snippets}/board-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-get/curl-request.adoc[]

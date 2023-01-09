@@ -1,0 +1,19 @@
+[[board-update-post]]
+== 게시판 수정 API
+
+==== Http Request
+include::{snippets}/board-update-post/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-update-post/request-headers.adoc[]
+==== Path-parameters
+include::{snippets}/board-update-post/path-parameters.adoc[]
+==== Request Parts
+include::{snippets}/board-update-post/request-parts.adoc[]
+updateBoardDto
+include::{snippets}/board-update-post/request-part-updateBoardDto-fields.adoc[]
+==== Http Response
+include::{snippets}/board-update-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-update-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-update-post/curl-request.adoc[]

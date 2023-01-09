@@ -1,0 +1,15 @@
+[[board-like-delete]]
+== 게시판 좋아요 삭제 API
+
+==== Http Request
+include::{snippets}/board-like-delete/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-like-delete/request-headers.adoc[]
+==== Path-parameters
+include::{snippets}/board-like-delete/path-parameters.adoc[]
+==== Http Response
+include::{snippets}/board-like-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-like-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-like-delete/curl-request.adoc[]

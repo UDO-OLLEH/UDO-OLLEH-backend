@@ -1,0 +1,14 @@
+[[board-user-get]]
+== 내가 작성한 게시판 목록 조회 API
+
+==== Http Request
+include::{snippets}/board-user-get/http-request.adoc[]
+include::{snippets}/board-user-get/httpie-request.adoc[]
+==== Request Header
+include::{snippets}/board-user-get/request-headers.adoc[]
+==== Http Response
+include::{snippets}/board-user-get/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-user-get/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-user-get/curl-request.adoc[]
