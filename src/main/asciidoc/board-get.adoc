@@ -4,6 +4,8 @@
 ==== Http Request
 include::{snippets}/board-get/http-request.adoc[]
 include::{snippets}/board-get/httpie-request.adoc[]
+==== Request Header
+include::{snippets}/board-get/request-headers.adoc[]
 ==== Http Response
 include::{snippets}/board-get/http-response.adoc[]
 ==== Response Body

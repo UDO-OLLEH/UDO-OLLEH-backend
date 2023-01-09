@@ -298,6 +298,8 @@ public class BoardControllerTests {
 
     @Test
     void getBoardListTest() throws Exception {
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
         ResponseBoard.BoardListDto boardListDto = ResponseBoard.BoardListDto.builder()
                 .id("id")
                 .email("email")
@@ -317,6 +319,7 @@ public class BoardControllerTests {
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/board/list")
+                .header("x-auth-token", accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -328,6 +331,8 @@ public class BoardControllerTests {
                                         .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
                                 responseFields( // response 필드 정보 입력
                                         fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
                                         fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
@@ -360,6 +365,60 @@ public class BoardControllerTests {
                                         fieldWithPath("list.first").type(JsonFieldType.BOOLEAN).description("첫 페이지 여부"),
                                         fieldWithPath("list.numberOfElements").type(JsonFieldType.NUMBER).description("요소 개수"),
                                         fieldWithPath("list.empty").type(JsonFieldType.BOOLEAN).description("리스트가 비어있는지 여부")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @Test
+    void getBoardTest() throws Exception {
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        ResponseBoard.BoardDto boardDto = ResponseBoard.BoardDto.builder()
+                .id("id")
+                .email("email")
+                .title("title")
+                .context("context")
+                .photo("photo_url")
+                .createAt(new Date())
+                .nickname("nickname")
+                .countLikes(1L)
+                .hashtag("hastag")
+                .build();
+
+        given(boardService.getBoardDetail(any(), any())).willReturn(boardDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/board/{id}", "id")
+                .header("x-auth-token", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("board-detail-get", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(parameterWithName("id").description("게시판 아이디")),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list.id").type(JsonFieldType.STRING).description("게시판 아이디"),
+                                        fieldWithPath("list.email").type(JsonFieldType.STRING).description("작성자 아이디"),
+                                        fieldWithPath("list.title").type(JsonFieldType.STRING).description("게시판 제목"),
+                                        fieldWithPath("list..context").type(JsonFieldType.STRING).description("게시판 내용"),
+                                        fieldWithPath("list.photo").type(JsonFieldType.STRING).description("사진 url"),
+                                        fieldWithPath("list.createAt").type(JsonFieldType.STRING).description("게시판 작성 일자"),
+                                        fieldWithPath("list.nickname").type(JsonFieldType.STRING).description("게시판 작성자 닉네임"),
+                                        fieldWithPath("list.countLikes").type(JsonFieldType.NUMBER).description("게시판 좋아요 수"),
+                                        fieldWithPath("list.hashtag").type(JsonFieldType.STRING).description("게시판 해시태그")
                                 )
                         )
                 )
