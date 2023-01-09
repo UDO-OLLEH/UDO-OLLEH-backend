@@ -1,0 +1,13 @@
+[[harbor-post]]
+== 항구 등록 API(어드민)
+
+==== Http Request
+include::{snippets}/harbor-post/http-request.adoc[]
+include::{snippets}/harbor-post/request-headers.adoc[]
+include::{snippets}/harbor-post/request-fields.adoc[]
+==== Http Response
+include::{snippets}/harbor-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/harbor-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/harbor-post/curl-request.adoc[]

@@ -1,0 +1,12 @@
+[[harbor-delete]]
+== 항구 삭제 API(어드민)
+
+==== Http Request
+include::{snippets}/harbor-delete/http-request.adoc[]
+include::{snippets}/harbor-delete/request-headers.adoc[]
+==== Http Response
+include::{snippets}/harbor-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/harbor-delete/response-fields.adoc[]
+==== Request PathParameter
+include::{snippets}/harbor-delete/path-parameters.adoc[]
