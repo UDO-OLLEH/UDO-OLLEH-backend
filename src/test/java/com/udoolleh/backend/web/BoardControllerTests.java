@@ -214,4 +214,38 @@ public class BoardControllerTests {
                 )
         ;
     }
+
+    @DisplayName("게시판 좋아요 테스트")
+    @Test
+    void likeBoardTest() throws Exception {
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        doNothing().when(boardService).updateLikes("email","id");
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/board/{id}/likes", "id")
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("board-like-post", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(parameterWithName("id").description("게시판 아이디")),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
 }

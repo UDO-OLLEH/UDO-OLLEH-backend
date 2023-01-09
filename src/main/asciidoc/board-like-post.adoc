@@ -1,0 +1,15 @@
+[[board-like-post]]
+== 게시판 좋아요 API
+
+==== Http Request
+include::{snippets}/board-like-post/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-like-post/request-headers.adoc[]
+==== Path-parameters
+include::{snippets}/board-like-post/path-parameters.adoc[]
+==== Http Response
+include::{snippets}/board-like-post/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-like-post/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-like-post/curl-request.adoc[]
