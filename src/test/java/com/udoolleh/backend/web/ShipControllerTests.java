@@ -1,16 +1,16 @@
 package com.udoolleh.backend.web;
 
-import com.udoolleh.backend.entity.Harbor;
-import com.udoolleh.backend.entity.HarborTimetable;
-import com.udoolleh.backend.entity.ShipFare;
-import com.udoolleh.backend.provider.service.BoardService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.udoolleh.backend.provider.service.AdminAuthenticationService;
 import com.udoolleh.backend.provider.service.ShipService;
-import com.udoolleh.backend.provider.service.UserService;
-import com.udoolleh.backend.repository.BoardRepository;
-import com.udoolleh.backend.repository.HarborRepository;
-import com.udoolleh.backend.repository.HarborTimetableRepository;
-import com.udoolleh.backend.repository.ShipFareRepository;
-import com.udoolleh.backend.repository.UserRepository;
+import com.udoolleh.backend.web.dto.RequestHarborTimetable;
+import com.udoolleh.backend.web.dto.RequestShipFare;
+import com.udoolleh.backend.web.dto.ResponseHarbor;
+import com.udoolleh.backend.web.dto.ResponseHarborTimetable;
+import com.udoolleh.backend.web.dto.ResponseShipFare;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -26,11 +27,14 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -40,12 +44,10 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,19 +61,18 @@ public class ShipControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
     private ShipService shipService;
 
-    @Autowired
-    private HarborRepository harborRepository;
+    @MockBean
+    private AdminAuthenticationService adminAuthenticationService;
 
-    @Autowired
-    private HarborTimetableRepository harborTimetableRepository;
-
-    @Autowired
-    private ShipFareRepository shipFareRepository;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+    private String accessToken;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -80,20 +81,26 @@ public class ShipControllerTests {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+        given(adminAuthenticationService.validAdminToken(any())).willReturn(true);
+        accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0Iiwibmlja25hbWUiOiJoZWxsby11ZG8ifQ.sRFqCWI3ohcxHHbk969PqdYCFUUe1KEwhndR1b878mo";
     }
 
     @DisplayName("선착장 조회 성공 테스트 - 상태코드 : 200")
-    @Transactional
     @Test
     void getHarborTest() throws Exception {
-        Harbor harbor = Harbor.builder()
-                .harborName("성산항")
+        List<ResponseHarbor.HarborDto> harborDtos = new ArrayList<>();
+        ResponseHarbor.HarborDto harborDto = ResponseHarbor.HarborDto.builder()
+                .id(2L)
+                .name("성산항")
                 .build();
-        harborRepository.save(harbor);
-        harbor = Harbor.builder()
-                .harborName("종달항")
+        harborDtos.add(harborDto);
+        harborDto = ResponseHarbor.HarborDto.builder()
+                .id(3L)
+                .name("성산항")
                 .build();
-        harborRepository.save(harbor);
+        harborDtos.add(harborDto);
+
+        given(shipService.getAllHarbors()).willReturn(harborDtos);
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/harbor")
@@ -120,31 +127,30 @@ public class ShipControllerTests {
     }
 
     @DisplayName("선착장 시간표 조회 성공 테스트 - 상태코드 : 200")
-    @Transactional
     @Test
     void getHarborTimetalbeTest() throws Exception {
-        Harbor harbor = Harbor.builder()
-                .harborName("성산항")
-                .build();
-        harbor = harborRepository.save(harbor);
-        HarborTimetable harborTimetable = HarborTimetable.builder()
-                .harbor(harbor)
-                .destination("천진항")
-                .period("3 ~ 6월")
+        List<ResponseHarborTimetable.TimetableDto> timetableDtos = new ArrayList<>();
+        ResponseHarborTimetable.TimetableDto timetableDto = ResponseHarborTimetable.TimetableDto.builder()
+                .id(1L)
                 .operatingTime("07:30 ~ 17:30")
+                .period("1 ~ 2월")
                 .build();
-        harborTimetableRepository.save(harborTimetable);
+        timetableDtos.add(timetableDto);
+        timetableDto = ResponseHarborTimetable.TimetableDto.builder()
+                .id(2L)
+                .operatingTime("07:00 ~ 17:00")
+                .period("4 ~ 6월")
+                .build();
+        timetableDtos.add(timetableDto);
+        ResponseHarborTimetable.HarborTimetableDto harborTimetableDto = ResponseHarborTimetable.HarborTimetableDto.builder()
+                .destination("하우목동항")
+                .timetableDtos(timetableDtos)
+                .build();
 
-        harborTimetable = HarborTimetable.builder()
-                .harbor(harbor)
-                .destination("천진항")
-                .period("7 ~ 10월")
-                .operatingTime("07:30 ~ 17:00")
-                .build();
-        harborTimetableRepository.save(harborTimetable);
+        given(shipService.getHarborTimetable(any(), any())).willReturn(harborTimetableDto);
 
         mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/harbor/{id}/timetable/{destination}", harbor.getId(), harborTimetable.getDestination())
+                .get("/harbor/{id}/timetable/{destination}", "3", "성산항")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -171,36 +177,36 @@ public class ShipControllerTests {
         ;
     }
 
-    @DisplayName("선착장 시간표 조회 성공 테스트 - 상태코드 : 200")
-    @Transactional
+    @DisplayName("선착장 가격표 조회 성공 테스트 - 상태코드 : 200")
     @Test
-    void getHarborShipFare() throws Exception {
-        Harbor harbor = Harbor.builder()
-                .harborName("성산항")
-                .build();
-        harbor = harborRepository.save(harbor);
-        ShipFare shipFare = ShipFare.builder()
-                .harbor(harbor)
-                .ageGroup("중학생")
-                .leaveIsland(2000)
-                .enterIsland(5000)
-                .roundTrip(8000)
-                .build();
-        shipFareRepository.save(shipFare);
-        harbor.addShipFare(shipFare);
+    void getHarborShipFareTest() throws Exception {
+        List<ResponseShipFare.ShipFareDto> shipFareDtos = new ArrayList<>();
 
-        shipFare = ShipFare.builder()
-                .harbor(harbor)
+        ResponseShipFare.ShipFareDto shipFareDto = ResponseShipFare.ShipFareDto.builder()
                 .ageGroup("성인")
-                .leaveIsland(5500)
-                .enterIsland(6000)
-                .roundTrip(12000)
+                .leaveIsland(7500)
+                .enterIsland(10000)
+                .id(1L)
+                .roundTrip(17000)
                 .build();
-        shipFareRepository.save(shipFare);
-        harbor.addShipFare(shipFare);
+        shipFareDtos.add(shipFareDto);
+        shipFareDto = ResponseShipFare.ShipFareDto.builder()
+                .ageGroup("중고등학생")
+                .leaveIsland(5500)
+                .enterIsland(8000)
+                .id(2L)
+                .roundTrip(15000)
+                .build();
+        shipFareDtos.add(shipFareDto);
+        ResponseShipFare.HarborShipFareDto harborShipFareDto = ResponseShipFare.HarborShipFareDto.builder()
+                .harborName("성산항")
+                .shipFareDtos(shipFareDtos)
+                .build();
+
+        given(shipService.getShipFare(any())).willReturn(harborShipFareDto);
 
         mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/harbor/{id}/ship-fare", harbor.getId())
+                .get("/harbor/{id}/ship-fare", "3")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -227,5 +233,237 @@ public class ShipControllerTests {
                 )
         ;
     }
+    @DisplayName("항구 등록 성공 - 200")
+    @Test
+    void registerHarborTest() throws Exception {
+        doNothing().when(shipService).registerHarbor(any());
+
+        Map<String, String> harborName = Map.of("harborName", "sungsan harbor");
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+        .post("/harbor")
+                .content(objectMapper.writeValueAsString(harborName))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("harbor-post", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("어드민 액세스 토큰")),
+                                requestFields(
+                                        fieldWithPath("harborName").type(JsonFieldType.STRING).description("항구 이름")
+                                ),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("배 시간 등록 성공 - 200")
+    @Test
+    void registerHarborTimetableTest() throws Exception {
+        doNothing().when(shipService).registerHarborTimetable(any(), any(), any(), any());
+
+        RequestHarborTimetable.RegisterHarborTimetableDto requestDto = RequestHarborTimetable.RegisterHarborTimetableDto.builder()
+                .harborName("sungsan harbor")
+                .destination("Howumokdong harbor")
+                .operatingTime("07:00 ~ 17:00")
+                .period("1 ~ 3월")
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/harbor/timetable")
+                .content(objectMapper.writeValueAsString(requestDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("harbor-timetable-post", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("어드민 액세스 토큰")),
+                                requestFields(
+                                        fieldWithPath("harborName").type(JsonFieldType.STRING).description("출발지"),
+                                        fieldWithPath("destination").type(JsonFieldType.STRING).description("목적지"),
+                                        fieldWithPath("operatingTime").type(JsonFieldType.STRING).description("운영 시간"),
+                                        fieldWithPath("period").type(JsonFieldType.STRING).description("운영 기간")
+                                ),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("배 가격표 등록 성공 - 200")
+    @Test
+    void registerShipFareTest() throws Exception {
+        doNothing().when(shipService).registerShipFare(any());
+
+        RequestShipFare.RegisterShipFareDto registerShipFareDto = RequestShipFare.RegisterShipFareDto.builder()
+                .ageGroup("중고등학생")
+                .leaveIsland(5500)
+                .enterIsland(8000)
+                .harborId(2L)
+                .roundTrip(15000)
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/harbor/ship-fare")
+                .content(objectMapper.writeValueAsString(registerShipFareDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("harbor-ship-fare-post", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("어드민 액세스 토큰")),
+                                requestFields(
+                                        fieldWithPath("harborId").type(JsonFieldType.NUMBER).description("항구 아이디"),
+                                        fieldWithPath("ageGroup").type(JsonFieldType.STRING).description("나이 종류(가격 분류 기준)"),
+                                        fieldWithPath("leaveIsland").type(JsonFieldType.NUMBER).description("출도(우도 쪽으로 떠나는 것)"),
+                                        fieldWithPath("enterIsland").type(JsonFieldType.NUMBER).description("입도(제주 쪽으로 들어오는 것)"),
+                                        fieldWithPath("roundTrip").type(JsonFieldType.NUMBER).description("왕복")
+                                ),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("항구 삭제 성공 - 200")
+    @Test
+    void deleteHarborTest() throws Exception {
+        doNothing().when(shipService).deleteHarbor(any());
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/harbor/{id}", "3")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("harbor-delete", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("어드민 액세스 토큰")),
+                                pathParameters(parameterWithName("id").description("항구 아이디")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("배 시간 삭제 성공 - 200")
+    @Test
+    void deleteHarborTimetableTest() throws Exception {
+        doNothing().when(shipService).deleteHarborTimetable(any());
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/harbor/timetable/{id}", "2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("harbor-timetable-delete", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("어드민 액세스 토큰")),
+                                pathParameters(parameterWithName("id").description("항구 시간표 아이디")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("배 가격표 삭제 성공 - 200")
+    @Test
+    void deleteShipFareTest() throws Exception {
+        doNothing().when(shipService).deleteShipFare(any());
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/harbor/ship-fare/{id}", "2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("harbor-ship-fare-delete", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("어드민 액세스 토큰")),
+                                pathParameters(parameterWithName("id").description("항구 시간표 아이디")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+
 
 }

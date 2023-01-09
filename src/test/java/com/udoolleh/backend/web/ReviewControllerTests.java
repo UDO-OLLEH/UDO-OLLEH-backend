@@ -225,7 +225,7 @@ public class ReviewControllerTests {
         doNothing().when(reviewService).deleteReview(any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders
-                .delete("/restaurant/review/{id}", "aegiodjvaiejdfaewf")
+                .delete("/restaurant/review/{id}", "3")
                 .header("x-auth-token", accessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print())
