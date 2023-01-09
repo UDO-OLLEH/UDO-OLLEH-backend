@@ -5,24 +5,35 @@ import com.udoolleh.backend.entity.Review;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.CustomException;
 import com.udoolleh.backend.exception.ErrorCode;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
+import com.udoolleh.backend.provider.service.ReviewService;
 import com.udoolleh.backend.provider.service.UserService;
 import com.udoolleh.backend.repository.RestaurantRepository;
 import com.udoolleh.backend.repository.ReviewRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.utils.SHA256Util;
 import com.udoolleh.backend.web.dto.RequestUser;
+import com.udoolleh.backend.web.dto.ResponseReview;
 import com.udoolleh.backend.web.dto.ResponseUser;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -52,62 +63,36 @@ public class ReviewControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RestaurantRepository restaurantRepository;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
 
-    private User user;
+    @MockBean
+    private ReviewService reviewService;
 
-    private Restaurant restaurant;
+    @MockBean
+    private JwtAuthTokenProvider jwtAuthTokenProvider;
 
     private String accessToken;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentationContextProvider))
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        String salt = SHA256Util.generateSalt();
-        user = User.builder()
-                .email("email")
-                .nickname("nick")
-                .password(SHA256Util.getEncrypt("1234", salt))
-                .salt(salt)
-                .build();
-        user = userRepository.save(user);
-
-        ResponseUser.Token token = userService.login(RequestUser.LoginDto.builder()
-                .email("email")
-                .password("1234")
-                .build()).orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
-        accessToken = token.getAccessToken();
-
-        restaurant = Restaurant.builder()
-                .name("restaurant")
-                .build();
-        restaurant = restaurantRepository.save(restaurant);
+        accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0Iiwibmlja25hbWUiOiJoZWxsby11ZG8ifQ.sRFqCWI3ohcxHHbk969PqdYCFUUe1KEwhndR1b878mo";
     }
-
+    @DisplayName("리뷰 등록 성공 - 200")
     @Test
-    @Transactional
     void registerReviewTest() throws Exception {
+
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
                 "application/json", "{\"restaurantName\": \"restaurant\",\"context\": \"context\",\"grade\": 3.0}".getBytes());
+
+        doNothing().when(reviewService).registerReview(any(), any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/restaurant/review")
@@ -140,24 +125,18 @@ public class ReviewControllerTests {
                 ));
     }
 
+    @DisplayName("리뷰 수정 성공 - 200")
     @Test
-    @Transactional
     void updateReviewTest() throws Exception {
-        Review review = Review.builder()
-                .context("context")
-                .grade(3.0)
-                .user(user)
-                .restaurant(restaurant)
-                .build();
-        review = reviewRepository.save(review);
-
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
                 "image/png", "test data".getBytes());
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
                 "application/json", "{\"context\": \"context\",\"grade\": 3.0}".getBytes());
 
+        doNothing().when(reviewService).updateReview(any(), any(), any(), any());
+
         mockMvc.perform(RestDocumentationRequestBuilders
-                .multipart("/restaurant/review/{id}", review.getId())
+                .multipart("/restaurant/review/{id}", "3")
                 .file(mockMultipartfile)
                 .file(requestDto)
                 .header("x-auth-token", accessToken)
@@ -186,22 +165,33 @@ public class ReviewControllerTests {
                         )
                 ));
     }
-
+    @DisplayName("리뷰 리스트로 조회 성공 - 200")
     @Test
-    @Transactional
     void getReviewTest() throws Exception {
         //given
-        Review review = Review.builder()
-                .restaurant(restaurant)
-                .context("hello")
-                .user(user)
-                .photo("photo_url")
+        List<ResponseReview.ReviewDto> reviewDtos = new ArrayList<>();
+        ResponseReview.ReviewDto reviewDto = ResponseReview.ReviewDto.builder()
+                .email("test")
+                .context("so good")
+                .grade(4.5)
+                .nickname("testNickname")
+                .reviewId("difajioenv1239dkalnvalie2")
+                .photo("s3.dafeg132413rfw13r5")
                 .build();
-        review = reviewRepository.save(review);
-
+        reviewDtos.add(reviewDto);
+        reviewDto = ResponseReview.ReviewDto.builder()
+                .email("test@naver.com")
+                .context("so good grilled fish")
+                .grade(4.5)
+                .nickname("fishing")
+                .reviewId("aegiodjvaiej!dfaewf")
+                .photo("s3.ddsafewavbdvbfbda")
+                .build();
+        reviewDtos.add(reviewDto);
+        given(reviewService.getReview(any())).willReturn(reviewDtos);
         //when
         mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/restaurant/{name}/review", "restaurant")
+                .get("/restaurant/{name}/review", "해녀촌해산물")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -229,20 +219,13 @@ public class ReviewControllerTests {
                 )
         ;
     }
-
+    @DisplayName("리뷰 삭제 성공 - 200")
     @Test
-    @Transactional
     void deleteReviewTest() throws Exception {
-        Review review = Review.builder()
-                .restaurant(restaurant)
-                .context("내용")
-                .user(user)
-                .photo("photo_url")
-                .build();
-        review = reviewRepository.save(review);
+        doNothing().when(reviewService).deleteReview(any(), any());
 
         mockMvc.perform(RestDocumentationRequestBuilders
-                .delete("/restaurant/review/{id}", review.getId())
+                .delete("/restaurant/review/{id}", "aegiodjvaiejdfaewf")
                 .header("x-auth-token", accessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print())
