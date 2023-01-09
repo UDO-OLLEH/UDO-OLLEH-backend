@@ -141,7 +141,7 @@ public class BoardControllerTests {
 
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
 
-        doNothing().when(boardService).updateBoard(mockMultipartfile, "email","id", RequestBoard.UpdateBoardDto.builder().build());
+        doNothing().when(boardService).updateBoard(mockMultipartfile, "email", "id", RequestBoard.UpdateBoardDto.builder().build());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/board/{id}", "id")
@@ -186,7 +186,7 @@ public class BoardControllerTests {
     void deleteBoardTest() throws Exception {
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
 
-        doNothing().when(boardService).deleteBoard("email","id");
+        doNothing().when(boardService).deleteBoard("email", "id");
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("/board/{id}", "id")
@@ -220,7 +220,7 @@ public class BoardControllerTests {
     void likeBoardTest() throws Exception {
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
 
-        doNothing().when(boardService).updateLikes("email","id");
+        doNothing().when(boardService).updateLikes("email", "id");
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/board/{id}/likes", "id")
@@ -236,6 +236,41 @@ public class BoardControllerTests {
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(parameterWithName("id").description("게시판 아이디")),
+                                requestHeaders(
+                                        headerWithName("x-auth-token").description("액세스 토큰")),
+                                responseFields( // response 필드 정보 입력
+                                        fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
+                                        fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
+                                        fieldWithPath("list").type(JsonFieldType.NULL).description("반환 리스트")
+                                )
+                        )
+                )
+        ;
+    }
+
+    @DisplayName("게시판 좋아요 취소 테스트")
+    @Test
+    void deleteLikeBoardTest() throws Exception {
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        doNothing().when(boardService).deleteLikes("email", "likeId", "id");
+
+        mockMvc.perform(RestDocumentationRequestBuilders
+                .delete("/board/{id}/likes/{likesId}", "id", "likesId")
+                .header("x-auth-token", accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo( // rest docs 문서 작성 시작
+                        document("board-like-delete", // 문서 조각 디렉토리 명
+                                preprocessRequest(modifyUris()
+                                        .scheme("http")
+                                        .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
+                                        .removePort(), prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(parameterWithName("id").description("게시판 아이디"),
+                                        parameterWithName("likesId").description("좋아요 아이디")),
                                 requestHeaders(
                                         headerWithName("x-auth-token").description("액세스 토큰")),
                                 responseFields( // response 필드 정보 입력
