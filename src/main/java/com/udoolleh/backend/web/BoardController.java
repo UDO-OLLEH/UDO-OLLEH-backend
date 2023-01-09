@@ -35,7 +35,7 @@ public class BoardController {
 
     @GetMapping("/board/list")
     public ResponseEntity<CommonResponse> getBoardList(HttpServletRequest request,
-                                                    @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                    @PageableDefault(size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
         Optional<String> token = jwtAuthTokenProvider.resolveToken(request);
         String email = null;
         if (token.isPresent()) {
