@@ -1,0 +1,15 @@
+[[board-delete]]
+== 게시판 삭제 API
+
+==== Http Request
+include::{snippets}/board-delete/http-request.adoc[]
+==== Request Header
+include::{snippets}/board-delete/request-headers.adoc[]
+==== Path-parameters
+include::{snippets}/board-delete/path-parameters.adoc[]
+==== Http Response
+include::{snippets}/board-delete/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-delete/response-fields.adoc[]
+==== Request curl
+include::{snippets}/board-delete/curl-request.adoc[]
