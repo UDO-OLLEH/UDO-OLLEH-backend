@@ -3,21 +3,27 @@ package com.udoolleh.backend.web;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.CustomException;
 import com.udoolleh.backend.exception.ErrorCode;
+import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.provider.service.BoardService;
 import com.udoolleh.backend.provider.service.UserService;
 import com.udoolleh.backend.repository.BoardRepository;
 import com.udoolleh.backend.repository.UserRepository;
 import com.udoolleh.backend.utils.SHA256Util;
+import com.udoolleh.backend.web.dto.RequestBoard;
 import com.udoolleh.backend.web.dto.RequestUser;
 import com.udoolleh.backend.web.dto.ResponseUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -48,6 +54,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
@@ -57,17 +65,11 @@ public class BoardControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private BoardRepository boardRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
+    @MockBean
     private BoardService boardService;
+
+    @MockBean
+    private JwtAuthTokenProvider jwtAuthTokenProvider;
 
     private User user;
 
@@ -83,25 +85,9 @@ public class BoardControllerTests {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        String salt = SHA256Util.generateSalt();
-        user = User.builder()
-                .email("email")
-                .nickname("nick")
-                .password(SHA256Util.getEncrypt("1234", salt))
-                .salt(salt)
-                .build();
-        user = userRepository.save(user);
-
-        ResponseUser.Token token = userService.login(RequestUser.LoginDto.builder()
-                .email("email")
-                .password("1234")
-                .build()).orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
-        accessToken = token.getAccessToken();
     }
 
     @DisplayName("게시판 작성 성공 테스트 - 상태코드 : 200")
-    @Transactional
     @Test
     void registerBoardTest() throws Exception {
         MockMultipartFile mockMultipartfile = new MockMultipartFile("file", "test2.png",
@@ -109,6 +95,9 @@ public class BoardControllerTests {
         MockMultipartFile requestDto = new MockMultipartFile("requestDto", "",
                 "application/json", "{\"title\": \"board title\",\"hashtag\": \"hashtag\",\"context\": \"context\"}".getBytes());
 
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImV4cCI6MTY3MTc3NDI2NH0.b-02-QeknnbtWV1lrtOdXEYD9xYLLIQ3G0vIy_U8_-8";
+
+        doNothing().when(boardService).registerBoard(mockMultipartfile, "email", RequestBoard.RegisterBoardDto.builder().build());
 
         mockMvc.perform(RestDocumentationRequestBuilders
                 .multipart("/board")

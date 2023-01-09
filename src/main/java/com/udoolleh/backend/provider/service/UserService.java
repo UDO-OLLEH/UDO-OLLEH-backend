@@ -5,7 +5,6 @@ import com.udoolleh.backend.core.service.UserServiceInterface;
 import com.udoolleh.backend.entity.User;
 import com.udoolleh.backend.exception.CustomException;
 import com.udoolleh.backend.exception.ErrorCode;
-import com.udoolleh.backend.exception.errors.*;
 import com.udoolleh.backend.provider.security.JwtAuthToken;
 import com.udoolleh.backend.provider.security.JwtAuthTokenProvider;
 import com.udoolleh.backend.repository.UserRepository;
