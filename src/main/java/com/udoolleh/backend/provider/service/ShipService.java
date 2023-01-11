@@ -109,21 +109,22 @@ public class ShipService implements ShipServiceInterface {
     //id를 함께 조회할 수 있도록 해야함
     @Transactional(readOnly = true)
     @Override
-    public ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(Long id, String destination) {
+    public ResponseHarborTimetable.HarborTimetableDto getHarborTimetable(Long id) {
         Harbor harbor = harborRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HARBOR));
-
-        List<HarborTimetable> harborTimetables = harborTimetableRepository.findByDestinationAndHarbor(destination, harbor);
+        List<HarborTimetable> harborTimetables = harborTimetableRepository.findByHarbor(harbor);
         if (harborTimetables.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_HARBOR_TIMETABLE);
         }
-        List<ResponseHarborTimetable.TimetableDto> timetableDtos = new ArrayList<>();
 
+        List<ResponseHarborTimetable.TimetableDto> timetableDtos = new ArrayList<>();
+        String destination = "";
         for (HarborTimetable harborTimetable : harborTimetables) {
             timetableDtos.add(ResponseHarborTimetable.TimetableDto.builder()
                     .id(harborTimetable.getId())
                     .operatingTime(harborTimetable.getOperatingTime())
                     .period(harborTimetable.getPeriod())
                     .build());
+            destination = harborTimetable.getDestination();
         }
 
         ResponseHarborTimetable.HarborTimetableDto harborTimetableDto = ResponseHarborTimetable.HarborTimetableDto.builder()
