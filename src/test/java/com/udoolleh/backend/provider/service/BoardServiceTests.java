@@ -204,6 +204,7 @@ public class BoardServiceTests {
         assertFalse(user.getBoardList().contains(board));
     }
     @Test
+    @Transactional
     @DisplayName("자신의 게시물 조회 테스트")
     void getMyBoardListTest() {
         //given
@@ -244,7 +245,32 @@ public class BoardServiceTests {
         //then
         assertEquals(2 ,list.toList().size());
     }
+
     @Test
+    @Transactional
+    @DisplayName("좋아요 추가 테스트(성공)")
+    void updateLike(){
+        User user = User.builder()
+                .email("test")
+                .nickname("nick")
+                .password("1234")
+                .build();
+        user = userRepository.save(user);
+
+        Board board = Board.builder()
+                .title("제목")
+                .context("내용")
+                .user(user)
+                .countVisit(0L)
+                .countLikes(0L)
+                .build();
+        board = boardRepository.save(board);
+        boardService.updateLikes("test",board.getId());
+        assertEquals(1, boardRepository.findById(board.getId()).get().getCountLikes());
+    }
+
+    @Test
+    @Transactional
     @DisplayName("좋아요 한 게시판 조회 테스트(성공)")
     void getLikeBoardTest(){
         User user = User.builder()

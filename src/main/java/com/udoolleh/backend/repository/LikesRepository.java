@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface LikesRepository extends JpaRepository<Likes, String> {
-    Optional<Likes> findByUserAndBoard(User user, Board board);
+    Likes findByUserAndBoard(User user, Board board);
 
     int countByBoard(Board board);
 }

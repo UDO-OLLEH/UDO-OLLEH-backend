@@ -136,10 +136,9 @@ public class LikesServiceTests {
 
         saveNewBoardAndGoodHistory(newUser, newBoard);
 
-        Optional<Likes> savedEntity = likesRepository.findByUserAndBoard(newUser, newBoard);
+        Likes savedEntity = likesRepository.findByUserAndBoard(newUser, newBoard);
 
         assertNotNull(savedEntity);
-        assertThat(savedEntity.isPresent(), equalTo(Boolean.TRUE));
 
     }
 
