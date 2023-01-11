@@ -80,9 +80,9 @@ public class ShipController {
                 .build());
     }
 
-    @GetMapping("/harbor/{id}/timetable/{destination}")
-    public ResponseEntity<CommonResponse> getHarborTimetable(@PathVariable("id") Long id, @PathVariable("destination") String destination) {
-        ResponseHarborTimetable.HarborTimetableDto list = shipService.getHarborTimetable(id, destination);
+    @GetMapping("/harbor/{id}/timetable")
+    public ResponseEntity<CommonResponse> getHarborTimetable(@PathVariable("id") Long id) {
+        ResponseHarborTimetable.HarborTimetableDto list = shipService.getHarborTimetable(id);
 
         return ResponseEntity.ok().body(CommonResponse.builder()
                 .message("배 시간 조회 성공")

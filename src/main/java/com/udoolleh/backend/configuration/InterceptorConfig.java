@@ -21,6 +21,5 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludePatterns); // 경로지정하기
-
     }
 }

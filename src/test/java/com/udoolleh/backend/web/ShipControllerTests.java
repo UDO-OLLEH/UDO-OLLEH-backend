@@ -147,10 +147,10 @@ public class ShipControllerTests {
                 .timetableDtos(timetableDtos)
                 .build();
 
-        given(shipService.getHarborTimetable(any(), any())).willReturn(harborTimetableDto);
+        given(shipService.getHarborTimetable(any())).willReturn(harborTimetableDto);
 
         mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/harbor/{id}/timetable/{destination}", "3", "성산항")
+                .get("/harbor/{id}/timetable", "3")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -161,8 +161,7 @@ public class ShipControllerTests {
                                         .host("ec2-54-241-190-224.us-west-1.compute.amazonaws.com")
                                         .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                pathParameters(parameterWithName("id").description("항구 아이디"),
-                                        parameterWithName("destination").description("목적지")),
+                                pathParameters(parameterWithName("id").description("항구 아이디")),
                                 responseFields( // response 필드 정보 입력
                                         fieldWithPath("id").type(JsonFieldType.STRING).description("응답 아이디"),
                                         fieldWithPath("dateTime").type(JsonFieldType.STRING).description("응답 시간"),

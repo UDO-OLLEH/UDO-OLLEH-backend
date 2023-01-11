@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HarborTimetableRepository extends JpaRepository<HarborTimetable, Long> {
     HarborTimetable findByDestinationAndPeriodAndHarborId(String destination, String period, Long harborId);
-    List<HarborTimetable> findByDestinationAndHarbor(String destination, Harbor harbor);
+    List<HarborTimetable> findByHarbor(Harbor harbor);
 }

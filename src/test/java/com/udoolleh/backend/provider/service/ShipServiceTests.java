@@ -227,7 +227,7 @@ public class ShipServiceTests {
                 .build();
 
         //when
-        ResponseHarborTimetable.HarborTimetableDto result = shipService.getHarborTimetable(harbor.getId(), destination);
+        ResponseHarborTimetable.HarborTimetableDto result = shipService.getHarborTimetable(harbor.getId());
 
         //then
         assertThat(result).isEqualTo(harborTimetableDto);
@@ -237,11 +237,11 @@ public class ShipServiceTests {
     @Transactional
     @Test
     void getEmptyHarborOrEmptyTimetableTest() {
-        assertThatThrownBy(() -> shipService.getHarborTimetable(12345L, "존재하지않은 목적지"))
+        assertThatThrownBy(() -> shipService.getHarborTimetable(12345L))
                 .isInstanceOf(CustomException.class)
                 .hasMessageContaining(ErrorCode.NOT_FOUND_HARBOR.getMessage());
 
-        assertThatThrownBy(() -> shipService.getHarborTimetable(setUpHarborId, "존재하지 않는 목적지"))
+        assertThatThrownBy(() -> shipService.getHarborTimetable(setUpHarborId))
                 .isInstanceOf(CustomException.class)
                 .hasMessageContaining(ErrorCode.NOT_FOUND_HARBOR_TIMETABLE.getMessage());
     }
