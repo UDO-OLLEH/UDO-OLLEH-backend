@@ -85,8 +85,14 @@ public class Board {
         this.countVisit = countVisit;
     }
 
-    public void updateLikes(long countLikes) {
-        this.countLikes = countLikes;
+    public void deleteLike(Likes likes) {
+        this.countLikes = this.countLikes - 1;
+        this.likeList.remove(likes);
+    }
+
+    public void updateLike(Likes likes) {
+        this.countLikes = this.countLikes + 1;
+        this.likeList.add(likes);
     }
 }
 

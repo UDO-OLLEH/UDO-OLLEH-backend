@@ -102,6 +102,8 @@ public class BoardService implements BoardServiceInterface {
                 .title(postDto.getTitle())
                 .hashtag(postDto.getHashtag())
                 .context(postDto.getContext())
+                .countLikes(0L)
+                .countVisit(0L)
                 .user(user)
                 .build();
 
@@ -177,18 +179,17 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
-        likesRepository.findByUserAndBoard(user, board).ifPresent(duplicate -> {
+        Likes likes  = likesRepository.findByUserAndBoard(user, board);
+        if(likes != null){
             throw new CustomException(ErrorCode.LIKES_DUPLICATED);
-        });
+        }
 
-        long countLikes = board.getCountLikes() + 1;
-        board.updateLikes(countLikes);
-
-        likesRepository.save(
+        likes = likesRepository.save(
                 Likes.builder()
                         .user(user)
                         .board(board)
                         .build());
+        board.updateLike(likes);
     }
 
     @Override
@@ -202,11 +203,12 @@ public class BoardService implements BoardServiceInterface {
         if (board == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
-        likesRepository.findByUserAndBoard(user, board).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_LIKES));
+        Likes likes = likesRepository.findByUserAndBoard(user, board);
+        if(likes == null){
+            throw new CustomException(ErrorCode.NOT_FOUND_LIKES);
+        }
+        board.deleteLike(likes);
 
-        long countLikes = board.getCountLikes() - 1;
-        board.updateLikes(countLikes);
         likesRepository.deleteById(likesId);
     }
 
